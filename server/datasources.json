@@ -1,0 +1,19 @@
+{
+  "db": {
+    "name": "db",
+    "connector": "memory"
+  },
+  "myFile": {
+    "name": "myFile",
+    "connector": "loopback-component-storage",
+    "provider": "filesystem",
+    "root": "./server/storage"
+  },
+  "myDB":{
+    "name":"myDB",
+    "connector":"mongodb",
+    "host": "localhost",
+    "port": 27017,
+    "database": "FirstDB"
+  }
+}

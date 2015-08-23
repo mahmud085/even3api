@@ -1,0 +1,87 @@
+{
+  "name": "Business",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "Name": {
+      "type": "string"
+    },
+    "BusinessPicture": {
+      "type": "string"
+    },
+    "LocationLat": {
+      "type": "number"
+    },
+    "LocationLong": {
+      "type": "number"
+    },
+    "Address": {
+      "type": "string"
+    },
+    "Description": {
+      "type": "string"
+    }
+  },
+  "validations": [],
+  "relations": {
+    "account": {
+      "type": "belongsTo",
+      "model": "Account",
+      "foreignKey": "AccountId"
+    },
+    "businessCategory": {
+      "type": "belongsTo",
+      "model": "BusinessCategory",
+      "foreignKey": "BusinessCategoryId"
+    },
+    "services": {
+      "type": "hasMany",
+      "model": "Service",
+      "foreignKey": "BusinessId"
+    }
+  },
+  "acls": [
+    {
+      "accessType": "*",
+      "principalType": "ROLE",
+      "principalId": "admin",
+      "permission": "ALLOW"
+    },
+    {
+      "accessType": "READ",
+      "principalType": "ROLE",
+      "principalId": "$unauthenticated",
+      "permission": "DENY"
+    },
+    {
+      "accessType": "READ",
+      "principalType": "ROLE",
+      "principalId": "$authenticated",
+      "permission": "ALLOW"
+    },
+    {
+      "accessType": "*",
+      "principalType": "ROLE",
+      "principalId": "$owner",
+      "permission": "ALLOW"
+    },
+    {
+      "accessType": "EXECUTE",
+      "principalType": "ROLE",
+      "principalId": "$owner",
+      "permission": "ALLOW",
+      "property": "editbusiness"
+    },
+    {
+      "accessType": "EXECUTE",
+      "principalType": "ROLE",
+      "principalId": "$unauthenticated",
+      "permission": "DENY",
+      "property": "editbusiness"
+    }
+  ],
+  "methods": {}
+}
