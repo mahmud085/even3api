@@ -4,6 +4,28 @@ var app = module.exports = loopback();
 var fs = require('fs');
 
 module.exports = function(Account) {
+
+Account.addtoken=function(data,cb)
+{
+//console.log(data.req.body);
+//console.log(data.req.accessToken.userId);
+            Account.find({where:{"id":data.req.accessToken.userId}},function(err,ant){
+              if(err)
+                cb(null,err);
+              else
+              {
+                if(data.req.body.type=='FB')
+                  ant[0].accessTokenFacebook=data.req.body.token;
+                else
+                  ant[0].accessTokenGoogle=data.req.body.token;
+
+                ant[0].save();
+                cb(null,'Sucessfully Updated');
+              }
+            });
+};
+
+
  Account.addaccount = function (ctx,options,cb) {
         if(!options) options = {};
         ctx.req.params.container = 'profilepic';
@@ -246,6 +268,21 @@ module.exports = function(Account) {
         }
     );
 
+Account.remoteMethod(
+        'addtoken',
+        {
+          description: 'Adds a Token',
+          accepts:
+              { arg: 'data', type: 'object', http: { source: 'context' } } ,
+          returns:{
+            arg: 'message', type: 'string'
+          },
+
+          http: {verb: 'post'}
+
+        }
+
+  );
 
 
 };

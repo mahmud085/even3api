@@ -24,6 +24,12 @@
     "GoogleID": {
       "type": "number"
     },
+    "accessTokenFacebook": {
+      "type": "string"
+      },
+    "accessTokenGoogle": {
+      "type": "string"
+      },
     "SavedBusiness": {
       "type": [
         "number"
@@ -104,6 +110,27 @@
       "principalId": "$authenticated",
       "permission": "ALLOW",
       "property": "editaccount"
+    },
+    {
+      "accessType": "EXECUTE",
+      "principalType": "ROLE",
+      "principalId": "$owner",
+      "permission": "ALLOW",
+      "property": "addtoken"
+    },
+    {
+      "accessType": "EXECUTE",
+      "principalType": "ROLE",
+      "principalId": "$unauthenticated",
+      "permission": "DENY",
+      "property": "addtoken"
+    },
+    {
+      "accessType": "EXECUTE",
+      "principalType": "ROLE",
+      "principalId": "$authenticated",
+      "permission": "ALLOW",
+      "property": "addtoken"
     },
     {
       "accessType": "EXECUTE",
