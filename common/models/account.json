@@ -26,10 +26,10 @@
     },
     "accessTokenFacebook": {
       "type": "string"
-      },
+    },
     "accessTokenGoogle": {
       "type": "string"
-      },
+    },
     "SavedBusiness": {
       "type": [
         "number"
@@ -138,6 +138,13 @@
       "principalId": "$everyone",
       "permission": "ALLOW",
       "property": "addaccount"
+    },
+    {
+      "accessType": "EXECUTE",
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "ALLOW",
+      "property": "socialsignin"
     }
   ],
   "methods": {}

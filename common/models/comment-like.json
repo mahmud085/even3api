@@ -10,8 +10,7 @@
       "type": "string"
     },
     "Liker": {
-      "type": 
-        "string"
+      "type": "string"
     }
   },
   "validations": [],
@@ -22,7 +21,8 @@
       "foreignKey": "EventCommentId"
     }
   },
-  "acls": [    {
+  "acls": [
+    {
       "accessType": "*",
       "principalType": "ROLE",
       "principalId": "admin",
@@ -45,6 +45,7 @@
       "principalType": "ROLE",
       "principalId": "$owner",
       "permission": "ALLOW"
-    }],
+    }
+  ],
   "methods": {}
 }

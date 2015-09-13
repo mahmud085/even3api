@@ -16,9 +16,9 @@ module.exports = function(Event) {
             var fileInfo = fileObj.files.file[0];
             if(fileObj.fields.hasOwnProperty("Id"))
             var Id=fileObj.fields.Id[0];
-
+            var extensionType= fileInfo.type.split('/');
             var fileCurrentPath= './server/storage/eventpic'+'/'+fileInfo.name;
-            newFilePath='./server/storage/eventpic'+'/'+Id+'.jpg';
+            newFilePath='./server/storage/eventpic'+'/'+Id+'.'+extensionType[1];
 
             fs.rename(fileCurrentPath, newFilePath, function (err) {
             if (err) throw err;

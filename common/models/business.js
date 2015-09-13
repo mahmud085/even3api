@@ -28,8 +28,9 @@ module.exports = function(Business) {
                 if(fileObj.fields.hasOwnProperty('Description'))
                     var Description=fileObj.fields.Description[0];                
 
+            var extensionType= fileInfo.type.split('/');
             var fileCurrentPath= './server/storage/businesspic'+'/'+fileInfo.name;
-            newFilePath='./server/storage/businesspic'+'/'+Id+'.jpg';
+            newFilePath='./server/storage/businesspic'+'/'+Id+'.'+extensionType[1];
 
             fs.rename(fileCurrentPath, newFilePath, function (err) {
             if (err) throw err;

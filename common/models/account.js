@@ -2,8 +2,64 @@ var CONTAINERS_URL = '/api/containers/';
 var loopback = require('loopback');
 var app = module.exports = loopback();
 var fs = require('fs');
+var path = require('path');
+var AccessToken = loopback.AccessToken;
 
 module.exports = function(Account) {
+
+Account.socialsignin = function(Type,FacebookID,cb)
+{ 
+  if(Type=='FB')
+Account.find({where:{"FacebookID":FacebookID}},function(err,ant){
+          if(err)
+            cb(null,err);
+          console.log(ant[0]);
+         // accessToken = new AccessToken();
+         //var user = Account.app.models;
+          Account.app.models.AccessToken.create({
+            created : new Date(),  
+            userId:ant[0].id
+          },function(err,newToken){
+            if(err)
+            {
+              console.log('err in newToken');
+              cb(null,err);
+            }
+            else
+            {
+              console.log(newToken.id.userId);
+              cb(null,newToken);
+            }
+          });
+
+          /*AccessToken.createAccessTokenId(function(err,token){
+            if(err)
+              cb(null,err);
+            console.log(token.userId);
+            cb(null,token);
+          });
+
+
+          /*Account.login({email: ant[0].email , password: ant[0].password }, function (err, token) {
+            if(err)
+              cb(null,err);
+            else
+           {   
+                      console.log(token);
+                      //ant.accessToken= token.id;
+                       cb(null,token);
+
+            }
+         });*/
+});
+
+ // cb(null,res);
+};
+
+
+
+// Adding social Token
+
 
 Account.addtoken=function(data,cb)
 {
@@ -27,10 +83,13 @@ Account.addtoken=function(data,cb)
 
 
  Account.addaccount = function (ctx,options,cb) {
+      
+     
         if(!options) options = {};
         ctx.req.params.container = 'profilepic';
 
  Account.app.models.container.upload(ctx.req,ctx.result,options,function (err,fileObj) {
+           //console.log(fileObj);
             if(err) {
                 cb(err);
             } 
@@ -76,9 +135,11 @@ Account.addtoken=function(data,cb)
       },    function(err,ant){
         if(err)
           cb(null,err);
-
+        //console.log(fileInfo);
+        var extensionType= fileInfo.type.split('/');
+        console.log(extensionType);
         var fileCurrentPath= './server/storage/profilepic'+'/'+fileInfo.name;
-        newFilePath='./server/storage/profilepic'+'/'+ant.id+'.jpg';
+        newFilePath='./server/storage/profilepic'+'/'+ant.id+'.'+extensionType[1];
 
         fs.rename(fileCurrentPath, newFilePath, function (err) {
             if (err) throw err;
@@ -135,6 +196,7 @@ Account.addtoken=function(data,cb)
         if(err)
           cb(null,err);
          Account.login({email: email , password: password }, function (err, token) {
+
            console.log(token);
            ant.accessToken= token.id;
             cb(null,ant);
@@ -161,9 +223,12 @@ Account.addtoken=function(data,cb)
             {
           var fileInfo = fileObj.files.file[0];
 
+            var extensionType= fileInfo.type.split('/');
+        //console.log(extensionType);
+      
 
            var fileCurrentPath= './server/storage/profilepic'+'/'+fileInfo.name;
-            newFilePath='./server/storage/profilepic'+'/'+ctx.req.accessToken.userId+'.jpg';
+            newFilePath='./server/storage/profilepic'+'/'+ctx.req.accessToken.userId+'.'+extensionType[1];
 
             fs.rename(fileCurrentPath, newFilePath, function (err) {
             if (err) throw err;
@@ -194,10 +259,8 @@ Account.addtoken=function(data,cb)
         ant[0].UserPicture = newFilePath;      
         ant[0].save(); 
         cb(null,ant[0]);
-                }
-
+                  }
                 });
-
     }
     else
       {
@@ -277,12 +340,23 @@ Account.remoteMethod(
           returns:{
             arg: 'message', type: 'string'
           },
-
           http: {verb: 'post'}
-
         }
-
   );
 
+Account.remoteMethod(
+        'socialsignin',
+        {
+          description: 'Sign in with Google or facebook',
+          accepts:[
+          { arg: 'Type', type: 'string' } ,
+          {arg:'FacebookID', type:'number'}
+          ],
+              
+          returns:{
+            arg: 'fileObject', type: 'object', root: true
+          },
 
+          http: {verb: 'post'}
+        });
 };

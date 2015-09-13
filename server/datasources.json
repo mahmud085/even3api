@@ -9,11 +9,11 @@
     "provider": "filesystem",
     "root": "./server/storage"
   },
-  "myDB":{
-    "name":"myDB",
-    "connector":"mongodb",
+  "myDB": {
     "host": "localhost",
     "port": 27017,
-    "database": "FirstDB"
+    "database": "FirstDB",
+    "name": "myDB",
+    "connector": "mongodb"
   }
 }
