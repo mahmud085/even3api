@@ -3,6 +3,41 @@ var loopback = require('loopback');
 var boot = require('loopback-boot');
 
 var app = module.exports = loopback();
+/*
+// Passport configurators..
+var loopbackPassport = require('loopback-component-passport');
+var PassportConfigurator = loopbackPassport.PassportConfigurator;
+var passportConfigurator = new PassportConfigurator(app);
+
+var config = {};
+try {
+ config = require('./providers.json');
+} catch(err) {
+ console.error('Please configure your passport strategy in `providers.json`.');
+ console.error('Copy `providers.json.template` to `providers.json` and replace the clientID/clientSecret values with your own.');
+ process.exit(1);
+}
+// Initialize passport
+passportConfigurator.init();
+
+// Configure passport strategies for third party auth providers
+for(var s in config) {
+ var c = config[s];
+ c.session = c.session !== false;
+ passportConfigurator.configureProvider(s, c);
+}
+
+
+
+passportConfigurator.setupModels({
+  userModel: app.models.user,
+  userIdentityModel: app.models.userIdentity,
+  userCredentialModel: app.models.userCredential
+});
+
+*/
+
+
 
 
 app.start = function() {

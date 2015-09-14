@@ -7,18 +7,21 @@ var AccessToken = loopback.AccessToken;
 
 module.exports = function(Account) {
 
-Account.socialsignin = function(Type,FacebookID,cb)
+Account.socialsignin = function(Type,ID,cb)
 { 
+
+
   if(Type=='FB')
-Account.find({where:{"FacebookID":FacebookID}},function(err,ant){
+Account.find({where:{"FacebookID":ID}},function(err,ant){
           if(err)
             cb(null,err);
-          console.log(ant[0]);
-         // accessToken = new AccessToken();
-         //var user = Account.app.models;
-          Account.app.models.AccessToken.create({
+          if(ant==undefined)
+            cb(null,'Account not found');
+
+         ant[0].accessTokens.create({
+          //.AccessToken.create({
             created : new Date(),  
-            userId:ant[0].id
+           // userId:ant[0].id
           },function(err,newToken){
             if(err)
             {
@@ -27,30 +30,37 @@ Account.find({where:{"FacebookID":FacebookID}},function(err,ant){
             }
             else
             {
-              console.log(newToken.id.userId);
+              console.log(newToken);
               cb(null,newToken);
             }
           });
 
-          /*AccessToken.createAccessTokenId(function(err,token){
+});
+
+else
+Account.find({where:{"GoogleID":ID}},function(err,ant){
+          if(err)
+            cb(null,err);
+          if(ant==undefined)
+            cb(null,'Account not found');
+
+         ant[0].accessTokens.create({
+          //.AccessToken.create({
+            created : new Date(),  
+           // userId:ant[0].id
+          },function(err,newToken){
             if(err)
+            {
+              console.log('err in newToken');
               cb(null,err);
-            console.log(token.userId);
-            cb(null,token);
-          });
-
-
-          /*Account.login({email: ant[0].email , password: ant[0].password }, function (err, token) {
-            if(err)
-              cb(null,err);
-            else
-           {   
-                      console.log(token);
-                      //ant.accessToken= token.id;
-                       cb(null,token);
-
             }
-         });*/
+            else
+            {
+              console.log(newToken);
+              cb(null,newToken);
+            }
+          });
+         
 });
 
  // cb(null,res);
@@ -350,7 +360,7 @@ Account.remoteMethod(
           description: 'Sign in with Google or facebook',
           accepts:[
           { arg: 'Type', type: 'string' } ,
-          {arg:'FacebookID', type:'number'}
+          {arg:'ID', type:'number'}
           ],
               
           returns:{

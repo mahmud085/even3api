@@ -3,6 +3,7 @@
     "sources": [
       "loopback/common/models",
       "loopback/server/models",
+      "loopback/node_modules/loopback-component-passport/lib/models",
       "../common/models",
       "./models"
     ],
@@ -13,6 +14,8 @@
       "./mixins"
     ]
   },
+
+
   "User": {
     "dataSource": "db"
   },
@@ -32,6 +35,8 @@
     "dataSource": "db",
     "public": false
   },
+
+
   "Account": {
     "dataSource": "myDB",
     "public": true

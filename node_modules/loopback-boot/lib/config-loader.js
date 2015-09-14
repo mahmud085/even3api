@@ -1,6 +1,7 @@
 var fs = require('fs');
 var path = require('path');
 var debug = require('debug')('loopback:boot:config-loader');
+var assert = require('assert');
 
 var ConfigLoader = exports;
 
@@ -32,7 +33,7 @@ ConfigLoader.loadDataSources = function(rootDir, env) {
  */
 ConfigLoader.loadModels = function(rootDir, env) {
   /*jshint unused:false */
-  return tryReadJsonConfig(rootDir, 'model-config') || {};
+  return loadNamed(rootDir, env, 'model-config', mergeModelConfig);
 };
 
 /**
@@ -140,11 +141,16 @@ function mergeConfigurations(configObjects, mergeFn) {
 }
 
 function mergeDataSourceConfig(target, config, fileName) {
-  for (var ds in target) {
-    var err = mergeObjects(target[ds], config[ds]);
-    if (err) {
-      throw new Error('Cannot apply ' + fileName + ' to `'  + ds + '`: ' + err);
-    }
+  var err = mergeObjects(target, config);
+  if (err) {
+    throw new Error('Cannot apply ' + fileName + ': ' + err);
+  }
+}
+
+function mergeModelConfig(target, config, fileName) {
+  var err = mergeObjects(target, config);
+  if (err) {
+    throw new Error('Cannot apply ' + fileName + ': ' + err);
   }
 }
 
@@ -168,13 +174,59 @@ function mergeMiddlewareConfig(target, config, fileName) {
   }
 }
 
+function mergeNamedItems(arr1, arr2, key) {
+  assert(Array.isArray(arr1), 'invalid array: ' + arr1);
+  assert(Array.isArray(arr2), 'invalid array: ' + arr2);
+  key = key || 'name';
+  var result = [].concat(arr1);
+  for (var i = 0, n = arr2.length; i < n; i++) {
+    var item = arr2[i];
+    var found = false;
+    if (item[key]) {
+      for (var j = 0, k = result.length; j < k; j++) {
+        if (result[j][key] === item[key]) {
+          mergeObjects(result[j], item);
+          found = true;
+          break;
+        }
+      }
+    }
+    if (!found) {
+      result.push(item);
+    }
+  }
+  return result;
+}
+
 function mergePhaseConfig(target, config, phase) {
   var err;
-  for (var middleware in config) {
-    if (middleware in target) {
-      err = mergeObjects(target[middleware], config[middleware]);
+  for (var mw in config) {
+    if (mw in target) {
+      var targetMiddleware = target[mw];
+      var configMiddleware = config[mw];
+      if (Array.isArray(targetMiddleware) && Array.isArray(configMiddleware)) {
+        // Both are arrays, combine them
+        target[mw] = mergeNamedItems(targetMiddleware, configMiddleware);
+      } else if (Array.isArray(targetMiddleware)) {
+        if (typeof configMiddleware === 'object' &&
+          Object.keys(configMiddleware).length) {
+          // Config side is an non-empty object
+          target[mw] = mergeNamedItems(targetMiddleware, [configMiddleware]);
+        }
+      } else if (Array.isArray(configMiddleware)) {
+        if (typeof targetMiddleware === 'object' &&
+          Object.keys(targetMiddleware).length) {
+          // Target side is an non-empty object
+          target[mw] = mergeNamedItems([targetMiddleware], configMiddleware);
+        } else {
+          // Target side is empty
+          target[mw] = configMiddleware;
+        }
+      } else {
+        err = mergeObjects(targetMiddleware, configMiddleware);
+      }
     } else {
-      err = 'The middleware "' + middleware + '" in phase "' + phase + '"' +
+      err = 'The middleware "' + mw + '" in phase "' + phase + '"' +
         'is not defined in the main config.';
     }
     if (err) return err;
@@ -182,11 +234,9 @@ function mergePhaseConfig(target, config, phase) {
 }
 
 function mergeComponentConfig(target, config, fileName) {
-  for (var c in target) {
-    var err = mergeObjects(target[c], config[c]);
-    if (err) {
-      throw new Error('Cannot apply ' + fileName + ' to `'  + c + '`: ' + err);
-    }
+  var err = mergeObjects(target, config);
+  if (err) {
+    throw new Error('Cannot apply ' + fileName + ': ' + err);
   }
 }
 
@@ -249,20 +299,4 @@ function hasCompatibleType(origValue, newValue) {
   // Note: typeof Array() is 'object' too,
   // we don't need to explicitly check array types
   return typeof newValue !== 'object';
-}
-
-/**
- * Try to read a config file with .json extension
- * @param {string} cwd Dirname of the file
- * @param {string} fileName Name of the file without extension
- * @returns {Object|undefined} Content of the file, undefined if not found.
- */
-function tryReadJsonConfig(cwd, fileName) {
-  try {
-    return require(path.join(cwd, fileName + '.json'));
-  } catch (e) {
-    if (e.code !== 'MODULE_NOT_FOUND') {
-      throw e;
-    }
-  }
 }

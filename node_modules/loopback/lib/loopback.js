@@ -159,6 +159,9 @@ if (loopback.isServer) {
 
   loopback.urlNotFound = loopback['url-not-found'];
   delete loopback['url-not-found'];
+
+  loopback.errorHandler = loopback['error-handler'];
+  delete loopback['error-handler'];
 }
 
 /*
@@ -179,12 +182,6 @@ if (loopback.isServer) {
    */
   loopback.faviconFile = path.resolve(__dirname, '../favicon.ico');
 }
-
-/*!
- * Error handler title
- */
-
-loopback.errorHandler.title = 'Loopback';
 
 /**
  * Add a remote method to a model.
@@ -215,7 +212,9 @@ loopback.remoteMethod = function(fn, options) {
 loopback.template = function(file) {
   var templates = this._templates || (this._templates = {});
   var str = templates[file] || (templates[file] = fs.readFileSync(file, 'utf8'));
-  return ejs.compile(str);
+  return ejs.compile(str, {
+    filename: file
+  });
 };
 
 require('../server/current-context')(loopback);

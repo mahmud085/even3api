@@ -30,6 +30,8 @@ module.exports = function(Event) {
                     console.log(err);
                 else
                 {
+                    if(fileObj.fields.hasOwnProperty('Description'))
+                    evnt[0].Description=fileObj.fields.Description[0];
                     if(fileObj.fields.hasOwnProperty("Name"))
                     evnt[0].Name=fileObj.fields.Name[0];
                     if(fileObj.fields.hasOwnProperty("StartDate"))
@@ -51,6 +53,8 @@ module.exports = function(Event) {
     }
     else
     {
+                if(fileObj.fields.hasOwnProperty('Description'))
+                    var Description=fileObj.fields.Description[0];
                 if(fileObj.fields.hasOwnProperty('Id'))
                     var Id=fileObj.fields.Id[0];
                 if(fileObj.fields.hasOwnProperty('Name'))
@@ -69,8 +73,10 @@ module.exports = function(Event) {
                 if(err)
                     console.log(err);
                 else
-                {
+                {   
+
                     evnt[0].Name=Name;
+                    evnt[0].Description=Description;
                     evnt[0].LocationLat=LocationLat;
                     evnt[0].LocationLong=LocationLong;
                     evnt[0].Address=Address;
@@ -144,16 +150,17 @@ module.exports = function(Event) {
     	{
     		response='Can not save';
     		cb(null, response);
-    	}    		
-    	response='eventurl/'+event.id;
+    	}
+        var response={};
+        response.id=event.id;
+    	response.link='eventurl/'+event.id;
+
     	console.log(response);
     	cb(null, response);
     });
 
-
     
 };
-
 
 
 
@@ -166,7 +173,7 @@ Event.remoteMethod(
 			type: 'string'
 		}
 		],
-		returns: {arg: 'res', type: 'string', 'http': {source: 'res'}}
+		returns: {arg: 'res', type: 'object', 'http': {source: 'res'}}
 	});
 
   Event.remoteMethod(

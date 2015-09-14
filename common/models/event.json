@@ -12,6 +12,9 @@
     "EventPicture": {
       "type": "string"
     },
+    "Description": {
+      "type": "string"
+    },
     "StartDate": {
       "type": "date"
     },
