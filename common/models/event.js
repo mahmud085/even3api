@@ -1,3 +1,4 @@
+var CONTAINERS_URL = '/containers/';
 var loopback = require('loopback');
 var app = module.exports = loopback();
 var fs = require('fs');
@@ -9,6 +10,7 @@ module.exports = function(Event) {
         ctx.req.params.container = 'eventpic';
            //console.log(ctx.req.query);
       Event.app.models.container.upload(ctx.req,ctx.result,options,function (err,fileObj) {
+
             if(err) {
                 cb(err);
             }  if(fileObj.files.hasOwnProperty('file'))
@@ -44,7 +46,7 @@ module.exports = function(Event) {
                     evnt[0].LocationLong=fileObj.fields.LocationLong[0];
                     if(fileObj.fields.hasOwnProperty("Address"))
                     evnt[0].Address=fileObj.fields.Address[0];
-                    evnt[0].EventPicture=newFilePath;
+                    evnt[0].EventPicture=CONTAINERS_URL+fileInfo.container+'/download/'+Id+'.'+extensionType[1];
                     evnt[0].save();
                     cb(null,evnt[0]);
                 }

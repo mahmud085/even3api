@@ -1,4 +1,4 @@
-var CONTAINERS_URL = '/api/containers/';
+var CONTAINERS_URL = '/containers/';
 var loopback = require('loopback');
 var app = module.exports = loopback();
 var fs = require('fs');
@@ -10,8 +10,7 @@ module.exports = function(Account) {
 Account.socialsignin = function(Type,ID,cb)
 { 
 
-
-  if(Type=='FB')
+if(Type=='FB')
 Account.find({where:{"FacebookID":ID}},function(err,ant){
           if(err)
             cb(null,err);
@@ -73,9 +72,8 @@ Account.find({where:{"GoogleID":ID}},function(err,ant){
 
 Account.addtoken=function(data,cb)
 {
-//console.log(data.req.body);
-//console.log(data.req.accessToken.userId);
-            Account.find({where:{"id":data.req.accessToken.userId}},function(err,ant){
+
+            Account.find({where:{"id":data.req.body.Id}},function(err,ant){
               if(err)
                 cb(null,err);
               else
@@ -156,11 +154,13 @@ Account.addtoken=function(data,cb)
             //console.log('renamed complete');
             });
 
-        ant.UserPicture=newFilePath;
+        ant.UserPicture=CONTAINERS_URL+fileInfo.container+'/download/'+ant.id+'.'+extensionType[1];
         ant.save();
          Account.login({email: email , password: password }, function (err, token) {
            console.log(token);
            ant.accessToken= token.id;
+          // ant.container='profilepic';
+          // ant.UserPicture= ''+ant.id+'.'+extensionType[1];
             cb(null,ant);
          });
 
@@ -226,6 +226,10 @@ Account.addtoken=function(data,cb)
         ctx.req.params.container = 'profilepic';
 
       Account.app.models.container.upload(ctx.req,ctx.result,options,function (err,fileObj) {
+            if(!fileObj.fields.hasOwnProperty('Id'))
+              cb(err);
+            else
+              var Id= fileObj.fields.Id[0];
             if(err) {
                 cb(err);
             } 
@@ -238,14 +242,14 @@ Account.addtoken=function(data,cb)
       
 
            var fileCurrentPath= './server/storage/profilepic'+'/'+fileInfo.name;
-            newFilePath='./server/storage/profilepic'+'/'+ctx.req.accessToken.userId+'.'+extensionType[1];
+            newFilePath='./server/storage/profilepic'+'/'+Id+'.'+extensionType[1];
 
             fs.rename(fileCurrentPath, newFilePath, function (err) {
             if (err) throw err;
             //console.log('renamed complete');
             });
 
-            Account.find({where:{"id":ctx.req.accessToken.userId}},function(err,ant){
+            Account.find({where:{"id":Id}},function(err,ant){
                 if(err)
                cb(null,err);
                 else
@@ -266,8 +270,10 @@ Account.addtoken=function(data,cb)
         ant[0].EmailNotification=fileObj.fields.EmailNotification[0];
         if(fileObj.fields.hasOwnProperty('PushNotification'))
         ant[0].PushNotification=fileObj.fields.PushNotification[0];
-        ant[0].UserPicture = newFilePath;      
-        ant[0].save(); 
+        ant[0].UserPicture = CONTAINERS_URL+fileInfo.container+'/download/'+ant[0].id+'.'+extensionType[1];      
+        ant[0].save();
+        //ant[0].container="profilepic";
+        //ant[0].UserPicture= ''+ant[0].id+'.'+extensionType[1]; 
         cb(null,ant[0]);
                   }
                 });
@@ -276,7 +282,7 @@ Account.addtoken=function(data,cb)
       {
              
 
-            Account.find({where:{"id":ctx.req.accessToken.userId}},function(err,ant){
+            Account.find({where:{"id":Id}},function(err,ant){
                 if(err)
                cb(null,err);
                 else

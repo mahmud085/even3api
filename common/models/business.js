@@ -1,3 +1,4 @@
+var CONTAINERS_URL = '/containers/';
 var loopback = require('loopback');
 var app = module.exports = loopback();
 var fs = require('fs');
@@ -45,7 +46,7 @@ module.exports = function(Business) {
                     busnes[0].LocationLat=LocationLat;
                     busnes[0].LocationLong=LocationLong;
                     busnes[0].Address=Address;
-                    busnes[0].BusinessPicture=newFilePath;
+                    busnes[0].BusinessPicture=CONTAINERS_URL+fileInfo.container+'/download/'+Id+'.'+extensionType[1];
                     busnes[0].Description=Description;
                     busnes[0].save();       
                 }
