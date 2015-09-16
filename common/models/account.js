@@ -464,7 +464,7 @@ Account.remoteMethod(
 Account.remoteMethod(
         'socialsignin',
         {
-          description: 'Sign in with Google or facebook',
+          description: 'Sign in with Google or facebook . credentials: a Json with Type(FB,Google),Id(facebook or google), email, FirstName,LastName',
           accepts:{ arg: 'data', type: 'object', http: { source: 'context' } },
               
           returns:{
