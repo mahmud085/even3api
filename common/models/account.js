@@ -7,15 +7,64 @@ var AccessToken = loopback.AccessToken;
 
 module.exports = function(Account) {
 
-Account.socialsignin = function(Type,ID,cb)
+
+
+
+// Social Signin 
+
+Account.socialsignin = function(data,cb)
 { 
 
-if(Type=='FB')
-Account.find({where:{"FacebookID":ID}},function(err,ant){
+if(data.req.body.Type=='FB')
+Account.find({where:{"FacebookID":data.req.body.Id}},function(err,ant){
           if(err)
             cb(null,err);
-          if(ant==undefined)
-            cb(null,'Account not found');
+          if(ant[0]==undefined)
+          {
+              //console.log(data.req.body.Id);
+                  Account.create({
+        FirstName:data.req.body.FirstName,
+        email:data.req.body.email,
+        password: data.req.body.Id,
+        LastName:data.req.body.LastName,
+        Newsletter:data.req.body.Newsletter,
+        FacebookID:data.req.body.Id,
+        SavedBusiness:data.req.body.SavedBusiness,
+        EmailNotification:data.req.body.EmailNotification,
+        PushNotification:data.req.body.PushNotification        
+
+      },    function(err,ant){
+        if(err)
+        {
+          console.log(err);
+          cb(null,err);
+        }
+          
+
+         ant.accessTokens.create({
+          //.AccessToken.create({
+            created : new Date(),  
+           // userId:ant[0].id
+          },function(err,newToken){
+            if(err)
+            {
+              console.log('err in newToken');
+              cb(null,err);
+            }
+            else
+            {
+
+              console.log(newToken);
+              ant.accessToken=newToken.id;
+              cb(null,ant);
+            }
+          });
+
+      });
+
+    }
+        else
+        {
 
          ant[0].accessTokens.create({
           //.AccessToken.create({
@@ -29,19 +78,66 @@ Account.find({where:{"FacebookID":ID}},function(err,ant){
             }
             else
             {
+              ant[0].accessToken=newToken.id;
               console.log(newToken);
-              cb(null,newToken);
+              cb(null,ant[0]);
             }
           });
+       }
 
 });
 
 else
-Account.find({where:{"GoogleID":ID}},function(err,ant){
+Account.find({where:{"GoogleID":data.req.body.Id}},function(err,ant){
           if(err)
             cb(null,err);
-          if(ant==undefined)
-            cb(null,'Account not found');
+          if(ant[0]==undefined)
+          {
+              //console.log(data.req.body.Id);
+                  Account.create({
+        FirstName:data.req.body.FirstName,
+        email:data.req.body.email,
+        password: data.req.body.Id,
+        LastName:data.req.body.LastName,
+        Newsletter:data.req.body.Newsletter,
+        GoogleID:data.req.body.Id,
+        SavedBusiness:data.req.body.SavedBusiness,
+        EmailNotification:data.req.body.EmailNotification,
+        PushNotification:data.req.body.PushNotification        
+
+      },    function(err,ant){
+        if(err)
+        {
+          console.log(err);
+          cb(null,err);
+        }
+          
+
+         ant.accessTokens.create({
+          //.AccessToken.create({
+            created : new Date(),  
+           // userId:ant[0].id
+          },function(err,newToken){
+            if(err)
+            {
+              console.log('err in newToken');
+              cb(null,err);
+            }
+            else
+            {
+
+              console.log(newToken);
+              ant.accessToken=newToken.id;
+              cb(null,ant);
+            }
+          });
+
+      });
+
+    }
+
+        else
+        {
 
          ant[0].accessTokens.create({
           //.AccessToken.create({
@@ -55,15 +151,18 @@ Account.find({where:{"GoogleID":ID}},function(err,ant){
             }
             else
             {
-              console.log(newToken);
-              cb(null,newToken);
+              ant[0].accessToken=newToken.id;
+              cb(null,ant[0]);
             }
           });
-         
+         }
 });
 
  // cb(null,res);
 };
+
+
+
 
 
 
@@ -360,14 +459,13 @@ Account.remoteMethod(
         }
   );
 
+
+
 Account.remoteMethod(
         'socialsignin',
         {
           description: 'Sign in with Google or facebook',
-          accepts:[
-          { arg: 'Type', type: 'string' } ,
-          {arg:'ID', type:'number'}
-          ],
+          accepts:{ arg: 'data', type: 'object', http: { source: 'context' } },
               
           returns:{
             arg: 'fileObject', type: 'object', root: true
@@ -375,4 +473,7 @@ Account.remoteMethod(
 
           http: {verb: 'post'}
         });
+
+
+
 };
