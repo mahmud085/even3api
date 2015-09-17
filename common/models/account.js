@@ -9,7 +9,7 @@ module.exports = function(Account) {
 
 
 
-
+/*
 // Social Signin 
 
 Account.socialsignin = function(data,cb)
@@ -161,8 +161,101 @@ Account.find({where:{"GoogleID":data.req.body.Id}},function(err,ant){
  // cb(null,res);
 };
 
+*/
+//Social Signin
 
+Account.socialsignin = function(data,cb)
+{ 
+  if(data.req.body.email==null)
+    cb(null,"Email Field is empty");
 
+Account.find({where:{"email":data.req.body.email}},function(err,ant){
+          if(err)
+            cb(null,err);
+          if(ant[0]==undefined)
+          {
+              //console.log(data.req.body.Id);
+                  Account.create({
+        FirstName:data.req.body.FirstName,
+        email:data.req.body.email,
+        password: data.req.body.Id,
+        LastName:data.req.body.LastName,
+        Newsletter:data.req.body.Newsletter,
+        //FacebookID:data.req.body.Id,
+        SavedBusiness:data.req.body.SavedBusiness,
+        EmailNotification:data.req.body.EmailNotification,
+        PushNotification:data.req.body.PushNotification        
+
+      },    function(err,ant){
+        if(err)
+        {
+          console.log(err);
+          cb(null,err);
+        }
+        
+        if(data.req.body.Type=='FB')  
+        ant.FacebookID=data.req.body.Id;
+        else
+        ant.GoogleID=data.req.body.Id;
+        ant.save();
+         ant.accessTokens.create({
+          //.AccessToken.create({
+            created : new Date(),  
+           // userId:ant[0].id
+          },function(err,newToken){
+            if(err)
+            {
+              console.log('err in newToken');
+              cb(null,err);
+            }
+            else
+            {
+
+              console.log(newToken);
+              ant.accessToken=newToken.id;
+              cb(null,ant);
+            }
+          });
+
+      });
+
+    }
+        else
+        {
+        if(ant[0].FacebookID==null&&data.req.body.Type=='FB')
+        {
+          ant[0].FacebookID=data.req.body.Id;
+          ant[0].save();
+        }
+        if(ant[0].GoogleID==null&&data.req.body.Type=='Google')
+        {
+         ant[0].GoogleID=data.req.body.Id;
+         ant[0].save(); 
+        }
+
+         ant[0].accessTokens.create({
+          //.AccessToken.create({
+            created : new Date(),  
+           // userId:ant[0].id
+          },function(err,newToken){
+            if(err)
+            {
+              console.log('err in newToken');
+              cb(null,err);
+            }
+            else
+            {
+              ant[0].accessToken=newToken.id;
+              console.log(newToken);
+              cb(null,ant[0]);
+            }
+          });
+       }
+
+});
+
+ // cb(null,res);
+};
 
 
 
