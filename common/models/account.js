@@ -270,10 +270,10 @@ Account.addtoken=function(data,cb)
                 cb(null,err);
               else
               {
-                if(data.req.body.type=='FB')
-                  ant[0].accessTokenFacebook=data.req.body.token;
+                if(data.req.body.Type=='FB')
+                  ant[0].accessTokenFacebook=data.req.body.Token;
                 else
-                  ant[0].accessTokenGoogle=data.req.body.token;
+                  ant[0].accessTokenGoogle=data.req.body.Token;
 
                 ant[0].save();
                 cb(null,'Sucessfully Updated');

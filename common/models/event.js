@@ -95,12 +95,12 @@ module.exports = function(Event) {
 };
 
 
-    Event.search=function(LocationLat,LocationLong,Address,cb){
+    Event.search=function(data,cb){
 
         var response={};
-        if(!Address&&LocationLat&&LocationLong)
+        if(!data.req.body.Address&&data.req.body.LocationLat&&data.req.body.LocationLong)
         {
-            Event.find({where:{"LocationLat":LocationLat,"LocationLong":LocationLong}},function(err,event){
+            Event.find({where:{"LocationLat":data.req.body.LocationLat,"LocationLong":data.req.body.LocationLong}},function(err,event){
                 if(err)
                 {
                     cb(null,err);
@@ -112,7 +112,7 @@ module.exports = function(Event) {
 
         }
 
-        if(Address)
+        if(data.req.body.Address)
         {
             Event.find(function(err,event){
 
@@ -141,13 +141,13 @@ module.exports = function(Event) {
 
 
 
-	Event.createemptyevent = function(AccountId,cb) {
+	Event.createemptyevent = function(data,cb) {
 
     //console.log('Its Working');
 
     var response={};
 
-    Event.create({AccountId:AccountId},function(err,event){
+    Event.create({AccountId:data.req.body.Id},function(err,event){
     	if(err)
     	{
     		response='Can not save';
@@ -170,11 +170,7 @@ Event.remoteMethod(
 	'createemptyevent',
 	{
 		http: {path: '/createemptyevent', verb: 'post'},
-		accepts: [{ 
-			arg: 'AccountId', 
-			type: 'string'
-		}
-		],
+		accepts: { arg: 'data', type: 'object', http: { source: 'context' } },
 		returns: {arg: 'res', type: 'object', 'http': {source: 'res'}}
 	});
 
@@ -182,7 +178,9 @@ Event.remoteMethod(
     'search',
     {
       http: {path: '/search', verb: 'post'},
-      accepts: [{ 
+      accepts: { arg: 'data', type: 'object', http: { source: 'context' } },
+
+      /*[{ 
         arg: 'LocationLat', 
         type: 'number'
       },
@@ -194,7 +192,7 @@ Event.remoteMethod(
         arg: 'Address', 
         type: 'string'
       }
-  ],
+  ],*/
       returns: {arg: 'res', type: 'object', 'http': {source: 'res'}}
     }
   );

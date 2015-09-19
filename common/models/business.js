@@ -89,9 +89,9 @@ module.exports = function(Business) {
 
 
 
-	Business.createemptybusiness = function(AccountId,cb) {
+	Business.createemptybusiness = function(data,cb) {
     var response={};
-    Business.create({AccountId:AccountId},function(err,business){
+    Business.create({AccountId:data.req.body.Id},function(err,business){
     	if(err)
     	{
     		response='Can not save';
@@ -103,16 +103,58 @@ module.exports = function(Business) {
     });
 };
 
+    Business.search=function(data,cb){
+
+        var response={};
+        if(!data.req.body.Address&&data.req.body.LocationLat&&data.req.body.LocationLong)
+        {
+            Event.find({where:{"LocationLat":data.req.body.LocationLat,"LocationLong":data.req.body.LocationLong}},function(err,event){
+                if(err)
+                {
+                    cb(null,err);
+                }
+                console.log(event);
+                response=JSON.parse(JSON.stringify(event));
+                cb(null,response);
+            });
+
+        }
+
+        if(data.req.body.Address)
+        {
+            Event.find(function(err,event){
+
+                if(err)
+                {
+                    cb(null,err);
+                }
+
+               var res=JSON.parse(JSON.stringify(event));
+               var result=[];
+               for(sample in res)
+                {        
+                            if(res[sample].hasOwnProperty('Address'))
+                            if(res[sample].Address.toLowerCase().search(Address.toLowerCase())!=-1)
+                                result.push(res[sample]);                        
+                }
+              
+            cb(null,result);
+                            
+            })
+        }
+
+     
+
+    };
+
+
+
 
 Business.remoteMethod(
 	'createemptybusiness',
 	{
 		http: {path: '/createemptybusiness', verb: 'post'},
-		accepts: [{ 
-			arg: 'AccountId', 
-			type: 'string'
-		}
-		],
+		accepts: { arg: 'data', type: 'object', http: { source: 'context' } },
 		returns: {arg: 'res', type: 'string', 'http': {source: 'res'}}
 	});
  Business.remoteMethod(
@@ -128,5 +170,28 @@ Business.remoteMethod(
             }
         }
     );
+
+   Business.remoteMethod(
+    'search',
+    {
+      http: {path: '/search', verb: 'post'},
+      accepts: { arg: 'data', type: 'object', http: { source: 'context' } },
+
+      /*[{ 
+        arg: 'LocationLat', 
+        type: 'number'
+      },
+      { 
+        arg: 'LocationLong', 
+        type: 'number'
+      },
+        { 
+        arg: 'Address', 
+        type: 'string'
+      }
+  ],*/
+      returns: {arg: 'res', type: 'object', 'http': {source: 'res'}}
+    }
+  );
 
 };
