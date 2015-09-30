@@ -145,6 +145,20 @@
       "principalId": "$everyone",
       "permission": "ALLOW",
       "property": "socialsignin"
+    },
+    {
+      "accessType": "EXECUTE",
+      "principalType": "ROLE",
+      "principalId": "$unauthenticated",
+      "permission": "DENY",
+      "property": "sendemail"
+    },
+    {
+      "accessType": "EXECUTE",
+      "principalType": "ROLE",
+      "principalId": "$authenticated",
+      "permission": "ALLOW",
+      "property": "sendemail"
     }
   ],
   "methods": {}

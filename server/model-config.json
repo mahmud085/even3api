@@ -14,8 +14,6 @@
       "./mixins"
     ]
   },
-
-
   "User": {
     "dataSource": "db"
   },
@@ -35,8 +33,9 @@
     "dataSource": "db",
     "public": false
   },
-
-
+  "Email": {
+    "dataSource": "myEmailDataSource"
+  },
   "Account": {
     "dataSource": "myDB",
     "public": true

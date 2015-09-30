@@ -15,5 +15,22 @@
     "database": "FirstDB",
     "name": "myDB",
     "connector": "mongodb"
+  },
+  "myEmailDataSource": {
+    "name": "myEmailDataSource",
+    "connector": "mail",
+    "defaultForType": "mail",
+    "transports": [
+      {
+        "type": "SMTP",
+        "host": "smtp.gmail.com",
+        "secure": true,
+        "port": 465,
+        "auth": {
+          "user": "name@gmail.com",
+          "pass": "pass"
+        }
+      }
+    ]
   }
 }

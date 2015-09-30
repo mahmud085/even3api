@@ -7,161 +7,30 @@ var AccessToken = loopback.AccessToken;
 
 module.exports = function(Account) {
 
+Account.sendemail=function(data,cb)
+{
+  if(!data.req.body.email)
+    cb(true,'You must specify an email');
+
+      Account.app.models.Email.send({
+      to: data.req.body.email,
+      from: 'sniperefat@gmail.com',
+      subject: 'First Email',
+      text: 'my text',
+      html: 'my <em>html</em>'
+    }, function(err, mail) {
+      if(err)
+        cb(err);
+
+      //console.log('email sent!');
+      else
+      cb(true,'email sent!');
+    });
 
 
-/*
-// Social Signin 
-
-Account.socialsignin = function(data,cb)
-{ 
-
-if(data.req.body.Type=='FB')
-Account.find({where:{"FacebookID":data.req.body.Id}},function(err,ant){
-          if(err)
-            cb(null,err);
-          if(ant[0]==undefined)
-          {
-              //console.log(data.req.body.Id);
-                  Account.create({
-        FirstName:data.req.body.FirstName,
-        email:data.req.body.email,
-        password: data.req.body.Id,
-        LastName:data.req.body.LastName,
-        Newsletter:data.req.body.Newsletter,
-        FacebookID:data.req.body.Id,
-        SavedBusiness:data.req.body.SavedBusiness,
-        EmailNotification:data.req.body.EmailNotification,
-        PushNotification:data.req.body.PushNotification        
-
-      },    function(err,ant){
-        if(err)
-        {
-          console.log(err);
-          cb(null,err);
-        }
-          
-
-         ant.accessTokens.create({
-          //.AccessToken.create({
-            created : new Date(),  
-           // userId:ant[0].id
-          },function(err,newToken){
-            if(err)
-            {
-              console.log('err in newToken');
-              cb(null,err);
-            }
-            else
-            {
-
-              console.log(newToken);
-              ant.accessToken=newToken.id;
-              cb(null,ant);
-            }
-          });
-
-      });
-
-    }
-        else
-        {
-
-         ant[0].accessTokens.create({
-          //.AccessToken.create({
-            created : new Date(),  
-           // userId:ant[0].id
-          },function(err,newToken){
-            if(err)
-            {
-              console.log('err in newToken');
-              cb(null,err);
-            }
-            else
-            {
-              ant[0].accessToken=newToken.id;
-              console.log(newToken);
-              cb(null,ant[0]);
-            }
-          });
-       }
-
-});
-
-else
-Account.find({where:{"GoogleID":data.req.body.Id}},function(err,ant){
-          if(err)
-            cb(null,err);
-          if(ant[0]==undefined)
-          {
-              //console.log(data.req.body.Id);
-                  Account.create({
-        FirstName:data.req.body.FirstName,
-        email:data.req.body.email,
-        password: data.req.body.Id,
-        LastName:data.req.body.LastName,
-        Newsletter:data.req.body.Newsletter,
-        GoogleID:data.req.body.Id,
-        SavedBusiness:data.req.body.SavedBusiness,
-        EmailNotification:data.req.body.EmailNotification,
-        PushNotification:data.req.body.PushNotification        
-
-      },    function(err,ant){
-        if(err)
-        {
-          console.log(err);
-          cb(null,err);
-        }
-          
-
-         ant.accessTokens.create({
-          //.AccessToken.create({
-            created : new Date(),  
-           // userId:ant[0].id
-          },function(err,newToken){
-            if(err)
-            {
-              console.log('err in newToken');
-              cb(null,err);
-            }
-            else
-            {
-
-              console.log(newToken);
-              ant.accessToken=newToken.id;
-              cb(null,ant);
-            }
-          });
-
-      });
-
-    }
-
-        else
-        {
-
-         ant[0].accessTokens.create({
-          //.AccessToken.create({
-            created : new Date(),  
-           // userId:ant[0].id
-          },function(err,newToken){
-            if(err)
-            {
-              console.log('err in newToken');
-              cb(null,err);
-            }
-            else
-            {
-              ant[0].accessToken=newToken.id;
-              cb(null,ant[0]);
-            }
-          });
-         }
-});
-
- // cb(null,res);
 };
 
-*/
+
 //Social Signin
 
 Account.socialsignin = function(data,cb)
@@ -181,6 +50,7 @@ Account.find({where:{"email":data.req.body.email}},function(err,ant){
         password: data.req.body.Id,
         LastName:data.req.body.LastName,
         Newsletter:data.req.body.Newsletter,
+        username:data.req.body.username,
         //FacebookID:data.req.body.Id,
         SavedBusiness:data.req.body.SavedBusiness,
         EmailNotification:data.req.body.EmailNotification,
@@ -300,6 +170,8 @@ Account.addtoken=function(data,cb)
       var FirstName= fileObj.fields.FirstName[0];
       if(fileObj.fields.hasOwnProperty('LastName'))
       var LastName = fileObj.fields.LastName[0];
+    if(fileObj.fields.hasOwnProperty('username'))
+      var username = fileObj.fields.username[0];
       if(fileObj.fields.hasOwnProperty('email'))
       var email = fileObj.fields.email[0];
       if(fileObj.fields.hasOwnProperty('password'))
@@ -323,6 +195,7 @@ Account.addtoken=function(data,cb)
         FirstName:FirstName,
         email:email,
         password:password,
+        username:username,
         UserPicture:CONTAINERS_URL+fileInfo.container+'/download/'+fileInfo.name,
         LastName:LastName,
         Newsletter:Newsletter,
@@ -361,6 +234,8 @@ Account.addtoken=function(data,cb)
     }
     else
       {
+      if(fileObj.fields.hasOwnProperty('username'))
+      var username = fileObj.fields.username[0];
       if(fileObj.fields.hasOwnProperty('FirstName'))
       var FirstName= fileObj.fields.FirstName[0];
       if(fileObj.fields.hasOwnProperty('LastName'))
@@ -386,6 +261,7 @@ Account.addtoken=function(data,cb)
         FirstName:FirstName,
         email:email,
         password:password,
+        username:username,
         LastName:LastName,
         Newsletter:Newsletter,
         FacebookID:FacebookID,
@@ -446,6 +322,8 @@ Account.addtoken=function(data,cb)
                cb(null,err);
                 else
                 {
+        if(fileObj.fields.hasOwnProperty('username'))
+         ant[0].username = fileObj.fields.username[0];
         if(fileObj.fields.hasOwnProperty('FirstName'))
         ant[0].FirstName=fileObj.fields.FirstName[0];
         if(fileObj.fields.hasOwnProperty('LastName'))
@@ -479,6 +357,8 @@ Account.addtoken=function(data,cb)
                cb(null,err);
                 else
                 {
+         if(fileObj.fields.hasOwnProperty('username'))
+         ant[0].username = fileObj.fields.username[0];
         if(fileObj.fields.hasOwnProperty('FirstName'))
         ant[0].FirstName=fileObj.fields.FirstName[0];
         if(fileObj.fields.hasOwnProperty('LastName'))
@@ -567,6 +447,19 @@ Account.remoteMethod(
           http: {verb: 'post'}
         });
 
+Account.remoteMethod(
+        'sendemail',
+        {
+          description: 'Sends An Email',
+          accepts:{ arg: 'data', type: 'object', http: { source: 'context' } },
+              
+          returns:{
+            arg: 'fileObject', type: 'object', root: true
+          },
+
+          http: {verb: 'post'}
+
+        });
 
 
 };
