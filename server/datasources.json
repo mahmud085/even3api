@@ -20,17 +20,23 @@
     "name": "myEmailDataSource",
     "connector": "mail",
     "defaultForType": "mail",
-    "transports": [
+        "transports": [
       {
         "type": "SMTP",
         "host": "smtp.gmail.com",
         "secure": true,
         "port": 465,
         "auth": {
-          "user": "name@gmail.com",
-          "pass": "pass"
+          "user": "sniperefat@gmail.com",
+          "pass": "1234Refat456"
         }
       }
     ]
-  }
+  },
+      "sendgrid": {
+        "connector": "loopback-connector-sendgrid",
+        "api_user": "even3co",
+        "api_key" :  "even3co1234"
+    }
+
 }

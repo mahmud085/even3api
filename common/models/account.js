@@ -12,20 +12,34 @@ Account.sendemail=function(data,cb)
   if(!data.req.body.email)
     cb(true,'You must specify an email');
 
-      Account.app.models.Email.send({
+ /*     Account.app.models.Email.send({
       to: data.req.body.email,
       from: 'sniperefat@gmail.com',
       subject: 'First Email',
       text: 'my text',
-      html: 'my <em>html</em>'
+      html: 'my <p><b>html</b></p>'
     }, function(err, mail) {
       if(err)
         cb(err);
 
-      //console.log('email sent!');
       else
       cb(true,'email sent!');
-    });
+    });*/
+
+loopback.Email.send({
+    to: "refat.rafi@yahoo.com",
+    from: " even3co@gmail.com",
+    subject: "subject",
+    text: "text message",
+    html: "html <b>message</b>"
+},
+function(err, result) {
+    if(err) {
+        console.log('Upppss something crash');
+    cb(err);
+        }
+    cb(true,result);
+});
 
 
 };
