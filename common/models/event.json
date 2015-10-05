@@ -99,6 +99,13 @@
       "principalId": "$unauthenticated",
       "permission": "DENY",
       "property": "editevent"
+    },
+    {
+      "accessType": "EXECUTE",
+      "principalType": "ROLE",
+      "principalId": "$unauthenticated",
+      "permission": "ALLOW",
+      "property": "deleteevent"
     }
   ],
   "methods": {}

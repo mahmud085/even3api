@@ -5,7 +5,20 @@ var fs = require('fs');
 
 module.exports = function(Event) {
 
+
+     Event.deleteevent=function(cb)
+     {
+        Event.destroyAll(function(err,result){
+            if(err)
+                cb(err);
+            cb(true,'Deleted');
+        });
+
+     }
+
+
      Event.editevent = function (ctx,options,cb) {
+
         if(!options) options = {};
         ctx.req.params.container = 'eventpic';
            //console.log(ctx.req.query);
@@ -227,5 +240,15 @@ Event.remoteMethod(
         }
     );
 
+  Event.remoteMethod(
+        'deleteevent',
+        {  http: {verb: 'post'},
+            description: 'Deletes All the Events',
+
+            returns: {
+                arg: 'fileObject', type: 'object', root: true
+            }
+        }
+    );
 
 };
