@@ -304,6 +304,7 @@ Account.addtoken=function(data,cb)
 
 
  Account.editaccount = function (ctx,options,cb) {
+
         if(!options) options = {};
         ctx.req.params.container = 'profilepic';
 
@@ -317,6 +318,7 @@ Account.addtoken=function(data,cb)
             } 
             if(fileObj.files.hasOwnProperty('file')) 
             {
+              
           var fileInfo = fileObj.files.file[0];
 
             var extensionType= fileInfo.type.split('/');

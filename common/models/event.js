@@ -41,9 +41,17 @@ module.exports = function(Event) {
                     if(fileObj.fields.hasOwnProperty("EndDate"))
                     evnt[0].EndDate=fileObj.fields.EndDate[0];
                     if(fileObj.fields.hasOwnProperty("LocationLat"))
-                    evnt[0].LocationLat=fileObj.fields.LocationLat[0];
+                        var LocationLat=fileObj.fields.LocationLat[0];
+                   
                     if(fileObj.fields.hasOwnProperty("LocationLong"))
-                    evnt[0].LocationLong=fileObj.fields.LocationLong[0];
+                    var LocationLong=fileObj.fields.LocationLong[0];
+
+                    if(LocationLat&&LocationLong)
+                    {
+                       evnt[0].Location= new loopback.GeoPoint({lat: LocationLat, lng: LocationLong});
+                    }
+
+                    
                     if(fileObj.fields.hasOwnProperty("Address"))
                     evnt[0].Address=fileObj.fields.Address[0];
                     if(fileObj.fields.hasOwnProperty("EventCategoryId"))
@@ -85,8 +93,10 @@ module.exports = function(Event) {
 
                     evnt[0].Name=Name;
                     evnt[0].Description=Description;
-                    evnt[0].LocationLat=LocationLat;
-                    evnt[0].LocationLong=LocationLong;
+                    //evnt[0].LocationLat=LocationLat;
+                    //evnt[0].LocationLong=LocationLong;
+                    if(LocationLat&&LocationLong)
+                    evnt[0].Location= new loopback.GeoPoint({lat: LocationLat, lng: LocationLong});
                     evnt[0].Address=Address;
                     evnt[0].StartDate=StartDate;
                     evnt[0].EndDate=EndDate;

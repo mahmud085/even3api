@@ -21,11 +21,8 @@
     "EndDate": {
       "type": "date"
     },
-    "LocationLat": {
-      "type": "number"
-    },
-    "LocationLong": {
-      "type": "number"
+    "Location": {
+      "type": "GeoPoint"
     },
     "Address": {
       "type": "string"
