@@ -6,9 +6,7 @@
     "validateUpsert": true
   },
   "properties": {
-    "Commenter": {
-      "type": "string"
-    },
+
     "CommentBody": {
       "type": "string"
     },
@@ -17,7 +15,13 @@
     }
   },
   "validations": [],
-  "relations": {
+  "relations": { 
+    
+    "account": {
+      "type": "belongsTo",
+      "model": "Account",
+      "foreignKey": "AccountId"
+    },
     "event": {
       "type": "belongsTo",
       "model": "Event",

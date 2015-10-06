@@ -44,6 +44,11 @@
   },
   "validations": [],
   "relations": {
+    "eventcomment":{
+      "type": "hasMany",
+      "model":"EventComment",
+      "foreignKey": "AccountId"
+      },
     "events": {
       "type": "hasMany",
       "model": "Event",

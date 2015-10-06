@@ -24,7 +24,7 @@ module.exports = function(EventComment) {
 		 	EventComment.create({
 		 		CommentBody:CommentBody,
 		 		EventId:EventId,
-		 		Commenter:Id
+		 		AccountId:Id
 		 	},function(err,eventcomment){
 		 		if(err)
 		 			cb(null,err);
@@ -47,7 +47,7 @@ module.exports = function(EventComment) {
 		 	EventComment.create({
 		 		CommentBody:CommentBody,
 		 		EventId:EventId,
-		 		Commenter:Id
+		 		AccountId:Id
 		 	},function(err,eventcomment){
 		 		if(err)
 		 			cb(null,err);

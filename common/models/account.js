@@ -373,6 +373,8 @@ Account.addtoken=function(data,cb)
                cb(null,err);
                 else
                 {
+                 // console.log('value is '+fileObj.fields.PushNotification[0]);
+
          if(fileObj.fields.hasOwnProperty('username'))
          ant[0].username = fileObj.fields.username[0];
         if(fileObj.fields.hasOwnProperty('FirstName'))
