@@ -6,11 +6,13 @@
     "validateUpsert": true
   },
   "properties": {
-
+    "Time":{
+      "type" : "date"
+    }
     "CommentBody": {
       "type": "string"
     },
-    "commentPicture": {
+    "CommentPicture": {
       "type": "string"
     }
   },

@@ -19,18 +19,21 @@ module.exports = function(EventComment) {
 		 		  var EventId= fileObj.fields.EventId[0];	
                   if(fileObj.fields.hasOwnProperty("Id"))
 		 		  var Id= fileObj.fields.Id[0];
+		 		  if(fileObj.fields.hasOwnProperty("Time"))
+		 		  var Time= fileObj.fields.Time[0];
 
 		 		//var Commenter =JSON.parse(JSON.stringify(ctx.req.accessToken.userId));
 		 	EventComment.create({
 		 		CommentBody:CommentBody,
 		 		EventId:EventId,
-		 		AccountId:Id
+		 		AccountId:Id,
+		 		Time:Time
 		 	},function(err,eventcomment){
 		 		if(err)
 		 			cb(null,err);
        var fileCurrentPath= './server/storage/eventcommentpic'+'/'+fileInfo.name;
         newFilePath='./server/storage/eventcommentpic'+'/'+eventcomment.id+'.jpg';		 		
-        eventcomment.UserPicture=CONTAINERS_URL+fileInfo.container+'/download/'+eventcomment.id+'.jpg';
+        eventcomment.CommentPicture=CONTAINERS_URL+fileInfo.container+'/download/'+eventcomment.id+'.jpg';
         eventcomment.save();
         cb(null,eventcomment);
 		 	});
@@ -44,10 +47,13 @@ module.exports = function(EventComment) {
 		 		  var EventId= fileObj.fields.EventId[0];	 			
 		 		  if(fileObj.fields.hasOwnProperty("Id"))
 		 		  var Id= fileObj.fields.Id[0];
+		 		  if(fileObj.fields.hasOwnProperty("Time"))
+		 		  var Time= fileObj.fields.Time[0];
 		 	EventComment.create({
 		 		CommentBody:CommentBody,
 		 		EventId:EventId,
-		 		AccountId:Id
+		 		AccountId:Id,
+		 		Time:Time
 		 	},function(err,eventcomment){
 		 		if(err)
 		 			cb(null,err);
