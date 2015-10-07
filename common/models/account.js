@@ -28,7 +28,7 @@ Account.sendemail=function(data,cb)
 
 loopback.Email.send({
     to: "refat.rafi@yahoo.com",
-    from: " even3co@gmail.com",
+    from: "even3co@gmail.com",
     subject: "subject",
     text: "text message",
     html: "html <b>message</b>"

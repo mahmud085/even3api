@@ -8,8 +8,8 @@
   "properties": {
     "Time":{
       "type" : "date"
-    }
-    "CommentBody": {
+    },
+    "CommentBody" : {
       "type": "string"
     },
     "CommentPicture": {
