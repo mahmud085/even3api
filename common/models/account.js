@@ -7,42 +7,94 @@ var AccessToken = loopback.AccessToken;
 
 module.exports = function(Account) {
 
+
 Account.sendemail=function(data,cb)
 {
   if(!data.req.body.email)
     cb(true,'You must specify an email');
+  //console.log(data.req.body.email);
 
- /*     Account.app.models.Email.send({
-      to: data.req.body.email,
-      from: 'sniperefat@gmail.com',
-      subject: 'First Email',
-      text: 'my text',
-      html: 'my <p><b>html</b></p>'
-    }, function(err, mail) {
-      if(err)
-        cb(err);
+  Account.find({where:{"email": data.req.body.email } },function(err,result){
+    if(err)
+      cb(err);
+    if(!result[0])
+      cb(null,'There is no user registered by the email');
+    if(result[0])
+      {
+           
+    //console.log(data.req.body.email);
+    var mail ='';
+    for(i=0;i<data.req.body.email.length;i++)
+      mail=mail+String.fromCharCode(data.req.body.email.charCodeAt(i)+2);
+    var link = 'http://localhost/even2/resetpassword/'+mail;
+    //console.log(mail);
 
-      else
-      cb(true,'email sent!');
-    });*/
-
-loopback.Email.send({
-    to: "refat.rafi@yahoo.com",
+    loopback.Email.send({
+    to: data.req.body.email,
     from: "even3co@gmail.com",
     subject: "subject",
     text: "text message",
-    html: "html <b>message</b>"
+    html: '<p>hi '+result[0].FirstName+'</p><p> You have requested to reset the password. If you are sure please click the link bellow. If it does not work click the button.</p>'+'<p>'+link+'</p>'+'<p><button href="http://localhost/even2/login.html">Click me</button></p>'
 },
 function(err, result) {
     if(err) {
-        console.log('Upppss something crash');
+    console.log('Upppss something crash');
     cb(err);
         }
-    cb(true,result);
-});
+      if(result.message=='success')
+      {
+        console.log(result.message);
+        cb(null,'success');  
+      }
+      
+    });    
+  
 
+      }
+
+  });
 
 };
+// reset password
+
+    Account.passwordreset=function(data,cb)
+    {
+      if(data.req.body.email==null)
+      {
+        msg={
+          error:404,
+          message:'email is required'
+        }
+        cb(null,msg);
+      }
+
+      Account.find({where:{"email":data.req.body.email}},function(err,ant){
+          if(err)
+            cb(err);
+          if(ant[0])
+          {
+              ant[0].accessTokens.create({
+                created : new Date(),
+              },function(err,newToken){
+                if(err)
+                  cb(err);
+                if(ant)
+                {
+                  console.log(newToken);
+                    cb(null,newToken);
+                }
+              });
+          }
+
+
+      });
+
+
+
+    }
+
+
+
 
 
 //Social Signin
@@ -338,8 +390,12 @@ Account.addtoken=function(data,cb)
                cb(null,err);
                 else
                 {
+        if(fileObj.fields.hasOwnProperty('email'))
+        ant[0].email = fileObj.fields.email[0];
+        if(fileObj.fields.hasOwnProperty('password'))
+        ant[0].password = fileObj.fields.password[0];
         if(fileObj.fields.hasOwnProperty('username'))
-         ant[0].username = fileObj.fields.username[0];
+        ant[0].username = fileObj.fields.username[0];
         if(fileObj.fields.hasOwnProperty('FirstName'))
         ant[0].FirstName=fileObj.fields.FirstName[0];
         if(fileObj.fields.hasOwnProperty('LastName'))
@@ -374,9 +430,12 @@ Account.addtoken=function(data,cb)
                 else
                 {
                  // console.log('value is '+fileObj.fields.PushNotification[0]);
-
-         if(fileObj.fields.hasOwnProperty('username'))
-         ant[0].username = fileObj.fields.username[0];
+        if(fileObj.fields.hasOwnProperty('email'))
+        ant[0].email = fileObj.fields.email[0];
+        if(fileObj.fields.hasOwnProperty('password'))
+        ant[0].password = fileObj.fields.password[0];
+        if(fileObj.fields.hasOwnProperty('username'))
+        ant[0].username = fileObj.fields.username[0];
         if(fileObj.fields.hasOwnProperty('FirstName'))
         ant[0].FirstName=fileObj.fields.FirstName[0];
         if(fileObj.fields.hasOwnProperty('LastName'))
@@ -472,12 +531,28 @@ Account.remoteMethod(
           accepts:{ arg: 'data', type: 'object', http: { source: 'context' } },
               
           returns:{
-            arg: 'fileObject', type: 'object', root: true
+            arg: 'message', type: 'string'
           },
 
           http: {verb: 'post'}
 
         });
+
+
+Account.remoteMethod(
+        'passwordreset',
+        {
+          description: 'resets the password',
+          accepts:{ arg: 'data', type: 'object', http: { source: 'context' } },
+              
+          returns:{
+           arg: 'fileObject', type: 'object', root: true
+          },
+
+          http: {verb: 'post'}
+
+        });
+
 
 
 };

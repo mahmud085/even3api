@@ -164,6 +164,13 @@
       "principalId": "$authenticated",
       "permission": "ALLOW",
       "property": "sendemail"
+    },
+    {
+      "accessType": "EXECUTE",
+      "principalType": "ROLE",
+      "principalId": "$unauthenticated",
+      "permission": "ALLOW",
+      "property": "passwordreset"
     }
   ],
   "methods": {}
