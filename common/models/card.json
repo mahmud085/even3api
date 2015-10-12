@@ -21,7 +21,7 @@
     "Expiryyear":{
       "type": "number"
     },
-    "ccv":{
+    "Ccv":{
       "type": "string"
     }
   },
