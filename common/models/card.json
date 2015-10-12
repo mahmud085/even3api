@@ -11,6 +11,18 @@
     },
     "Number": {
       "type": "string"
+    },
+    "Type":{
+      "type": "string"
+    },
+    "Expirymonth":{
+      "type": "number"
+    },
+    "Expiryyear":{
+      "type": "number"
+    },
+    "ccv":{
+      "type": "string"
     }
   },
   "validations": [],
