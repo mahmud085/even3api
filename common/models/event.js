@@ -64,11 +64,17 @@ module.exports = function(Event) {
                        evnt[0].Location= new loopback.GeoPoint({lat: LocationLat, lng: LocationLong});
                     }
 
-                    
                     if(fileObj.fields.hasOwnProperty("Address"))
                     evnt[0].Address=fileObj.fields.Address[0];
                     if(fileObj.fields.hasOwnProperty("EventCategoryId"))
                     evnt[0].EventCategoryId=fileObj.fields.EventCategoryId[0];
+                    if(fileObj.fields.hasOwnProperty("Phone"))
+                    evnt[0].Phone=fileObj.fields.Phone[0];
+                    if(fileObj.fields.hasOwnProperty("email"))
+                    evnt[0].email=fileObj.fields.email[0];
+                    if(fileObj.fields.hasOwnProperty("Website"))
+                    evnt[0].Website=fileObj.fields.Website[0];
+
                     evnt[0].EventPicture=CONTAINERS_URL+fileInfo.container+'/download/'+Id+'.'+extensionType[1];
                     evnt[0].save();
                     cb(null,evnt[0]);
@@ -96,7 +102,12 @@ module.exports = function(Event) {
                     var EndDate=fileObj.fields.EndDate[0]; 
                 if(fileObj.fields.hasOwnProperty("EventCategoryId"))
                     var EventCategoryId=fileObj.fields.EventCategoryId[0];
-                
+                if(fileObj.fields.hasOwnProperty("Phone"))
+                    var Phone=fileObj.fields.Phone[0];
+                    if(fileObj.fields.hasOwnProperty("email"))
+                    var email=fileObj.fields.email[0];
+                    if(fileObj.fields.hasOwnProperty("Website"))
+                    var Website=fileObj.fields.Website[0];
 
             Event.find({where:{"id":Id}},function(err,evnt){
                 if(err)
@@ -114,6 +125,9 @@ module.exports = function(Event) {
                     evnt[0].StartDate=StartDate;
                     evnt[0].EndDate=EndDate;
                     evnt[0].EventCategoryId=EventCategoryId;
+                    evnt[0].Phone=Phone;
+                    evnt[0].email=email;
+                    evnt[0].Website=Website;
                     evnt[0].save();       
                 }
             cb(null,evnt[0]);

@@ -39,7 +39,17 @@
     },
     "creator": {
       "type":"Account"
+    },
+    "Phone" :{
+      "type":"string"
+    },
+    "email":{
+      "type": "string"
+    },
+    "Website": {
+      "type": "string"
     }
+
   },
   "validations": [],
   "relations": {
