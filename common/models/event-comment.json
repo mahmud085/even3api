@@ -6,10 +6,10 @@
     "validateUpsert": true
   },
   "properties": {
-    "Time":{
-      "type" : "date"
+    "Time": {
+      "type": "date"
     },
-    "CommentBody" : {
+    "CommentBody": {
       "type": "string"
     },
     "CommentPicture": {
@@ -17,8 +17,7 @@
     }
   },
   "validations": [],
-  "relations": { 
-    
+  "relations": {
     "account": {
       "type": "belongsTo",
       "model": "Account",

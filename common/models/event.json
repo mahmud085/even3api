@@ -27,29 +27,23 @@
     "Address": {
       "type": "string"
     },
-    "Participant": {
-      "type": [
-        "string"
-      ]
-    },
     "Invited": {
       "type": [
         "string"
       ]
     },
     "creator": {
-      "type":"Account"
+      "type": "Account"
     },
-    "Phone" :{
-      "type":"string"
+    "Phone": {
+      "type": "string"
     },
-    "email":{
+    "email": {
       "type": "string"
     },
     "Website": {
       "type": "string"
     }
-
   },
   "validations": [],
   "relations": {
@@ -71,6 +65,11 @@
     "tickets": {
       "type": "hasMany",
       "model": "Ticket",
+      "foreignKey": "EventId"
+    },
+    "participants": {
+      "type": "hasMany",
+      "model": "Participant",
       "foreignKey": "EventId"
     }
   },

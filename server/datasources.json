@@ -20,7 +20,7 @@
     "name": "myEmailDataSource",
     "connector": "mail",
     "defaultForType": "mail",
-        "transports": [
+    "transports": [
       {
         "type": "SMTP",
         "host": "smtp.gmail.com",
@@ -33,10 +33,10 @@
       }
     ]
   },
-      "sendgrid": {
-        "connector": "loopback-connector-sendgrid",
-        "api_user": "even3co",
-        "api_key" :  "even3co1234"
-    }
-
+  "sendgrid": {
+    "name": "sendgrid",
+    "connector": "loopback-connector-sendgrid",
+    "api_user": "even3co",
+    "api_key": "even3co1234"
+  }
 }

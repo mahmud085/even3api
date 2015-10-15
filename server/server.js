@@ -3,6 +3,10 @@ var loopback = require('loopback');
 var boot = require('loopback-boot');
 
 var app = module.exports = loopback();
+
+//var facebook = require('./facebookfriends.js');
+//console.log(facebook.getfriends());
+
 /*
 // Passport configurators..
 var loopbackPassport = require('loopback-component-passport');

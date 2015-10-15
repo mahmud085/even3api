@@ -4,8 +4,42 @@ var app = module.exports = loopback();
 var fs = require('fs');
 var path = require('path');
 var AccessToken = loopback.AccessToken;
-
+var https = require('https');
 module.exports = function(Account) {
+
+/*Account.facebookFriends=function(data,cb)
+{
+var options = {
+        host: 'graph.facebook.com',
+        port: 443,
+        path: '/me/friends' + '?access_token=' + data.req.body.accessToken, //apiPath example: '/me/friends'
+        method: 'GET'
+    };
+
+    var buffer = ''; //this buffer will be populated with the chunks of the data received from facebook
+    var request = https.get(options, function(result){
+        result.setEncoding('utf8');
+        result.on('data', function(chunk){
+            buffer += chunk;
+        });
+
+        result.on('end', function(){
+            console.log(buffer);
+            cb(true,'success');
+        });
+    });
+
+    request.on('error', function(e){
+        console.log('error from facebook.getFbData: ' + e.message)
+    });
+
+    request.end();
+
+
+
+};*/
+
+
 
 
 Account.sendemail=function(data,cb)
@@ -129,10 +163,15 @@ Account.find({where:{"email":data.req.body.email}},function(err,ant){
           cb(null,err);
         }
         
-        if(data.req.body.Type=='FB')  
+        if(data.req.body.Type=='FB'){  
         ant.FacebookID=data.req.body.Id;
+        ant.accessTokenFacebook=data.req.body.Token;
+        }
         else
-        ant.GoogleID=data.req.body.Id;
+        {
+          ant.GoogleID=data.req.body.Id;
+        ant.accessTokenGoogle=data.req.body.Token;
+        }
         ant.save();
          ant.accessTokens.create({
           //.AccessToken.create({
@@ -161,11 +200,14 @@ Account.find({where:{"email":data.req.body.email}},function(err,ant){
         if(ant[0].FacebookID==null&&data.req.body.Type=='FB')
         {
           ant[0].FacebookID=data.req.body.Id;
+          ant[0].accessTokenFacebook=data.req.body.Token;
+
           ant[0].save();
         }
         if(ant[0].GoogleID==null&&data.req.body.Type=='Google')
         {
          ant[0].GoogleID=data.req.body.Id;
+         ant[0].accessTokenGoogle=data.req.body.Token;
          ant[0].save(); 
         }
 
@@ -212,6 +254,7 @@ Account.addtoken=function(data,cb)
                   ant[0].accessTokenGoogle=data.req.body.Token;
 
                 ant[0].save();
+                console.log(ant[0]);
                 cb(null,'Sucessfully Updated');
               }
             });
@@ -552,7 +595,20 @@ Account.remoteMethod(
           http: {verb: 'post'}
 
         });
+/*
+Account.remoteMethod(
+        'facebookFriends',
+        {
+          description: 'Get Data',
+          accepts:{ arg: 'data', type: 'object', http: { source: 'context' } },
+              
+          returns:{
+           arg: 'fileObject', type: 'string', root: true
+          },
 
+          http: {verb: 'post'}
+
+        });*/
 
 
 };

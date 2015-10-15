@@ -12,16 +12,16 @@
     "Number": {
       "type": "string"
     },
-    "Type":{
+    "Type": {
       "type": "string"
     },
-    "Expirymonth":{
+    "Expirymonth": {
       "type": "number"
     },
-    "Expiryyear":{
+    "Expiryyear": {
       "type": "number"
     },
-    "Ccv":{
+    "Ccv": {
       "type": "string"
     }
   },

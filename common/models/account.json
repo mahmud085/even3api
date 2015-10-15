@@ -44,11 +44,11 @@
   },
   "validations": [],
   "relations": {
-    "eventcomment":{
+    "eventcomment": {
       "type": "hasMany",
-      "model":"EventComment",
+      "model": "EventComment",
       "foreignKey": "AccountId"
-      },
+    },
     "events": {
       "type": "hasMany",
       "model": "Event",
@@ -67,6 +67,11 @@
     "ticketPurchases": {
       "type": "hasMany",
       "model": "TicketPurchase",
+      "foreignKey": "AccountId"
+    },
+    "participant": {
+      "type": "hasOne",
+      "model": "Participant",
       "foreignKey": "AccountId"
     }
   },
@@ -171,6 +176,13 @@
       "principalId": "$unauthenticated",
       "permission": "ALLOW",
       "property": "passwordreset"
+    },
+    {
+      "accessType": "EXECUTE",
+      "principalType": "ROLE",
+      "principalId": "$unauthenticated",
+      "permission": "ALLOW",
+      "property": "facebookFriends"
     }
   ],
   "methods": {}
