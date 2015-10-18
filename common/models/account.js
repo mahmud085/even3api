@@ -5,11 +5,14 @@ var fs = require('fs');
 var path = require('path');
 var AccessToken = loopback.AccessToken;
 var https = require('https');
+
+
 module.exports = function(Account) {
 
-/*Account.facebookFriends=function(data,cb)
+Account.facebookFriends=function(data,cb)
 {
-var options = {
+
+/*var options = {
         host: 'graph.facebook.com',
         port: 443,
         path: '/me/friends' + '?access_token=' + data.req.body.accessToken, //apiPath example: '/me/friends'
@@ -32,12 +35,22 @@ var options = {
     request.on('error', function(e){
         console.log('error from facebook.getFbData: ' + e.message)
     });
-
     request.end();
+*/
+var kue = require('kue')
+  , queue = kue.createQueue();
 
+var job = queue.create('email', {
+    title: 'welcome email for tj'
+  , to: 'tj@learnboost.com'
+  , template: 'welcome-email'
+}).save( function(err){
+   if( !err ) console.log( job.id );
+});
 
+cb(true,'success');
 
-};*/
+};
 
 
 
@@ -595,7 +608,7 @@ Account.remoteMethod(
           http: {verb: 'post'}
 
         });
-/*
+
 Account.remoteMethod(
         'facebookFriends',
         {
@@ -608,7 +621,7 @@ Account.remoteMethod(
 
           http: {verb: 'post'}
 
-        });*/
+        });
 
 
 };
