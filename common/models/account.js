@@ -12,7 +12,83 @@ module.exports = function(Account) {
 Account.facebookFriends=function(data,cb)
 {
 
-/*var options = {
+
+
+
+var kue = require('kue')
+  , queue = kue.createQueue();
+var job = queue.create('FindFacebook',{
+  accessToken:data.req.body.accessToken
+}).save( function(err){
+   if( !err ) console.log('Here is it '+ job.id );
+});
+
+
+ job.on('complete', function(result) {
+    console.log('completed job ' + job.id);
+    //return res.send(result);
+    cb(null,'success');
+  });
+
+
+
+queue.process('FindFacebook', function(job, done) {
+  console.log(job.data.accessToken);
+  console.log('processing job ' + job.id);
+    
+
+
+    https.get('https://graph.facebook.com/oauth/'+job.data.accessToken+'?client_id=1598513400364558'+'&client_secret=029cc683fee8912f7238feec3755f379'+'&grant_type=fb_exchange_token&fb_exchange_token='+job.data.accessToken,function(resu){
+
+      console.log(resu.toString());
+      for(var i in resu)
+        console.log(resu[i]);
+    });
+
+
+
+      var options = {
+        host: 'graph.facebook.com',
+        port: 443,
+        path: '/me/friends' + '?access_token=' + job.data.accessToken, //apiPath example: '/me/friends'
+        method: 'GET'
+    };
+
+    var buffer = ''; //this buffer will be populated with the chunks of the data received from facebook
+    var request = https.get(options, function(result){
+        result.setEncoding('utf8');
+        result.on('data', function(chunk){
+            buffer += chunk;
+        });
+
+        result.on('end', function(){
+            console.log(buffer);
+            //callback();
+        });
+    });
+
+    request.on('error', function(e){
+        console.log('error from facebook.getFbData: ' + e.message)
+    });
+    request.end();  
+
+
+  done(null, 'email sent with ' + Object.keys(job.data).length + ' special fields');
+});
+
+
+/*
+function callback()
+{
+  console.log('Called');
+   //cb(null,'success');
+
+}
+
+
+function facebook()
+{
+    var options = {
         host: 'graph.facebook.com',
         port: 443,
         path: '/me/friends' + '?access_token=' + data.req.body.accessToken, //apiPath example: '/me/friends'
@@ -28,16 +104,20 @@ Account.facebookFriends=function(data,cb)
 
         result.on('end', function(){
             console.log(buffer);
-            cb(true,'success');
+            callback();
         });
     });
 
     request.on('error', function(e){
         console.log('error from facebook.getFbData: ' + e.message)
     });
-    request.end();
+    request.end();  
+}
+
 */
-var kue = require('kue')
+
+
+/*var kue = require('kue')
   , queue = kue.createQueue();
 
 var job = queue.create('email', {
@@ -46,9 +126,13 @@ var job = queue.create('email', {
   , template: 'welcome-email'
 }).save( function(err){
    if( !err ) console.log( job.id );
-});
+});*/
 
-cb(true,'success');
+/*
+facebook();
+cb(null,'success');
+*/
+
 
 };
 

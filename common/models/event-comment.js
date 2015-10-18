@@ -1,5 +1,6 @@
 var CONTAINERS_URL = '/containers/';
-
+var fs = require('fs');
+var path = require('path');
 module.exports = function(EventComment) {
 	
 	EventComment.addcomment=function(ctx,options,cb){
@@ -31,8 +32,13 @@ module.exports = function(EventComment) {
 		 	},function(err,eventcomment){
 		 		if(err)
 		 			cb(null,err);
+		 		console.log(fileInfo.name);
        var fileCurrentPath= './server/storage/eventcommentpic'+'/'+fileInfo.name;
-        newFilePath='./server/storage/eventcommentpic'+'/'+eventcomment.id+'.jpg';		 		
+        newFilePath='./server/storage/eventcommentpic'+'/'+eventcomment.id+'.jpg';
+                fs.rename(fileCurrentPath, newFilePath, function (err) {
+            if (err) throw err;
+            //console.log('renamed complete');
+            });		 		
         eventcomment.CommentPicture=CONTAINERS_URL+fileInfo.container+'/download/'+eventcomment.id+'.jpg';
         eventcomment.save();
         cb(null,eventcomment);
