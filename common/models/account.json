@@ -24,6 +24,9 @@
     "GoogleID": {
       "type": "number"
     },
+    "Friends": {
+      "type": ["string"]
+    },
     "accessTokenFacebook": {
       "type": "string"
     },
