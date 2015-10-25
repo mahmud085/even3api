@@ -16,10 +16,10 @@
       "type": "string"
     },
     "StartDate": {
-      "type": "date"
+      "type": "number"
     },
     "EndDate": {
-      "type": "date"
+      "type": "number"
     },
     "Location": {
       "type": "GeoPoint"
@@ -70,6 +70,11 @@
     "participants": {
       "type": "hasMany",
       "model": "Participant",
+      "foreignKey": "EventId"
+    },
+    "ticketPurchaseDetails": {
+      "type": "hasMany",
+      "model": "TicketPurchaseDetail",
       "foreignKey": "EventId"
     }
   },

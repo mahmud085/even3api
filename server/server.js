@@ -4,8 +4,18 @@ var boot = require('loopback-boot');
 
 var app = module.exports = loopback();
 
+var redis = require('redis');
+var client = redis.createClient();
+
+client.on('connect', function() {
+    console.log('connected');
+});
+
+
 //var facebook = require('./facebookfriends.js');
 //console.log(facebook.getfriends());
+
+
 
 /*
 // Passport configurators..

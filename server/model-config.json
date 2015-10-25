@@ -88,5 +88,9 @@
   "Participant": {
     "dataSource": "myDB",
     "public": true
+  },
+  "TicketPurchaseDetail": {
+    "dataSource": "myDB",
+    "public": true
   }
 }

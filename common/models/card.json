@@ -15,13 +15,22 @@
     "Type": {
       "type": "string"
     },
-    "Expirymonth": {
+    "ExpiryMonth": {
       "type": "number"
     },
-    "Expiryyear": {
+    "ExpiryYear": {
       "type": "number"
     },
     "Ccv": {
+      "type": "string"
+    },
+    "BillingAddress":{
+      "type": "string"
+    },
+    "City":{
+      "type": "string"
+    },
+    "Country":{
       "type": "string"
     }
   },

@@ -23,7 +23,8 @@
     "passport-local": "^1.0.0",
     "passport-oauth2": "^1.1.2",
     "passport-twitter": "^1.0.2",
-    "serve-favicon": "^2.0.1"
+    "serve-favicon": "^2.0.1",
+    "redis": "*"
   },
   "optionalDependencies": {
     "loopback-explorer": "^1.1.0"

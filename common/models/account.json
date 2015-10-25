@@ -25,7 +25,9 @@
       "type": "number"
     },
     "Friends": {
-      "type": ["string"]
+      "type": [
+        "string"
+      ]
     },
     "accessTokenFacebook": {
       "type": "string"
@@ -75,6 +77,11 @@
     "participant": {
       "type": "hasOne",
       "model": "Participant",
+      "foreignKey": "AccountId"
+    },
+    "ticketPurchaseDetails": {
+      "type": "hasMany",
+      "model": "TicketPurchaseDetail",
       "foreignKey": "AccountId"
     }
   },
@@ -179,13 +186,6 @@
       "principalId": "$unauthenticated",
       "permission": "ALLOW",
       "property": "passwordreset"
-    },
-    {
-      "accessType": "EXECUTE",
-      "principalType": "ROLE",
-      "principalId": "$unauthenticated",
-      "permission": "ALLOW",
-      "property": "facebookFriends"
     }
   ],
   "methods": {}

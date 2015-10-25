@@ -11,6 +11,9 @@
     },
     "TransactionId": {
       "type": "number"
+    },
+    "TimeOfTicket": {
+      "type": "number"
     }
   },
   "validations": [],
@@ -19,6 +22,16 @@
       "type": "belongsTo",
       "model": "Account",
       "foreignKey": "AccountId"
+    },
+    "ticket": {
+      "type": "belongsTo",
+      "model": "Ticket",
+      "foreignKey": "TicketId"
+    },
+    "ticketPurchaseDetails": {
+      "type": "hasMany",
+      "model": "TicketPurchaseDetail",
+      "foreignKey": "TicketPurchaseId"
     }
   },
   "acls": [

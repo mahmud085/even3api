@@ -7,7 +7,7 @@
   },
   "properties": {
     "Time": {
-      "type": "date"
+      "type": "number"
     },
     "CommentBody": {
       "type": "string"

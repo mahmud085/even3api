@@ -6,129 +6,7 @@ var path = require('path');
 var AccessToken = loopback.AccessToken;
 var https = require('https');
 
-
 module.exports = function(Account) {
-
-Account.facebookFriends=function(data,cb)
-{
-
-var kue = require('kue')
-  , queue = kue.createQueue();
-var job = queue.create('FindFacebook',{
-  accessToken:data.req.body.accessToken
-}).save( function(err){
-   if( !err ) console.log('Here is it '+ job.id );
-});
-
-
- job.on('complete', function(result) {
-    console.log('completed job ' + job.id);
-    //return res.send(result);
-    cb(null,'success');
-  });
-
-queue.process('FindFacebook', function(job, done) {
-  console.log(job.data.accessToken);
-  console.log('processing job ' + job.id);
-    
-      var options = {
-        host: 'graph.facebook.com',
-        port: 443,
-        path: '/me/friends' + '?access_token=' + job.data.accessToken, //apiPath example: '/me/friends'
-        method: 'GET'
-    };
-
-    var buffer = ''; //this buffer will be populated with the chunks of the data received from facebook
-    var request = https.get(options, function(result){
-        result.setEncoding('utf8');
-        result.on('data', function(chunk){
-            buffer += chunk;
-        });
-
-        result.on('end', function(){
-            console.log(buffer);
-            //callback();
-        });
-    });
-
-    request.on('error', function(e){
-        console.log('error from facebook.getFbData: ' + e.message)
-    });
-    request.end();  
-
-
-  done(null, 'email sent with ' + Object.keys(job.data).length + ' special fields');
-});
-
-
-  Account.afterRemote('facebookFriends', function(context, remoteMethodOutput, next) {
-    console.log('who is first');
-    next();
-  });
-
-
-
-/*
-function callback()
-{
-  console.log('Called');
-   //cb(null,'success');
-
-}
-
-
-function facebook()
-{
-    var options = {
-        host: 'graph.facebook.com',
-        port: 443,
-        path: '/me/friends' + '?access_token=' + data.req.body.accessToken, //apiPath example: '/me/friends'
-        method: 'GET'
-    };
-
-    var buffer = ''; //this buffer will be populated with the chunks of the data received from facebook
-    var request = https.get(options, function(result){
-        result.setEncoding('utf8');
-        result.on('data', function(chunk){
-            buffer += chunk;
-        });
-
-        result.on('end', function(){
-            console.log(buffer);
-            callback();
-        });
-    });
-
-    request.on('error', function(e){
-        console.log('error from facebook.getFbData: ' + e.message)
-    });
-    request.end();  
-}
-
-*/
-
-
-/*var kue = require('kue')
-  , queue = kue.createQueue();
-
-var job = queue.create('email', {
-    title: 'welcome email for tj'
-  , to: 'tj@learnboost.com'
-  , template: 'welcome-email'
-}).save( function(err){
-   if( !err ) console.log( job.id );
-});*/
-
-/*
-facebook();
-cb(null,'success');
-*/
-
-
-};
-
-
-
 
 Account.sendemail=function(data,cb)
 {
@@ -325,10 +203,9 @@ Account.find({where:{"email":data.req.body.email}},function(err,ant){
 };
 
 // Social Sign in afterRemote Method
-/*
-   Account.afterRemote('socialsignin', function(context, remoteMethodOutput, next) 
-   {
-    
+
+Account.afterRemote('socialsignin', function(context, remoteMethodOutput, next) 
+{
     //console.log(context.req.body);
     // console.log(remoteMethodOutput);
 
@@ -336,49 +213,51 @@ Account.find({where:{"email":data.req.body.email}},function(err,ant){
     , queue = kue.createQueue();
     if(context.req.body.Type=='FB')
     {   
-          var job = queue.create('FindFacebook',{
-      accessToken:context.req.body.Token
-   }).save( function(err){
-   if( !err ) console.log('Here is it '+ job.id );
-   });
-  }
-  /*else
-  {//ya29.EQKi968hPUb9Oau28Edq-aG16sN6KTUmSciZ5PFAuklpNjmf4GOCEsZVkaNgryS8QgrD
-    var job= queue.create('FindGoogle',{
-      accessToken: context.req.body.Token
-    }).save(function(err){
-      if(!err) console.log('Google  is it '+ job.id); 
-    });
-  }*/
-  
+      var job = queue.create('FindFacebook',{
+        accessToken:context.req.body.Token
+      }).save( function(err){
+       if( !err ) console.log('FB is it '+ job.id );
+     });
+    }
+    else
+    {
+      var job= queue.create('FindGoogle',{
+        accessToken: context.req.body.Token
+      }).save(function(err){
+        if(!err) console.log('Google  is it '+ job.id); 
+      });
+    }
 
 
-  /*job.on('complete', function(result) {
-    console.log('completed job ' + job.id);
+
+    job.on('complete', function(result) {
+      console.log('completed job ' + job.id);
     //return res.send(result);
     //console.log(result);
     next();
   });
 
-  /*queue.process('FindGoogle', function(job,done){
+    queue.process('FindGoogle', function(job,done){
+      if(!job.data.accessToken)
+        done();
 
-      var url = 'https://www.googleapis.com/plus/v1/people/me/people/visible?maxResults=10&access_token=ya29.EgLmjjg_4qKKF7VDtRaTiLp0ns2dDd_nrn_ZJy20sfo-sFQScbhD5LJQylYOnS3ENInv';
+      var url = 'https://www.googleapis.com/plus/v1/people/me/people/visible?maxResults=99&access_token='+job.data.accessToken;
 
       https.get(url, function(res){
-          var body = '';
+        var body = '';
 
-          res.on('data', function(chunk){
-              body += chunk;
-          });
+        res.on('data', function(chunk){
+          body += chunk;
+        });
 
-          res.on('end', function(){
+        res.on('end', function(){
 
-            body=JSON.parse(body);
-            
-            var friends=[];
-                  for(var i in body.items)
-                  { 
+          body=JSON.parse(body);
 
+          var friends=[];
+          for(var i in body.items)
+          { 
+                    //console.log(body.items[i].id);
                     Account.find({where:{'GoogleID':body.items[i].id}},function(err,ant)
                     {
                       if(ant[0])
@@ -387,83 +266,93 @@ Account.find({where:{"email":data.req.body.email}},function(err,ant){
                       }
                     });
                   }
+                  Account.find({where:{'id':remoteMethodOutput.id}},function(err,ant)
+                  {
+              //console.log(friends.length);
+              //console.log(ant[0]&&friends.length!=0);
+              if(ant[0]&&friends.length!=0)
+                { console.log(friends[0]);
+                  ant[0].Friends=[];
+                  for(var i =0;i<friends.length;i++)
+                    ant[0].Friends[i]=friends[i];
+                  ant[0].save();
+                }
+              });
 
-
-
-              console.log(body.items);
-          });
-      }).on('error', function(e){
-            console.log("Got an error: ", e);
+                  console.log(body.items);
+                });
+        }).on('error', function(e){
+        console.log("Got an error: ", e);
       });
 
       done(null);
-  });*/
+    });
 
 
 
   // Friend Finding Process
- /* queue.process('FindFacebook', function(job, done) {
-  console.log(job.data.accessToken);
-  console.log('processing job ' + job.id);
+  queue.process('FindFacebook', function(job, done) {
+    console.log(job.data.accessToken);
+    console.log('processing job ' + job.id);
     
-      var options = {
-        host: 'graph.facebook.com',
-        port: 443,
+    var options = {
+      host: 'graph.facebook.com',
+      port: 443,
         path: '/me/friends' + '?access_token=' + job.data.accessToken, //apiPath example: '/me/friends'
         method: 'GET'
-    };
+      };
 
     var buffer = ''; //this buffer will be populated with the chunks of the data received from facebook
     var request = https.get(options, function(result){
-        result.setEncoding('utf8');
-        result.on('data', function(chunk){
-            buffer += chunk;
-        });
+      result.setEncoding('utf8');
+      result.on('data', function(chunk){
+        buffer += chunk;
+      });
 
-        result.on('end', function(){
+      result.on('end', function(){
             //console.log(buffer);
             var user = JSON.parse(buffer);
             //console.log(buffer);
             var friends=[];
             for(var i in user.data)
-            { console.log(user.data[i].id);
-              Account.find({where:{'FacebookID':user.data[i].id}},function(err,ant)
-              {
-                if(ant[0])
+              { console.log(user.data[i].id);
+                Account.find({where:{'FacebookID':user.data[i].id}},function(err,ant)
                 {
-                  friends.push(ant[0].id);
-                }
-              });
-            }
-            Account.find({where:{'id':remoteMethodOutput.id}},function(err,ant)
-            {
+                  if(ant[0])
+                  {
+                    friends.push(ant[0].id);
+                  }
+                });
+              }
+              Account.find({where:{'id':remoteMethodOutput.id}},function(err,ant)
+              {
               //console.log(friends.length);
               //console.log(ant[0]&&friends.length!=0);
               if(ant[0]&&friends.length!=0)
-              { console.log(friends[0]);
-                ant[0].Friends=[];
-                for(var i =0;i<friends.length;i++)
-                ant[0].Friends[i]=friends[i];
-                ant[0].save();
-              }
-            });
+                { console.log(friends[0]);
+                  ant[0].Friends=[];
+                  for(var i =0;i<friends.length;i++)
+                    ant[0].Friends[i]=friends[i];
+                  ant[0].save();
+                }
+              });
 
             //console.log(JSON.stringify(buffer));
             //callback();
-        });
+          });
     });
 
     request.on('error', function(e){
-        console.log('error from facebook.getFbData: ' + e.message)
+      console.log('error from facebook.getFbData: ' + e.message)
     });
     request.end();  
 
 
-  done(null);
- });
+    done(null);
+  });
 
 });
-*/
+
 
 // Adding social Token
 
@@ -824,19 +713,6 @@ Account.remoteMethod(
 
         });
 
-Account.remoteMethod(
-        'facebookFriends',
-        {
-          description: 'Get Data',
-          accepts:{ arg: 'data', type: 'object', http: { source: 'context' } },
-              
-          returns:{
-           arg: 'fileObject', type: 'string', root: true
-          },
-
-          http: {verb: 'post'}
-
-        });
 
 
 };
