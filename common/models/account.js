@@ -49,7 +49,6 @@ function(err, result) {
       
     });    
   
-
       }
 
   });
@@ -203,7 +202,7 @@ Account.find({where:{"email":data.req.body.email}},function(err,ant){
 };
 
 // Social Sign in afterRemote Method
-
+/*
 Account.afterRemote('socialsignin', function(context, remoteMethodOutput, next) 
 {
     //console.log(context.req.body);
@@ -353,7 +352,7 @@ Account.afterRemote('socialsignin', function(context, remoteMethodOutput, next)
 
 });
 
-
+*/
 // Adding social Token
 
 
