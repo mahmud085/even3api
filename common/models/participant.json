@@ -10,7 +10,8 @@
       "type": "boolean"
     },
     "Rsvp": {
-      "type": "boolean"
+      "type": "number",
+      "default" : 0
     }
   },
   "validations": [],
