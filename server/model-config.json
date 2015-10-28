@@ -92,5 +92,21 @@
   "TicketPurchaseDetail": {
     "dataSource": "myDB",
     "public": true
+  },
+  "application": {
+    "dataSource": "myDB",
+    "public": true
+  },
+  "push": {
+    "dataSource": "push",
+    "public": true
+  },
+  "installation": {
+    "dataSource": "myDB",
+    "public": true
+  },
+  "notification": {
+    "dataSource": "myDB",
+    "public": true
   }
 }

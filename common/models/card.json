@@ -24,13 +24,13 @@
     "Ccv": {
       "type": "string"
     },
-    "BillingAddress":{
+    "BillingAddress": {
       "type": "string"
     },
-    "City":{
+    "City": {
       "type": "string"
     },
-    "Country":{
+    "Country": {
       "type": "string"
     }
   },

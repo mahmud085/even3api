@@ -38,5 +38,12 @@
     "connector": "loopback-connector-sendgrid",
     "api_user": "even3co",
     "api_key": "even3co1234"
+  },
+  "push": {
+    "name": "push",
+    "connector": "loopback-component-push",
+    "installation": "installation",
+    "notification": "notification",
+    "application": "application"
   }
 }

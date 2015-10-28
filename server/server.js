@@ -1,7 +1,8 @@
 
 var loopback = require('loopback');
 var boot = require('loopback-boot');
-
+var fs = require('fs');
+var path = require('path');
 var app = module.exports = loopback();
 
 /*var redis = require('redis');
@@ -12,46 +13,58 @@ client.on('connect', function() {
 });
 */
 
+//var Application = require('./ticketPurchaseDetails');
+
+
+//console.log(app);
 
 //var facebook = require('./facebookfriends.js');
 //console.log(facebook.getfriends());
 
+//PushNotification key
+//AIzaSyApKoyaRxr-59rV0fKvb-8YBW9a8-95YS8
 
+function prepareForPush() 
+{
+  var Notification = app.models.notification;
+  var Application = app.models.application;
+  var PushModel = app.models.push;
 
-/*
-// Passport configurators..
-var loopbackPassport = require('loopback-component-passport');
-var PassportConfigurator = loopbackPassport.PassportConfigurator;
-var passportConfigurator = new PassportConfigurator(app);
+  Application.register('even3appdeveloper',
+    'even3app',
+    {
+      description: 'LoopBack Push Notification Demo Application',
+      pushSettings: {
+        apns: {
+          //certData: readCredentialsFile('apns_cert_dev.pem'),
+         // keyData: readCredentialsFile('apns_key_dev.pem'),
+  
+          pushOptions: {
+          },
+          feedbackOptions: {
+            batchFeedback: true,
+            interval: 300
+          }
+        },
+        gcm: {
+          serverApiKey: 'AIzaSyApKoyaRxr-59rV0fKvb-8YBW9a8-95YS8'
+        }
+      }
+    },
+    function(err, app) {
+      //if (err) return cb(err);
+     // return cb(null, app);
+    }
+  );
+  
+/*function readCredentialsFile(name) {
+ return fs.readFileSync(
+   path.resolve(__dirname, 'credentials', name),
+   'UTF-8'
+ );
+}*/
 
-var config = {};
-try {
- config = require('./providers.json');
-} catch(err) {
- console.error('Please configure your passport strategy in `providers.json`.');
- console.error('Copy `providers.json.template` to `providers.json` and replace the clientID/clientSecret values with your own.');
- process.exit(1);
-}
-// Initialize passport
-passportConfigurator.init();
-
-// Configure passport strategies for third party auth providers
-for(var s in config) {
- var c = config[s];
- c.session = c.session !== false;
- passportConfigurator.configureProvider(s, c);
-}
-
-
-
-passportConfigurator.setupModels({
-  userModel: app.models.user,
-  userIdentityModel: app.models.userIdentity,
-  userCredentialModel: app.models.userCredential
-});
-
-*/
-
+};
 
 
 
@@ -60,6 +73,7 @@ app.start = function() {
   return app.listen(function() {
     app.emit('started');
     console.log('Web server listening at: %s', app.get('url'));
+    prepareForPush();
   });
 };
 
@@ -73,50 +87,3 @@ boot(app, __dirname, function(err) {
   if (require.main === module)
     app.start();
 });
-/*
-
-var loopback = require('loopback');
-var boot = require('loopback-boot');
-
-var app = module.exports = loopback();
-
-// Set up the /favicon.ico
-app.use(loopback.favicon());
-
-// request pre-processing middleware
-app.use(loopback.compress());
-
-// -- Add your pre-processing middleware here --
-
-// boot scripts mount components like REST API
-// Run the boot process asynchronously
-boot(app, __dirname, function(err) {
-
-// -- Mount static files here--
-// All static middleware should be registered at the end, as all requests
-// passing the static middleware are hitting the file system
-// Example:
-//   var path = require('path');
-//   app.use(loopback.static(path.resolve(__dirname, '../client')));
-
-// Requests that get this far won't be handled
-// by any middleware. Convert them into a 404 error
-// that will be handled later down the chain.
-  app.use(loopback.urlNotFound());
-
-// The ultimate error handler.
-  app.use(loopback.errorHandler());
-
-  app.start = function() {
-    // start the web server
-    return app.listen(function() {
-      app.emit('started');
-      console.log('Web server listening at: %s', app.get('url'));
-    });
-  };
-
-// start the server if `$ node server.js`
-  if (require.main === module) {
-    app.start();
-  }
-});*/

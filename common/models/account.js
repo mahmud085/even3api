@@ -377,6 +377,7 @@ Account.addtoken=function(data,cb)
 };
 
 
+
  Account.addaccount = function (ctx,options,cb) {
       
      

@@ -12,9 +12,9 @@
     "Available": {
       "type": "number"
     },
-    "SoldTicket":{
-      "type" : "number",
-      "default" : 0
+    "SoldTicket": {
+      "type": "number",
+      "default": 0
     }
   },
   "validations": [],
