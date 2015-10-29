@@ -24,13 +24,10 @@ client.on('connect', function() {
 //PushNotification key
 //AIzaSyApKoyaRxr-59rV0fKvb-8YBW9a8-95YS8
 
-function prepareForPush() 
-{
-  var Notification = app.models.notification;
-  var Application = app.models.application;
-  var PushModel = app.models.push;
 
-  Application.register('even3appdeveloper',
+function register()
+{
+    Application.register('even3appdeveloper',
     'even3app',
     {
       description: 'LoopBack Push Notification Demo Application',
@@ -52,10 +49,33 @@ function prepareForPush()
       }
     },
     function(err, app) {
+      console.log(app);
       //if (err) return cb(err);
      // return cb(null, app);
     }
   );
+}
+
+
+
+function prepareForPush() 
+{
+
+
+  var Notification = app.models.notification;
+  var Application = app.models.application;
+  var PushModel = app.models.push;
+
+  Application.find(function(err,result){
+    if(err)
+      return;
+    if(result[0])
+      return;
+    else
+      register();
+  });
+
+
   
 /*function readCredentialsFile(name) {
  return fs.readFileSync(
