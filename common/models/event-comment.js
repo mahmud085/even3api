@@ -1,6 +1,8 @@
 var CONTAINERS_URL = '/containers/';
 var fs = require('fs');
 var path = require('path');
+var loopback = require('loopback');
+var app = module.exports = loopback();
 module.exports = function(EventComment) {
 	
 	EventComment.addcomment=function(ctx,options,cb){
@@ -42,6 +44,8 @@ module.exports = function(EventComment) {
         eventcomment.CommentPicture=CONTAINERS_URL+fileInfo.container+'/download/'+eventcomment.id+'.jpg';
         eventcomment.save();
         cb(null,eventcomment);
+
+
 		 	});
 		 }
 		 
@@ -66,11 +70,63 @@ module.exports = function(EventComment) {
         cb(null,eventcomment);
 		 	});
 		 }
-	});
+	  });
+
+    };
+
+
+EventComment.afterRemote('addcomment',function(ctx,data,done){
+
+console.log(data);
+
+
+ EventComment.app.models.Event.find({where:{'id':data.EventId}},function(err,event){
+ 	if(!event[0])
+ 		done();
+ 	if(event[0])
+ 	EventComment.app.models.Installation.find({where:{'userId': event[0].AccountId}},function(err,device){
+			var notification = EventComment.app.models.Notification;
+					device[0].badge++;
+					var message={
+					 	EventId: data.EventId
+					 }
+		EventComment.app.models.Account.find({where:{'id':data.AccountId}},function(err,acnt){
+			if(acnt[0])
+				message.text=''+acnt[0].FirstName+':'+ data.CommentBody;
+
+			  var note = new notification({
+								   expirationInterval: 3600, // Expires 1 hour from now.
+								   badge: device[0].badge,
+								   sound: 'ping.aiff',
+								   message:message,
+								   messageFrom: 'Even3co'
+								 });
+
+		    EventComment.app.models.Push.notifyById(device[0].id, note, function(err) {
+				   
+				   if (err) {
+				     console.log(err);
+				     done();
+				   }
+				   if(!err)
+				   {
+				   	device[0].save();
+				   console.log('pushing notification to %j', device[0].id);
+				   done();
+				}
+		
+		    });
+
+		});
 
 
 
-};
+ 	});
+
+ });
+
+//done();
+});
 
 
 	 EventComment.remoteMethod(

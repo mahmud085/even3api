@@ -60,8 +60,7 @@ function register()
 
 function prepareForPush() 
 {
-
-
+  
   var Notification = app.models.notification;
   var Application = app.models.application;
   var PushModel = app.models.push;

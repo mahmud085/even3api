@@ -8,6 +8,47 @@ var https = require('https');
 
 module.exports = function(Account) {
 
+Account.invitefriend=function(data,cb)
+{   
+  if(data.req.body.EventId)
+  {
+    cb(null,'friends are invited');
+  }
+
+  for(var i =0;i<data.req.body.email.length;i++)
+  {
+    Account.find({where:{'email':data.req.body.email[i].address}},function(err,result){
+          
+        if(result[0])
+        Account.app.models.Participant.create({
+          Invited:true,
+          AccountId:result[0].id,
+          EventId:data.req.body.EventId
+        },function(err){
+
+        });
+
+    });
+  }
+    for(var i =0;i<data.req.body.phone.length;i++)
+  {
+    Account.find({where:{'phone':data.req.body.phone[i].number}},function(err,result){
+        //console.log(result[0]);
+        if(result[0])
+        Account.app.models.Participant.create({
+          Invited:true,
+          AccountId:result[0].id,
+          EventId:data.req.body.EventId
+        },function(err){
+          
+        });
+
+    });
+  }
+  
+};
+
+
 Account.sendemail=function(data,cb)
 {
   if(!data.req.body.email)
@@ -713,6 +754,18 @@ Account.remoteMethod(
 
         });
 
+Account.remoteMethod(
+        'invitefriend',
+        {
+          description: 'invites friends to participate in events',
+          accepts:{ arg: 'data', type: '[object]', http: { source: 'context' } },
+              
+          returns:{
+           arg: 'message', type: 'string', root: true
+          },
 
+          http: {verb: 'post'}
+
+        });
 
 };
