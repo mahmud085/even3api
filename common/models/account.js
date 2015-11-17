@@ -129,7 +129,8 @@ function(err, result) {
 
       });
 
-
+ //else
+      //register();
 
     }
 
