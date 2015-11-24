@@ -16,18 +16,19 @@ module.exports = function(EventComment) {
 		 	{		
 
 		 		  var fileInfo = fileObj.files.file[0];
-		 		  if(fileObj.fields.hasOwnProperty("CommentBody"))
 		 		  
-		 		  var CommentBody= fileObj.fields.CommentBody[0];
+		 		  if(fileObj.fields.hasOwnProperty("CommentBody"))	
+			 		  var CommentBody= fileObj.fields.CommentBody[0];
+		 		  
 		 		  if(fileObj.fields.hasOwnProperty("EventId"))
+		 		  	var EventId = fileObj.fields.EventId[0];
 		 		  
-		 		  var BusinessId= fileObj.fields.EventId[0];
 		 		  if(fileObj.fields.hasOwnProperty("BusinessId"))
-		 		  
-		 		  var EventId= fileObj.fields.EventId[0];	
+		 		  var BusinessId= fileObj.fields.BusinessId[0];
+
                   if(fileObj.fields.hasOwnProperty("Id"))
+		 		  	var Id= fileObj.fields.Id[0];
 		 		  
-		 		  var Id= fileObj.fields.Id[0];
 		 		  if(fileObj.fields.hasOwnProperty("Time"))
 		 		  var Time= fileObj.fields.Time[0];
 
@@ -59,13 +60,13 @@ module.exports = function(EventComment) {
 		 else
 		 {
 		 		  if(fileObj.fields.hasOwnProperty("CommentBody"))
-		 		  var CommentBody= fileObj.fields.CommentBody[0];
+		 		  	var CommentBody= fileObj.fields.CommentBody[0];
 		 		  
 		 		  if(fileObj.fields.hasOwnProperty("EventId"))
-		 		  var EventId= fileObj.fields.EventId[0];
+		 		  	var EventId= fileObj.fields.EventId[0];
 
-		 		  var BusinessId= fileObj.fields.EventId[0];
-		 		  if(fileObj.fields.hasOwnProperty("BusinessId"))	 			
+		 		  if(fileObj.fields.hasOwnProperty("BusinessId"))
+		 		  	var BusinessId= fileObj.fields.BusinessId[0];	 			
 		 		  
 		 		  if(fileObj.fields.hasOwnProperty("Id"))
 		 		  var Id= fileObj.fields.Id[0];
