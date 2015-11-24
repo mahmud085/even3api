@@ -17,10 +17,16 @@ module.exports = function(EventComment) {
 
 		 		  var fileInfo = fileObj.files.file[0];
 		 		  if(fileObj.fields.hasOwnProperty("CommentBody"))
+		 		  
 		 		  var CommentBody= fileObj.fields.CommentBody[0];
 		 		  if(fileObj.fields.hasOwnProperty("EventId"))
+		 		  
+		 		  var BusinessId= fileObj.fields.EventId[0];
+		 		  if(fileObj.fields.hasOwnProperty("BusinessId"))
+		 		  
 		 		  var EventId= fileObj.fields.EventId[0];	
                   if(fileObj.fields.hasOwnProperty("Id"))
+		 		  
 		 		  var Id= fileObj.fields.Id[0];
 		 		  if(fileObj.fields.hasOwnProperty("Time"))
 		 		  var Time= fileObj.fields.Time[0];
@@ -29,6 +35,7 @@ module.exports = function(EventComment) {
 		 	EventComment.create({
 		 		CommentBody:CommentBody,
 		 		EventId:EventId,
+		 		BusinessId:BusinessId,
 		 		AccountId:Id,
 		 		Time:Time
 		 	},function(err,eventcomment){
@@ -53,15 +60,22 @@ module.exports = function(EventComment) {
 		 {
 		 		  if(fileObj.fields.hasOwnProperty("CommentBody"))
 		 		  var CommentBody= fileObj.fields.CommentBody[0];
+		 		  
 		 		  if(fileObj.fields.hasOwnProperty("EventId"))
-		 		  var EventId= fileObj.fields.EventId[0];	 			
+		 		  var EventId= fileObj.fields.EventId[0];
+
+		 		  var BusinessId= fileObj.fields.EventId[0];
+		 		  if(fileObj.fields.hasOwnProperty("BusinessId"))	 			
+		 		  
 		 		  if(fileObj.fields.hasOwnProperty("Id"))
 		 		  var Id= fileObj.fields.Id[0];
+		 		  
 		 		  if(fileObj.fields.hasOwnProperty("Time"))
 		 		  var Time= fileObj.fields.Time[0];
 		 	EventComment.create({
 		 		CommentBody:CommentBody,
 		 		EventId:EventId,
+		 		BusinessId:BusinessId,
 		 		AccountId:Id,
 		 		Time:Time
 		 	},function(err,eventcomment){
