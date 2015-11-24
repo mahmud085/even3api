@@ -28,6 +28,11 @@
       "model": "Event",
       "foreignKey": "EventId"
     },
+    "business": {
+      "type": "belongsTo",
+      "model": "Business",
+      "foreignKey": "BusinessId"
+    },
     "commentLike": {
       "type": "hasMany",
       "model": "CommentLike",
