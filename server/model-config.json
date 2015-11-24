@@ -108,5 +108,11 @@
   "notification": {
     "dataSource": "myDB",
     "public": true
+  },
+  "savedBusiness": {
+    "dataSource": "db",
+    "public": true,
+    "$promise": {},
+    "$resolved": true
   }
 }
