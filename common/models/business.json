@@ -20,6 +20,15 @@
     },
     "Description": {
       "type": "string"
+    },
+    "Phone": {
+      "type": "string"
+    },
+    "email": {
+      "type": "string"
+    },
+    "Website": {
+      "type": "string"
     }
   },
   "validations": [],
