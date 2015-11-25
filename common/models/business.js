@@ -29,7 +29,14 @@ module.exports = function(Business) {
                 if(fileObj.fields.hasOwnProperty('Description'))
                     var Description=fileObj.fields.Description[0]; 
                 if(fileObj.fields.hasOwnProperty('BusinessCategoryId'))
-                    var categoryId=fileObj.fields.BusinessCategoryId[0];                
+                    var categoryId=fileObj.fields.BusinessCategoryId[0]; 
+
+                if (fileObj.fields.hasOwnProperty("Phone"))
+                    var Phone = fileObj.fields.Phone[0];
+                if (fileObj.fields.hasOwnProperty("email"))
+                    var email = fileObj.fields.email[0];
+                if (fileObj.fields.hasOwnProperty("Website"))
+                    var Website = fileObj.fields.Website[0];               
 
             var extensionType= fileInfo.type.split('/');
             var fileCurrentPath= './server/storage/businesspic'+'/'+fileInfo.name;
@@ -52,6 +59,9 @@ module.exports = function(Business) {
                     busnes[0].BusinessPicture=CONTAINERS_URL+fileInfo.container+'/download/'+Id+'.'+extensionType[1];
                     busnes[0].Description=Description;
                     busnes[0].BusinessCategoryId = categoryId;
+                    busnes[0].Phone = Phone;
+                    busnes[0].email = email ;
+                    busnes[0].Website = Website ;
                     busnes[0].save();       
                 }
 
@@ -75,6 +85,13 @@ module.exports = function(Business) {
                 if(fileObj.fields.hasOwnProperty('BusinessCategoryId'))
                     var categoryId=fileObj.fields.BusinessCategoryId[0];
 
+                if (fileObj.fields.hasOwnProperty("Phone"))
+                    var Phone = fileObj.fields.Phone[0];
+                if (fileObj.fields.hasOwnProperty("email"))
+                    var email = fileObj.fields.email[0];
+                if (fileObj.fields.hasOwnProperty("Website"))
+                    var Website = fileObj.fields.Website[0];  
+
             Business.find({where:{"id":Id}},function(err,busnes){
                 if(err)
                     console.log(err);
@@ -87,6 +104,9 @@ module.exports = function(Business) {
                     busnes[0].Address=Address;
                     busnes[0].Description=Description;
                     busnes[0].BusinessCategoryId = categoryId;
+                    busnes[0].Phone = Phone;
+                    busnes[0].email = email ;
+                    busnes[0].Website = Website ;
                     busnes[0].save();       
                 }
             cb(null,busnes[0]);
