@@ -24,9 +24,9 @@ Card.stripepayment = function (data,cb) {
 		}, function(err, charge) {
 			console.log(err);
 		  if(charge)
-		  	cb(null,'success');
+		  	cb(null, {"result" : "success"});
 		  else
-		  	cb(null,'error');
+		  	cb(null,{"result" : "error", "message" : err });
 		});
 
 
