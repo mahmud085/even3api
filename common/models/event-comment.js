@@ -90,62 +90,109 @@ module.exports = function(EventComment) {
 
 		console.log(data);
 
-
-		EventComment.app.models.Event.find({
-			where: {
-				'id': data.EventId
-			}
-		}, function(err, event) {
-			if (!event[0])
-				done();
-			if (event[0])
-				EventComment.app.models.Installation.find({
-					where: {
-						'userId': event[0].AccountId
-					}
-				}, function(err, device) {
-					var notification = EventComment.app.models.Notification;
-					device[0].badge++;
-					var message = {
-						EventId: data.EventId
-					}
-					EventComment.app.models.Account.find({
+		if (data.EventId === undefined) {
+			EventComment.app.models.Business.find({
+				where: {
+					'id': data.BusinessId
+				}
+			}, function(err, business) {
+				if (!business[0])
+					done();
+				if (business[0])
+					EventComment.app.models.Installation.find({
 						where: {
-							'id': data.AccountId
+							'userId': business[0].AccountId
 						}
-					}, function(err, acnt) {
-						if (acnt[0])
-							message.text = '' + acnt[0].FirstName + ':' + data.CommentBody;
-
-						var note = new notification({
-							expirationInterval: 3600, // Expires 1 hour from now.
-							badge: device[0].badge,
-							sound: 'ping.aiff',
-							message: message,
-							messageFrom: 'Even3co'
-						});
-
-						EventComment.app.models.Push.notifyById(device[0].id, note, function(err) {
-
-							if (err) {
-								console.log(err);
-								done();
+					}, function(err, device) {
+						var notification = EventComment.app.models.Notification;
+						device[0].badge++;
+						var message = {
+							EventId: data.EventId
+						}
+						EventComment.app.models.Account.find({
+							where: {
+								'id': data.AccountId
 							}
-							if (!err) {
-								device[0].save();
-								console.log('pushing notification to %j', device[0].id);
-								done();
-							}
+						}, function(err, acnt) {
+							if (acnt[0])
+								message.text = '' + acnt[0].FirstName + ':' + data.CommentBody;
 
+							var note = new notification({
+								expirationInterval: 3600, // Expires 1 hour from now.
+								badge: device[0].badge,
+								sound: 'ping.aiff',
+								message: message,
+								messageFrom: 'Even3co'
+							});
+
+							EventComment.app.models.Push.notifyById(device[0].id, note, function(err) {
+
+								if (err) {
+									console.log(err);
+									done();
+								}
+								if (!err) {
+									device[0].save();
+									console.log('pushing notification to %j', device[0].id);
+									done();
+								}
+
+							});
 						});
-
 					});
+			});
+		} else {
+			EventComment.app.models.Event.find({
+				where: {
+					'id': data.EventId
+				}
+			}, function(err, event) {
+				if (!event[0])
+					done();
+				if (event[0])
+					EventComment.app.models.Installation.find({
+						where: {
+							'userId': event[0].AccountId
+						}
+					}, function(err, device) {
+						var notification = EventComment.app.models.Notification;
+						device[0].badge++;
+						var message = {
+							EventId: data.EventId
+						}
+						EventComment.app.models.Account.find({
+							where: {
+								'id': data.AccountId
+							}
+						}, function(err, acnt) {
+							if (acnt[0])
+								message.text = '' + acnt[0].FirstName + ':' + data.CommentBody;
 
+							var note = new notification({
+								expirationInterval: 3600, // Expires 1 hour from now.
+								badge: device[0].badge,
+								sound: 'ping.aiff',
+								message: message,
+								messageFrom: 'Even3co'
+							});
 
+							EventComment.app.models.Push.notifyById(device[0].id, note, function(err) {
 
-				});
+								if (err) {
+									console.log(err);
+									done();
+								}
+								if (!err) {
+									device[0].save();
+									console.log('pushing notification to %j', device[0].id);
+									done();
+								}
 
-		});
+							});
+						});
+					});
+			});
+		}
 
 		//done();
 	});
