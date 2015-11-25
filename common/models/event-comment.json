@@ -14,6 +14,12 @@
     },
     "CommentPicture": {
       "type": "string"
+    },
+    "BusinessId" : {
+      "type" : "string"
+    },
+    "EventId" : {
+      "type" : "string"
     }
   },
   "validations": [],
@@ -23,61 +29,44 @@
       "model": "Account",
       "foreignKey": "AccountId"
     },
-    "event": {
-      "type": "belongsTo",
-      "model": "Event",
-      "foreignKey": "EventId"
-    },
-    "business": {
-      "type": "belongsTo",
-      "model": "Business",
-      "foreignKey": "BusinessId"
-    },
     "commentLike": {
       "type": "hasMany",
       "model": "CommentLike",
       "foreignKey": "EventCommentId"
     }
   },
-  "acls": [
-    {
-      "accessType": "*",
-      "principalType": "ROLE",
-      "principalId": "admin",
-      "permission": "ALLOW"
-    },
-    {
-      "accessType": "READ",
-      "principalType": "ROLE",
-      "principalId": "$unauthenticated",
-      "permission": "DENY"
-    },
-    {
-      "accessType": "READ",
-      "principalType": "ROLE",
-      "principalId": "$authenticated",
-      "permission": "ALLOW"
-    },
-    {
-      "accessType": "*",
-      "principalType": "ROLE",
-      "principalId": "$owner",
-      "permission": "ALLOW"
-    },
-    {
-      "accessType": "EXECUTE",
-      "principalType": "ROLE",
-      "principalId": "$unauthenticated",
-      "permission": "DENY",
-      "property": "addcomment"
-    },
-    {
-      "accessType": "EXECUTE",
-      "principalType": "ROLE",
-      "principalId": "$authenticated",
-      "permission": "ALLOW",
-      "property": "addcomment"
-    }
-  ],
+  "acls": [{
+    "accessType": "*",
+    "principalType": "ROLE",
+    "principalId": "admin",
+    "permission": "ALLOW"
+  }, {
+    "accessType": "READ",
+    "principalType": "ROLE",
+    "principalId": "$unauthenticated",
+    "permission": "DENY"
+  }, {
+    "accessType": "READ",
+    "principalType": "ROLE",
+    "principalId": "$authenticated",
+    "permission": "ALLOW"
+  }, {
+    "accessType": "*",
+    "principalType": "ROLE",
+    "principalId": "$owner",
+    "permission": "ALLOW"
+  }, {
+    "accessType": "EXECUTE",
+    "principalType": "ROLE",
+    "principalId": "$unauthenticated",
+    "permission": "DENY",
+    "property": "addcomment"
+  }, {
+    "accessType": "EXECUTE",
+    "principalType": "ROLE",
+    "principalId": "$authenticated",
+    "permission": "ALLOW",
+    "property": "addcomment"
+  }],
   "methods": {}
 }

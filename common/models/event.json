@@ -52,11 +52,6 @@
       "model": "Account",
       "foreignKey": "AccountId"
     },
-    "eventComments": {
-      "type": "hasMany",
-      "model": "EventComment",
-      "foreignKey": "EventId"
-    },
     "eventCategory": {
       "type": "belongsTo",
       "model": "EventCategory",

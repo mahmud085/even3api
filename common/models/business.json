@@ -38,11 +38,6 @@
       "type": "hasMany",
       "model": "Service",
       "foreignKey": "BusinessId"
-    },
-    "businessComments": {
-      "type": "hasMany",
-      "model": "EventComment",
-      "foreignKey": "BusinessId"
     }
   },
   "acls": [
