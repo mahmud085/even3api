@@ -10,7 +10,7 @@
       "type": "number"
     },
     "TransactionId": {
-      "type": "number"
+      "type": "string"
     },
     "TimeOfTicket": {
       "type": "number"
