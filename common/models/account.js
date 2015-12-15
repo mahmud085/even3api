@@ -417,10 +417,7 @@ module.exports = function(Account) {
     });
   };
 
-
-
   Account.addaccount = function(ctx, options, cb) {
-
 
     if (!options) options = {};
     ctx.req.params.container = 'profilepic';
@@ -493,8 +490,6 @@ module.exports = function(Account) {
           }, function(err, token) {
             console.log(token);
             ant.accessToken = token.id;
-            // ant.container='profilepic';
-            // ant.UserPicture= ''+ant.id+'.'+extensionType[1];
             cb(null, ant);
           });
 

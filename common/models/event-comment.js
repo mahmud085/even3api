@@ -109,6 +109,7 @@ module.exports = function(EventComment) {
 						var message = {
 							BusinessId: data.BusinessId,
 							name : business[0].Name,
+							creator : business[0].AccountId,
 							event : false
 						}
 						EventComment.app.models.Account.find({
@@ -162,6 +163,7 @@ module.exports = function(EventComment) {
 						var message = {
 							EventId: data.EventId,
 							name : event[0].Name,
+							creator : event[0].AccountId,
 							event : true
 						}
 						EventComment.app.models.Account.find({
