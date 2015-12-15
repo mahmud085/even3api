@@ -111,7 +111,7 @@ module.exports = function(EventComment) {
 						}
 						EventComment.app.models.Account.find({
 							where: {
-								'id': data.AccountId
+								'id': data.Id
 							}
 						}, function(err, acnt) {
 							if (acnt[0])
