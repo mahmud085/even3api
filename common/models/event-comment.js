@@ -107,7 +107,9 @@ module.exports = function(EventComment) {
 						var notification = EventComment.app.models.Notification;
 						device[0].badge++;
 						var message = {
-							BusinessId: data.BusinessId
+							BusinessId: data.BusinessId,
+							name : business[0].Name,
+							event : false
 						}
 						EventComment.app.models.Account.find({
 							where: {
@@ -115,7 +117,7 @@ module.exports = function(EventComment) {
 							}
 						}, function(err, acnt) {
 							if (acnt[0])
-								message.text = '' + acnt[0].FirstName + ':' + data.CommentBody;
+								message.text = 'New comment from ' + acnt[0].FirstName ;
 
 							var note = new notification({
 								expirationInterval: 3600, // Expires 1 hour from now.
@@ -158,7 +160,9 @@ module.exports = function(EventComment) {
 						var notification = EventComment.app.models.Notification;
 						device[0].badge++;
 						var message = {
-							EventId: data.EventId
+							EventId: data.EventId,
+							name : event[0].Name,
+							event : true
 						}
 						EventComment.app.models.Account.find({
 							where: {
@@ -166,7 +170,7 @@ module.exports = function(EventComment) {
 							}
 						}, function(err, acnt) {
 							if (acnt[0])
-								message.text = '' + acnt[0].FirstName + ':' + data.CommentBody;
+								message.text = 'New comment from ' + acnt[0].FirstName ;
 
 							var note = new notification({
 								expirationInterval: 3600, // Expires 1 hour from now.
