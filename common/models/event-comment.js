@@ -107,7 +107,7 @@ module.exports = function(EventComment) {
 						var notification = EventComment.app.models.Notification;
 						device[0].badge++;
 						var message = {
-							EventId: data.EventId
+							BusinessId: data.BusinessId
 						}
 						EventComment.app.models.Account.find({
 							where: {
