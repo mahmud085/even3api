@@ -73,15 +73,15 @@ module.exports = function(Account) {
         var mail = '';
         for (i = 0; i < data.req.body.email.length; i++)
           mail = mail + String.fromCharCode(data.req.body.email.charCodeAt(i) + 2);
-        var link = 'http://localhost/even2/resetpassword/' + mail;
+        var link = 'http://even3.co/resetpassword/' + mail;
         //console.log(mail);
 
         loopback.Email.send({
             to: data.req.body.email,
             from: "even3co@gmail.com",
-            subject: "subject",
+            subject: "Even3 Password Reset",
             text: "text message",
-            html: '<p>hi ' + result[0].FirstName + '</p><p> You have requested to reset the password. If you are sure please click the link bellow. If it does not work click the button.</p>' + '<p>' + link + '</p>' + '<p><button href="http://localhost/even2/login.html">Click me</button></p>'
+            html: '<p>Hi ' + result[0].FirstName + '</p><p> You have requested to reset the password. If you are sure please click the link bellow. If it does not work click the button.</p>' + '<p>' + link + '</p>' + '<p><button href="http://even3.co/login.html">Click me</button></p>'
           },
           function(err, result) {
             if (err) {
@@ -616,7 +616,7 @@ module.exports = function(Account) {
             ant[0].UserPicture = CONTAINERS_URL + fileInfo.container + '/download/' + ant[0].id + '.' + extensionType[1];
             ant[0].save();
             //ant[0].container="profilepic";
-            //ant[0].UserPicture= ''+ant[0].id+'.'+extensionType[1]; 
+            //ant[0].UserPicture= ''+ant[0].id+'.'+extensionType[1];
             cb(null, ant[0]);
           }
         });
@@ -743,7 +743,7 @@ module.exports = function(Account) {
   );
 
 
-
+/*
   Account.remoteMethod(
     'socialsignin', {
       description: 'Sign in with Google or facebook . credentials: a Json with Type(FB,Google),Id(facebook or google), email, FirstName,LastName',
@@ -764,7 +764,7 @@ module.exports = function(Account) {
       http: {
         verb: 'post'
       }
-    });
+    }); */
 
   Account.remoteMethod(
     'sendemail', {
