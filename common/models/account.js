@@ -133,10 +133,6 @@ module.exports = function(Account) {
 
 
     });
-
-    //else
-    //register();
-
   }
 
 
@@ -238,31 +234,27 @@ module.exports = function(Account) {
   // Social Sign in afterRemote Method
 
   Account.afterRemote('socialsignin', function(context, remoteMethodOutput, next) {
-    //console.log(context.req.body);
-    // console.log(remoteMethodOutput);
-
+    
     var kue = require('kue'),
-      queue = kue.createQueue();
+        queue = kue.createQueue();
+    
+    var job ;
     if (context.req.body.Type == 'FB') {
-      var job = queue.create('FindFacebook', {
+      job = queue.create('FindFacebook', {
         accessToken: context.req.body.Token
       }).save(function(err) {
         if (!err) console.log('FB is it ' + job.id);
       });
     } else {
-      var job = queue.create('FindGoogle', {
+      job = queue.create('FindGoogle', {
         accessToken: context.req.body.Token
       }).save(function(err) {
         if (!err) console.log('Google  is it ' + job.id);
       });
     }
 
-
-
     job.on('complete', function(result) {
       console.log('completed job ' + job.id);
-      //return res.send(result);
-      //console.log(result);
       next();
     });
 
@@ -285,7 +277,6 @@ module.exports = function(Account) {
 
           var friends = [];
           for (var i in body.items) {
-            //console.log(body.items[i].id);
             Account.find({
               where: {
                 'GoogleID': body.items[i].id
@@ -301,8 +292,6 @@ module.exports = function(Account) {
               'id': remoteMethodOutput.id
             }
           }, function(err, ant) {
-            //console.log(friends.length);
-            //console.log(ant[0]&&friends.length!=0);
             if (ant[0] && friends.length != 0) {
               console.log(friends[0]);
               ant[0].Friends = [];
@@ -317,11 +306,8 @@ module.exports = function(Account) {
       }).on('error', function(e) {
         console.log("Got an error: ", e);
       });
-
       done(null);
     });
-
-
 
     // Friend Finding Process
     queue.process('FindFacebook', function(job, done) {
@@ -384,13 +370,10 @@ module.exports = function(Account) {
         console.log('error from facebook.getFbData: ' + e.message)
       });
       request.end();
-
-
       done(null);
     });
 
   });
-
 
   // Adding social Token
 
@@ -743,7 +726,7 @@ module.exports = function(Account) {
   );
 
 
-/*
+
   Account.remoteMethod(
     'socialsignin', {
       description: 'Sign in with Google or facebook . credentials: a Json with Type(FB,Google),Id(facebook or google), email, FirstName,LastName',
@@ -764,7 +747,7 @@ module.exports = function(Account) {
       http: {
         verb: 'post'
       }
-    }); */
+    });
 
   Account.remoteMethod(
     'sendemail', {
