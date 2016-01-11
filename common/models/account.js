@@ -233,7 +233,7 @@ module.exports = function(Account) {
 
   // Social Sign in afterRemote Method
 
-  Account.afterRemote('socialsignin', function(context, remoteMethodOutput, next) {
+ /* Account.afterRemote('socialsignin', function(context, remoteMethodOutput, next) {
     
     var kue = require('kue'),
         queue = kue.createQueue();
@@ -375,6 +375,7 @@ module.exports = function(Account) {
 
   });
 
+*/
   // Adding social Token
 
 
