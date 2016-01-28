@@ -581,6 +581,73 @@ module.exports = function(Account) {
             });
         });
   });
+  
+  Account.afterRemote('create', function(context, user, next) {
+        console.log('> user.afterRemote triggered');
+
+        var options = {
+            type: 'email',
+            to: user.email,
+            from: 'even3co@gmail.com',
+            subject: 'Thanks for registering in Even3.',
+            template: path.resolve(__dirname, '../../server/views/verify.ejs'),
+            redirect: '/verified',
+            Account: user
+        };
+        
+        console.log('options = ' + JSON.stringify(options));
+        
+       /* loopback.Email.send({
+            to: data.req.body.email,
+            from: "even3co@gmail.com",
+            subject: "Even3 Password Reset",
+            text: "text message",
+            html: '<p>Hi ' + result[0].FirstName + '</p><p> You have requested to reset the password. Please click the link bellow to set your new password. If it does not work, click the button.</p>' + '<p>' + link + '</p>' + '<p><button href="http://even3app.com/login.html">Reset Password</button></p>'
+          },
+          function(err, result) {
+                if (err) {
+                    console.log('Something went wrong while sending email.');
+                    cb(err);
+                }
+            
+                if (result.message == 'success') {
+                    console.log(result.message);
+                    cb(null, 'success');
+                }
+          }); */
+
+        Account.verify(options, function(err, response) {
+            console.log('verify response = ' + JSON.stringify(response));
+            console.log('verify error = ', JSON.stringify(err));
+            if (err) return next(err);
+            console.log('> verification email sent:', response);
+
+            context.res.render('response', {
+                title: 'Signed up successfully',
+                content: 'Please check your email and click on the verification link ' +
+            'before logging in.',
+                redirectTo: '/',
+                redirectToLinkText: 'Log in'
+            });
+        });
+        
+        user.verify(options, function(err, response) {
+            console.log('user verify response = ' + JSON.stringify(response));
+            console.log('user verify error = ', JSON.stringify(err));
+            if (err) return next(err);
+            console.log('> verification email sent:', response);
+
+            context.res.render('response', {
+                title: 'Signed up successfully',
+                content: 'Please check your email and click on the verification link ' +
+            'before logging in.',
+                redirectTo: '/',
+                redirectToLinkText: 'Log in'
+            });
+        });
+  });
+
+
 
   Account.editaccount = function(ctx, options, cb) {
 
