@@ -530,7 +530,7 @@ module.exports = function(Account) {
             Account: user
         };
         
-        console.log('options = ' + options);
+        console.log('options = ' + JSON.stringify(options));
 
         Account.verify(options, function(err, response) {
             if (err) return next(err);
