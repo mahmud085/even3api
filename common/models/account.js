@@ -451,14 +451,15 @@ module.exports = function(Account) {
 
           ant.UserPicture = CONTAINERS_URL + fileInfo.container + '/download/' + ant.id + '.' + extensionType[1];
           ant.save();
-          Account.login({
+        /*  Account.login({
             email: email,
             password: password
           }, function(err, token) {
             console.log(token);
             ant.accessToken = token.id;
             cb(null, ant);
-          });
+          }); */
+          cb(null, {message:'signup successful'});
 
 
         });
@@ -502,7 +503,7 @@ module.exports = function(Account) {
         }, function(err, ant) {
           if (err)
             cb(null, err);
-          Account.login({
+         /* Account.login({
             email: email,
             password: password
           }, function(err, token) {
@@ -510,9 +511,8 @@ module.exports = function(Account) {
             console.log(token);
             ant.accessToken = token.id;
             cb(null, ant);
-          });
-
-
+          }); */
+          cb(null, {message:'signup successful'});
         });
 
       }
@@ -527,7 +527,7 @@ module.exports = function(Account) {
             type: 'email',
             to: user.email,
             from: 'even3co@gmail.com',
-            subject: 'Thanks for registering.',
+            subject: 'Thanks for registering in Even3.',
             template: path.resolve(__dirname, '../../server/views/verify.ejs'),
             redirect: '/verified',
             user: user
