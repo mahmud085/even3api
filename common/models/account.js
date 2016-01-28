@@ -419,8 +419,6 @@ module.exports = function(Account) {
         if (fileObj.fields.hasOwnProperty('PushNotification'))
           var PushNotification = fileObj.fields.PushNotification[0];
 
-
-
         Account.create({
           FirstName: FirstName,
           email: email,
@@ -460,7 +458,6 @@ module.exports = function(Account) {
             cb(null, ant);
           }); */
           cb(null, {message:'signup successful'});
-
 
         });
       } else {
@@ -533,7 +530,7 @@ module.exports = function(Account) {
             user: user
         };
 
-        user.verify(options, function(err, response) {
+        Account.verify(options, function(err, response) {
             if (err) return next(err);
             console.log('> verification email sent:', response);
 
