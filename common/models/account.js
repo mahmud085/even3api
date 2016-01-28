@@ -449,14 +449,6 @@ module.exports = function(Account) {
 
           ant.UserPicture = CONTAINERS_URL + fileInfo.container + '/download/' + ant.id + '.' + extensionType[1];
           ant.save();
-        /*  Account.login({
-            email: email,
-            password: password
-          }, function(err, token) {
-            console.log(token);
-            ant.accessToken = token.id;
-            cb(null, ant);
-          }); */
           cb(null, ant);
 
         });
@@ -498,20 +490,12 @@ module.exports = function(Account) {
           PushNotification: PushNotification
 
         }, function(err, ant) {
-          if (err)
-            cb(null, err);
-         /* Account.login({
-            email: email,
-            password: password
-          }, function(err, token) {
-
-            console.log(token);
-            ant.accessToken = token.id;
-            cb(null, ant);
-          }); */
-          cb(null, ant);
+          if (err) {
+             cb(null, err);   
+          } else {
+             cb(null, ant);
+          }
         });
-
       }
 
     });
@@ -524,7 +508,7 @@ module.exports = function(Account) {
             type: 'email',
             to: user.email,
             from: 'even3co@gmail.com',
-            subject: 'Thanks for registering in Even3.',
+            subject: 'Welcome to Even3.',
             template: path.resolve(__dirname, '../../server/views/verify.ejs'),
             redirect: '/verified',
             Account: user
@@ -537,6 +521,10 @@ module.exports = function(Account) {
             console.log('user verify error = ', JSON.stringify(err));
             if (err) return next(err);
             console.log('> verification email sent:', response);
+            context.res.send({
+                status : 'Success',
+                message : 'Thanks for joining Even3. An activation link has been sent to your email. You must activate your account to use Even3.'
+            });
         });
   });
   
@@ -547,7 +535,7 @@ module.exports = function(Account) {
             type: 'email',
             to: user.email,
             from: 'even3co@gmail.com',
-            subject: 'Thanks for registering in Even3.',
+            subject: 'Welcome to Even3.',
             template: path.resolve(__dirname, '../../server/views/verify.ejs'),
             redirect: '/verified',
             Account: user
