@@ -5,6 +5,7 @@ var fs = require('fs');
 var path = require('path');
 var AccessToken = loopback.AccessToken;
 var https = require('https');
+var baseUrl = "http://even3app.com" ;
 
 module.exports = function(Account) {
 
@@ -28,7 +29,6 @@ module.exports = function(Account) {
           }, function(err) {
 
           });
-
       });
     }
     for (var i = 0; i < data.req.body.phone.length; i++) {
@@ -37,7 +37,6 @@ module.exports = function(Account) {
           'phone': data.req.body.phone[i].number
         }
       }, function(err, result) {
-        //console.log(result[0]);
         if (result[0])
           Account.app.models.Participant.create({
             Invited: true,
@@ -46,7 +45,6 @@ module.exports = function(Account) {
           }, function(err) {
 
           });
-
       });
     }
 
@@ -68,12 +66,10 @@ module.exports = function(Account) {
       if (!result[0])
         cb(null, 'There is no user registered by the email');
       if (result[0]) {
-
-        //console.log(data.req.body.email);
         var mail = '';
-        for (i = 0; i < data.req.body.email.length; i++)
+        for (var i = 0; i < data.req.body.email.length; i++)
           mail = mail + String.fromCharCode(data.req.body.email.charCodeAt(i) + 2);
-        var link = 'http://even3.co/resetpassword/' + mail;
+        var link = baseUrl + '/resetpassword/' + mail;
         //console.log(mail);
 
         loopback.Email.send({
@@ -81,20 +77,19 @@ module.exports = function(Account) {
             from: "even3co@gmail.com",
             subject: "Even3 Password Reset",
             text: "text message",
-            html: '<p>Hi ' + result[0].FirstName + '</p><p> You have requested to reset the password. If you are sure please click the link bellow. If it does not work click the button.</p>' + '<p>' + link + '</p>' + '<p><button href="http://even3.co/login.html">Click me</button></p>'
+            html: '<p>Hi ' + result[0].FirstName + '</p><p> You have requested to reset the password. Please click the link bellow to set your new password. If it does not work, click the button.</p>' + '<p>' + link + '</p>' + '<p><button href="http://even3app.com/login.html">Reset Password</button></p>'
           },
           function(err, result) {
-            if (err) {
-              console.log('Upppss something crash');
-              cb(err);
-            }
-            if (result.message == 'success') {
-              console.log(result.message);
-              cb(null, 'success');
-            }
-
+                if (err) {
+                    console.log('Something went wrong while sending email.');
+                    cb(err);
+                }
+            
+                if (result.message == 'success') {
+                    console.log(result.message);
+                    cb(null, 'success');
+                }
           });
-
       }
 
     });
@@ -104,9 +99,9 @@ module.exports = function(Account) {
 
   Account.passwordreset = function(data, cb) {
     if (data.req.body.email == null) {
-      msg = {
+      var msg = {
         error: 404,
-        message: 'email is required'
+        message: 'Email is required'
       }
       cb(null, msg);
     }
@@ -130,8 +125,6 @@ module.exports = function(Account) {
           }
         });
       }
-
-
     });
   }
 
@@ -141,8 +134,9 @@ module.exports = function(Account) {
 
   Account.socialsignin = function(data, cb) {
 
-    if (data.req.body.email == null)
-      cb(null, "Email Field is empty");
+    if (data.req.body.email == null) {
+        cb(null, "Email Field is empty");   
+    }
 
     Account.find({
       where: {
@@ -152,7 +146,6 @@ module.exports = function(Account) {
       if (err)
         cb(null, err);
       if (ant[0] == undefined) {
-        //console.log(data.req.body.Id);
         Account.create({
           FirstName: data.req.body.FirstName,
           email: data.req.body.email,
@@ -160,7 +153,6 @@ module.exports = function(Account) {
           LastName: data.req.body.LastName,
           Newsletter: data.req.body.Newsletter,
           username: data.req.body.username,
-          //FacebookID:data.req.body.Id,
           SavedBusiness: data.req.body.SavedBusiness,
           EmailNotification: data.req.body.EmailNotification,
           PushNotification: data.req.body.PushNotification
@@ -180,40 +172,35 @@ module.exports = function(Account) {
           }
           ant.save();
           ant.accessTokens.create({
-            //.AccessToken.create({
             created: new Date(),
-            // userId:ant[0].id
           }, function(err, newToken) {
-            if (err) {
-              console.log('err in newToken');
-              cb(null, err);
-            } else {
-
-              //console.log(newToken);
-              ant.accessToken = newToken.id;
-              cb(null, ant);
-            }
+                if (err) {
+                    console.log('Error in new token');
+                    cb(null, err);
+                } else {
+                    ant.accessToken = newToken.id;
+                    cb(null, ant);
+                }
           });
 
         });
 
       } else {
+        
         if (ant[0].FacebookID == null && data.req.body.Type == 'FB') {
-          ant[0].FacebookID = data.req.body.Id;
-          ant[0].accessTokenFacebook = data.req.body.Token;
-
-          ant[0].save();
+            ant[0].FacebookID = data.req.body.Id;
+            ant[0].accessTokenFacebook = data.req.body.Token;
+            ant[0].save();
         }
+        
         if (ant[0].GoogleID == null && data.req.body.Type == 'Google') {
-          ant[0].GoogleID = data.req.body.Id;
-          ant[0].accessTokenGoogle = data.req.body.Token;
-          ant[0].save();
+            ant[0].GoogleID = data.req.body.Id;
+            ant[0].accessTokenGoogle = data.req.body.Token;
+            ant[0].save();
         }
 
         ant[0].accessTokens.create({
-          //.AccessToken.create({
           created: new Date(),
-          // userId:ant[0].id
         }, function(err, newToken) {
           if (err) {
             console.log('err in newToken');
@@ -227,13 +214,11 @@ module.exports = function(Account) {
       }
 
     });
-
-    // cb(null,res);
   };
 
   // Social Sign in afterRemote Method
 
- /* Account.afterRemote('socialsignin', function(context, remoteMethodOutput, next) {
+  Account.afterRemote('socialsignin', function(context, remoteMethodOutput, next) {
     
     var kue = require('kue'),
         queue = kue.createQueue();
@@ -375,10 +360,7 @@ module.exports = function(Account) {
 
   });
 
-*/
   // Adding social Token
-
-
   Account.addtoken = function(data, cb) {
 
     Account.find({
@@ -459,7 +441,7 @@ module.exports = function(Account) {
           var extensionType = fileInfo.type.split('/');
           console.log(extensionType);
           var fileCurrentPath = './server/storage/profilepic' + '/' + fileInfo.name;
-          newFilePath = './server/storage/profilepic' + '/' + ant.id + '.' + extensionType[1];
+          var newFilePath = './server/storage/profilepic' + '/' + ant.id + '.' + extensionType[1];
 
           fs.rename(fileCurrentPath, newFilePath, function(err) {
             if (err) throw err;
@@ -560,7 +542,7 @@ module.exports = function(Account) {
 
 
         var fileCurrentPath = './server/storage/profilepic' + '/' + fileInfo.name;
-        newFilePath = './server/storage/profilepic' + '/' + Id + '.' + extensionType[1];
+        var newFilePath = './server/storage/profilepic' + '/' + Id + '.' + extensionType[1];
 
         fs.rename(fileCurrentPath, newFilePath, function(err) {
           if (err) throw err;
