@@ -457,7 +457,7 @@ module.exports = function(Account) {
             ant.accessToken = token.id;
             cb(null, ant);
           }); */
-          cb(null, {message:'signup successful'});
+          cb(null, ant);
 
         });
       } else {
@@ -509,7 +509,7 @@ module.exports = function(Account) {
             ant.accessToken = token.id;
             cb(null, ant);
           }); */
-          cb(null, {message:'signup successful'});
+          cb(null, ant);
         });
 
       }
