@@ -4,6 +4,8 @@ var fs = require('fs');
 var path = require('path');
 var app = module.exports = loopback();
 
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
 
 function register() {
   Application.register('even3appdeveloper',
