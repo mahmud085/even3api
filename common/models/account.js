@@ -616,22 +616,8 @@ module.exports = function(Account) {
                 }
           }); */
 
-        Account.verify(options, function(err, response) {
-            console.log('verify response = ' + JSON.stringify(response));
-            console.log('verify error = ', JSON.stringify(err));
-            if (err) return next(err);
-            console.log('> verification email sent:', response);
-
-            context.res.render('response', {
-                title: 'Signed up successfully',
-                content: 'Please check your email and click on the verification link ' +
-            'before logging in.',
-                redirectTo: '/',
-                redirectToLinkText: 'Log in'
-            });
-        });
-        
-        user.verify(options, function(err, response) {
+       
+        user.verify(options, function(err, response, next) {
             console.log('user verify response = ' + JSON.stringify(response));
             console.log('user verify error = ', JSON.stringify(err));
             if (err) return next(err);
