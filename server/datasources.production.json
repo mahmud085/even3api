@@ -8,11 +8,5 @@
     "connector": "loopback-component-storage",
     "provider": "filesystem",
     "root": "./server/storage"
-  }/*,
-  "myDB": {
-    "name": "myDB",
-    "connector": "loopback-connector-mongodb",
-    "url": "mongodb://admin:ZWQbMQpvMz-F@process.env.OPENSHIFT_MONGODB_DB_HOST:process.env.OPENSHIFT_MONGODB_DB_PORT/even3co"
-  }*/
-
+  }
 }
