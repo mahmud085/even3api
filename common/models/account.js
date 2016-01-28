@@ -515,8 +515,9 @@ module.exports = function(Account) {
         };
         
         console.log('options = ' + JSON.stringify(options));
-           
-        user.verify(options, function(err, response, next) {
+        
+        if (user.hasOwnProperty('id')) {
+            user.verify(options, function(err, response, next) {
             console.log('user verify response = ' + JSON.stringify(response));
             console.log('user verify error = ', JSON.stringify(err));
             if (err) return next(err);
@@ -524,8 +525,16 @@ module.exports = function(Account) {
             context.res.send({
                 status : 'Success',
                 message : 'Thanks for joining Even3. An activation link has been sent to your email. You must activate your account to use Even3.'
+              });
             });
-        });
+        } else {
+            context.res.send({
+                status : user['name'],
+                message : user['message']
+              });
+        }
+           
+        
   });
   
   Account.afterRemote('create', function(context, user, next) {
