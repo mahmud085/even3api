@@ -6,6 +6,7 @@ var path = require('path');
 var AccessToken = loopback.AccessToken;
 var https = require('https');
 var baseUrl = "http://even3app.com" ;
+var config = require('../../server/config.json');
 
 module.exports = function(Account) {
 
@@ -519,6 +520,32 @@ module.exports = function(Account) {
     });
   };
 
+  Account.afterRemote('addaccount', function(context, user, next) {
+        console.log('> user.afterRemote triggered');
+
+        var options = {
+            type: 'email',
+            to: user.email,
+            from: 'even3co@gmail.com',
+            subject: 'Thanks for registering.',
+            template: path.resolve(__dirname, '../../server/views/verify.ejs'),
+            redirect: '/verified',
+            user: user
+        };
+
+        user.verify(options, function(err, response) {
+            if (err) return next(err);
+            console.log('> verification email sent:', response);
+
+            context.res.render('response', {
+                title: 'Signed up successfully',
+                content: 'Please check your email and click on the verification link ' +
+            'before logging in.',
+                redirectTo: '/',
+                redirectToLinkText: 'Log in'
+            });
+        });
+  });
 
   Account.editaccount = function(ctx, options, cb) {
 

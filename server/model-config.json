@@ -39,7 +39,10 @@
   },
   "Account": {
     "dataSource": "myDB",
-    "public": true
+    "public": true,
+    "options": {
+      "emailVerificationRequired": true
+    }
   },
   "container": {
     "dataSource": "myFile",
