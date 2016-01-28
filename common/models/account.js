@@ -596,27 +596,7 @@ module.exports = function(Account) {
         };
         
         console.log('options = ' + JSON.stringify(options));
-        
-       /* loopback.Email.send({
-            to: data.req.body.email,
-            from: "even3co@gmail.com",
-            subject: "Even3 Password Reset",
-            text: "text message",
-            html: '<p>Hi ' + result[0].FirstName + '</p><p> You have requested to reset the password. Please click the link bellow to set your new password. If it does not work, click the button.</p>' + '<p>' + link + '</p>' + '<p><button href="http://even3app.com/login.html">Reset Password</button></p>'
-          },
-          function(err, result) {
-                if (err) {
-                    console.log('Something went wrong while sending email.');
-                    cb(err);
-                }
-            
-                if (result.message == 'success') {
-                    console.log(result.message);
-                    cb(null, 'success');
-                }
-          }); */
-
-       
+         
         user.verify(options, function(err, response, next) {
             console.log('user verify response = ' + JSON.stringify(response));
             console.log('user verify error = ', JSON.stringify(err));

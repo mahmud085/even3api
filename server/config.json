@@ -1,6 +1,6 @@
 {
   "restApiRoot": "/api",
-  "host": "0.0.0.0",
+  "host": "even3app.com",
   "port": 3000,
   "remoting": {
     "context": {
