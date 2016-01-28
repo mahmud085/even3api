@@ -34,7 +34,7 @@
     "public": false
   },
   "Email": {
-    "dataSource": "sendgrid",
+    "dataSource": "myEmailDataSource",
     "public": false
   },
   "Account": {
