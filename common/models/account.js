@@ -527,8 +527,10 @@ module.exports = function(Account) {
             subject: 'Thanks for registering in Even3.',
             template: path.resolve(__dirname, '../../server/views/verify.ejs'),
             redirect: '/verified',
-            user: user
+            Account: user
         };
+        
+        console.log('options = ' + options);
 
         Account.verify(options, function(err, response) {
             if (err) return next(err);
