@@ -1,6 +1,5 @@
 var loopback = require('loopback');
 var app = module.exports = loopback();
-var notification = app.models.Notification;
 
 module.exports = function(Push) {
 
@@ -9,7 +8,7 @@ module.exports = function(Push) {
         if (!userId) {
             return ;
         }
-        
+       var notification = Push.app.models.Notification;
        var note = new notification({
             expirationInterval: 3600, // Expires 1 hour from now.
             badge: 1,
