@@ -20,8 +20,10 @@ module.exports = function(Account) {
           'id': data.req.body.EventId
         }
     }, function (error, event) {
-        if (!error)
-            eventName = event.Name ;
+        if (!error) {
+             eventName = event[0].Name ;   
+        }
+        console.log("event name = " + eventName);
     });
     
     console.log("event name = " + eventName);
