@@ -13,9 +13,6 @@ var Event = app.models.Event ;
 module.exports = function(Account) {
 
   Account.invitefriend = function(data, cb) {
-    if (data.req.body.EventId) {
-      cb(null, {"result" : "success"});
-    }
     
     var eventName = "An Event";
     Event.find({
@@ -45,6 +42,7 @@ module.exports = function(Account) {
           Account.app.models.Push.sendNotification(user.id, message);
       });
     }
+    
     for (var i = 0; i < data.req.body.phone.length; i++) {
       Account.find({
         where: {
@@ -65,6 +63,7 @@ module.exports = function(Account) {
       });
     }
 
+    cb(null, {"result" : "success"});
   };
 
 
