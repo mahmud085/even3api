@@ -8,22 +8,31 @@ module.exports = function(Push) {
         if (!userId) {
             return ;
         }
-       var notification = Push.app.models.Notification;
-       var note = new notification({
-            expirationInterval: 3600, // Expires 1 hour from now.
-            badge: 1,
-            sound: 'ping.aiff',
-            alert: message ,
-            messageFrom: 'Even3'
-      });
-      
-      this.notifyById(userId, note, function (err) {
-        if (err) {
-            console.error('Cannot notify %j: %s', userId, err.stack);
-            return;
-        }
-        console.log('pushing notification to %j', userId);
-     });
-      
+        
+        Push.app.models.Installations.find({
+            where : {"userId" : userId}
+        }, function (error, devices) {
+            if (!error) {
+                for (var i = 0 ; i < devices.length ; i++) {
+                    var notification = Push.app.models.Notification;
+                    var note = new notification({
+                            expirationInterval: 3600, // Expires 1 hour from now.
+                            badge: 1,
+                            sound: 'ping.aiff',
+                            alert: message ,
+                            messageFrom: 'Even3'
+                    });
+                    
+                    Push.notifyById(devices[i].id, note, function (err) {
+                        if (err) {
+                            console.error('Cannot notify %j: %s', userId, err.stack);
+                            return;
+                        }
+                        console.log('pushing notification to %j', userId);
+                    });
+                }
+            }
+        });
+       
     }
 };
