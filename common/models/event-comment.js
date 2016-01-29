@@ -141,6 +141,8 @@ module.exports = function(EventComment) {
 								}
 
 							});
+                            
+                            EventComment.app.models.Push.sendNotification(device[0].id, message);
 						});
 					});
 			});
