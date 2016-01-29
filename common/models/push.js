@@ -9,10 +9,11 @@ module.exports = function(Push) {
             return ;
         }
         
-        Push.app.models.Installations.find({
+        Push.app.models.Installation.find({
             where : {"userId" : userId}
         }, function (error, devices) {
             if (!error) {
+                console.log('devices installed = ' + JSON.stringify(devices));
                 for (var i = 0 ; i < devices.length ; i++) {
                     var notification = Push.app.models.Notification;
                     var note = new notification({
@@ -31,6 +32,8 @@ module.exports = function(Push) {
                         console.log('pushing notification to %j', userId);
                     });
                 }
+            } else {
+                console.log("push installation error = " + error);
             }
         });
        
