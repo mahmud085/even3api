@@ -15,7 +15,7 @@ module.exports = function(Account) {
   Account.invitefriend = function(data, cb) {
     
     var eventName = "An Event";
-    Event.find({
+    Account.app.models.Event.find({
         where: {
           'id': data.req.body.EventId
         }
