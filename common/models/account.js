@@ -47,7 +47,7 @@ module.exports = function(Account) {
           var message = user.FirstName + " invited you to join " + eventName ;
           Account.app.models.Push.sendNotification(user.id, message);   
         } else {
-            console.log("user undefined for" + data.req.body.email[i].address);
+            console.log("user undefined for this email");
         }
       
       });
@@ -72,7 +72,7 @@ module.exports = function(Account) {
              var message = result[0].FirstName + " invited you to join " + eventName ;
              Account.app.models.Push.sendNotification(result[0].id, message);
           } else {
-              console.log("user undefined for" + data.req.body.phone[i].number);
+              console.log("user undefined for this phone number");
           }
         }
       });
