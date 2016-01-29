@@ -7,12 +7,12 @@ var AccessToken = loopback.AccessToken;
 var https = require('https');
 var baseUrl = "http://even3app.com" ;
 var config = require('../../server/config.json');
-var pushManager = app.models.Push ;
-var Event = app.models.Event ;
 
 module.exports = function(Account) {
 
   Account.invitefriend = function(data, cb) {
+    
+    console.log('invite friends > data = ' + JSON.stringify(data));
     
     var eventName = "An Event";
     Account.app.models.Event.find({
@@ -20,8 +20,11 @@ module.exports = function(Account) {
           'id': data.req.body.EventId
         }
     }, function (error, event) {
-        eventName = event.Name ;
+        if (!error)
+            eventName = event.Name ;
     });
+    
+    console.log("event name = " + eventName);
 
     for (var i = 0; i < data.req.body.email.length; i++) {
       Account.find({
