@@ -7,6 +7,8 @@ var AccessToken = loopback.AccessToken;
 var https = require('https');
 var baseUrl = "http://even3app.com" ;
 var config = require('../../server/config.json');
+var pushManager = app.models.Push ;
+var Event = app.models.Event ;
 
 module.exports = function(Account) {
 
@@ -14,6 +16,15 @@ module.exports = function(Account) {
     if (data.req.body.EventId) {
       cb(null, {"result" : "success"});
     }
+    
+    var eventName = "An Event";
+    Event.find({
+        where: {
+          'id': data.req.body.EventId
+        }
+    }, function (error, event) {
+        eventName = event.Name ;
+    });
 
     for (var i = 0; i < data.req.body.email.length; i++) {
       Account.find({
@@ -21,15 +32,17 @@ module.exports = function(Account) {
           'email': data.req.body.email[i].address
         }
       }, function(err, result) {
-
-        if (result[0])
+        var user = result[0];
+        if (user)
           Account.app.models.Participant.create({
             Invited: true,
-            AccountId: result[0].id,
+            AccountId: user.id,
             EventId: data.req.body.EventId
           }, function(err) {
 
           });
+          var message = user.FirstName + " invited you to join " + eventName ;
+          pushManager.sendNotification(user.id, message);
       });
     }
     for (var i = 0; i < data.req.body.phone.length; i++) {
