@@ -12,7 +12,7 @@ module.exports = function(Account) {
 
   Account.invitefriend = function(data, cb) {
     
-    console.log('invite friends > data = ' + JSON.stringify(data));
+    console.log('invite friends > data = ' + JSON.stringify(data.req.body));
     
     var eventName = "An Event";
     Account.app.models.Event.find({
