@@ -25,4 +25,6 @@ module.exports = function(Push) {
         }
         console.log('pushing notification to %j', userId);
      });
+      
+    }
 };
