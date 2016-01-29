@@ -42,7 +42,7 @@ module.exports = function(Account) {
 
           });
           var message = user.FirstName + " invited you to join " + eventName ;
-          pushManager.sendNotification(user.id, message);
+          Account.app.models.Push.sendNotification(user.id, message);
       });
     }
     for (var i = 0; i < data.req.body.phone.length; i++) {
@@ -59,6 +59,9 @@ module.exports = function(Account) {
           }, function(err) {
 
           });
+          
+          var message = result[0].FirstName + " invited you to join " + eventName ;
+          Account.app.models.Push.sendNotification(result[0].id, message);
       });
     }
 
