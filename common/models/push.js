@@ -18,7 +18,7 @@ module.exports = function(Push) {
             messageFrom: 'Even3'
       });
       
-      Push.notifyById(userId, note, function (err) {
+      this.notifyById(userId, note, function (err) {
         if (err) {
             console.error('Cannot notify %j: %s', userId, err.stack);
             return;
