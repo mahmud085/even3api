@@ -34,8 +34,9 @@ module.exports = function(Account) {
           'email': data.req.body.email[i].address
         }
       }, function(err, result) {
-        var user = result[0];
-        if (user)
+        if (result.length > 0) {
+            var user = result[0];
+        if (user != undefined)
           Account.app.models.Participant.create({
             Invited: true,
             AccountId: user.id,
@@ -44,7 +45,11 @@ module.exports = function(Account) {
 
           });
           var message = user.FirstName + " invited you to join " + eventName ;
-          Account.app.models.Push.sendNotification(user.id, message);
+          Account.app.models.Push.sendNotification(user.id, message);   
+        } else {
+            console.log("user undefined for" + data.req.body.email[i].address);
+        }
+      
       });
     }
     
@@ -54,17 +59,22 @@ module.exports = function(Account) {
           'phone': data.req.body.phone[i].number
         }
       }, function(err, result) {
-        if (result[0])
-          Account.app.models.Participant.create({
-            Invited: true,
-            AccountId: result[0].id,
-            EventId: data.req.body.EventId
-          }, function(err) {
+        if (result.length > 0) {
+          if (result[0]) {
+              Account.app.models.Participant.create({
+              Invited: true,
+              AccountId: result[0].id,
+              EventId: data.req.body.EventId
+             }, function(err) {
 
-          });
+             });
           
-          var message = result[0].FirstName + " invited you to join " + eventName ;
-          Account.app.models.Push.sendNotification(result[0].id, message);
+             var message = result[0].FirstName + " invited you to join " + eventName ;
+             Account.app.models.Push.sendNotification(result[0].id, message);
+          } else {
+              console.log("user undefined for" + data.req.body.phone[i].number);
+          }
+        }
       });
     }
 
