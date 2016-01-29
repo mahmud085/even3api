@@ -524,7 +524,7 @@ module.exports = function(Account) {
             console.log('> verification email sent:', response);
             context.res.send({
                 status : 'Success',
-                message : 'Thanks for joining Even3. An activation link has been sent to your email. You must activate your account to use Even3.'
+                message : 'Thanks for joining Even3. An activation link has been sent to your email. Please activate your account to use Even3.'
               });
             });
         } else {
