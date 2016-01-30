@@ -38,7 +38,7 @@ module.exports = function(Account) {
     
     console.log("event name = " + eventName);
 
-    for (var i = 0; i < emails.length; i++) {
+    for (i = 0; i < emails.length; i++) {
       
       console.log("current email processing = " + emails[i]);
       Account.find({
