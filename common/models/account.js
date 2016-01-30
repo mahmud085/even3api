@@ -46,7 +46,6 @@ module.exports = function(Account) {
           'email': emails[i]
         }
       }, function(err, result) {
-          console.log("user find error = " + JSON.stringify(err) + ", result = " + JSON.stringify(result));
         if (result.length > 0) {
             var user = result[0];
             if (user != undefined)
@@ -62,8 +61,7 @@ module.exports = function(Account) {
         } else {
             console.log("user undefined for this email");
             var userEmail = emails[i];
-            var userEmailBody = data.req.body.email[i].address ;
-            console.log("user email = " + userEmail + ", body email = " + userEmailBody);
+            console.log("user email = " + userEmail);
             var body = "<p>" + eventCreatorName + " invited you to join " + eventName + "</p>" ;
             body += "<p><a href=\"" + baseUrl + "/event/" + data.req.body.EventId + "\">Event Link</a></p>" ;
             Account.app.models.Push.sendEmail("ayon@dhrubokinfotech.com","Even3 Event Invitation", body);
