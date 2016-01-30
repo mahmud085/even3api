@@ -16,9 +16,10 @@ module.exports = function(Account) {
     
     var eventName = "An Event";
     var eventCreatorName = data.req.body.CreatorName ;
+    var emailArray = data.req.body.email ;
     var emails = [];
-    for (var i = 0 ; data.req.body.email.length; i++) {
-        emails.push(data.req.body.email[i].address);
+    for (var i = 0 ; emailArray.length; i++) {
+        emails.push(emailArray[i]['address']);
     }
     
     console.log("Emails = " + JSON.stringify(emails));
