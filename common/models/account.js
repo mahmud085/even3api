@@ -19,7 +19,8 @@ module.exports = function(Account) {
     var emailArray = data.req.body.email ;
     var emails = [];
     for (var i = 0 ; emailArray.length; i++) {
-        emails.push(emailArray[i]['address']);
+       // emails.push(emailArray[i]['address']);
+       console.log('current item = ' + JSON.stringify(emailArray[i]));
     }
     
     console.log("Emails = " + JSON.stringify(emails));
