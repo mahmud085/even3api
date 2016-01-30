@@ -29,6 +29,7 @@ module.exports = function(Push) {
                             console.error('Cannot notify %j: %s', userId, err.stack);
                             return;
                         }
+                        console.log('push payload = ' + JSON.stringify(note));
                         console.log('pushing notification to %j', userId);
                     });
                 }
