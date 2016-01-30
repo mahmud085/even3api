@@ -18,8 +18,8 @@ module.exports = function(Account) {
     var eventCreatorName = data.req.body.CreatorName ;
     var emailArray = data.req.body.email ;
     var emails = [];
-    for (var i = 0 ; emailArray.length; i++) {
-       // emails.push(emailArray[i]['address']);
+    for (var i = 0 ; i < emailArray.length; i++) {
+       emails.push(emailArray[i].address);
        console.log('current item = ' + JSON.stringify(emailArray[i]));
     }
     
