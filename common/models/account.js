@@ -41,9 +41,10 @@ module.exports = function(Account) {
     for (i = 0; i < emails.length; i++) {
       
       console.log("current email processing = " + emails[i]);
-      Account.find({
+      (function(index){
+          Account.find({
         where: {
-          'email': emails[i]
+          'email': emails[index]
         }
       }, function(err, result) {
         if (result.length > 0) {
@@ -60,14 +61,14 @@ module.exports = function(Account) {
             Account.app.models.Push.sendNotification(user.id, message);   
         } else {
             console.log("user undefined for this email");
-            var userEmail = emails[i];
+            var userEmail = emails[index];
             console.log("user email = " + userEmail);
             var body = "<p>" + eventCreatorName + " invited you to join " + eventName + "</p>" ;
             body += "<p><a href=\"" + baseUrl + "/event/" + data.req.body.EventId + "\">Event Link</a></p>" ;
             Account.app.models.Push.sendEmail("ayon@dhrubokinfotech.com","Even3 Event Invitation", body);
-        }
-      
-      });
+        } 
+      })
+      })(i);
     }
     
     for (var i = 0; i < data.req.body.phone.length; i++) {
