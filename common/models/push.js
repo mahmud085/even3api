@@ -20,7 +20,7 @@ module.exports = function(Push) {
                             expirationInterval: 3600, // Expires 1 hour from now.
                             badge: 1,
                             sound: 'ping.aiff',
-                            alert: message ,
+                            message: message ,
                             messageFrom: 'Even3'
                     });
                     
