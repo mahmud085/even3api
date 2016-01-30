@@ -104,7 +104,6 @@ module.exports = function(EventComment) {
 							'userId': business[0].AccountId
 						}
 					}, function(err, device) {
-						var notification = EventComment.app.models.Notification;
 						device[0].badge++;
 						var message = {
 							BusinessId: data.BusinessId,
@@ -117,32 +116,12 @@ module.exports = function(EventComment) {
 								'id': data.AccountId
 							}
 						}, function(err, acnt) {
-							if (acnt[0])
-								message.text = 'New comment from ' + acnt[0].FirstName ;
-
-							var note = new notification({
-								expirationInterval: 3600, // Expires 1 hour from now.
-								badge: device[0].badge,
-								sound: 'ping.aiff',
-								message: message,
-								messageFrom: 'Even3co'
-							});
-
-							EventComment.app.models.Push.notifyById(device[0].id, note, function(err) {
-
-								if (err) {
-									console.log(err);
-									done();
-								}
-								if (!err) {
-									device[0].save();
-									console.log('pushing notification to %j', device[0].id);
-									done();
-								}
-
-							});
-                            
-                            EventComment.app.models.Push.sendNotification(device[0].id, message);
+							if (acnt[0]) {
+                                if (device[0].userId != acnt[0].id) {
+                                    message.text = 'New comment from ' + acnt[0].FirstName ;
+                                    EventComment.app.models.Push.sendNotification(device[0].id, message);
+                                }
+                            }
 						});
 					});
 			});
