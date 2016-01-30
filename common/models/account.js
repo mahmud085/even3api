@@ -40,11 +40,13 @@ module.exports = function(Account) {
 
     for (var i = 0; i < emails.length; i++) {
       
+      console.log("current email processing = " + emails[i]);
       Account.find({
         where: {
           'email': emails[i]
         }
       }, function(err, result) {
+          console.log("user find error = " + JSON.stringify(err) + ", result = " + JSON.stringify(result));
         if (result.length > 0) {
             var user = result[0];
             if (user != undefined)
