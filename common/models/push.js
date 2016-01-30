@@ -54,4 +54,38 @@ module.exports = function(Push) {
           });
     }
     
+    Push.sendpush = function (data, cb) {
+        var userId = data.req.body.userId ;
+        var message = data.req.body.message ;
+        
+        if (userId === undefined) {
+            return ;
+        }
+        
+        Push.sendNotification(userId, message);
+        cb(null, {status : 'success'});
+    }
+    
+    Push.remoteMethod(
+        'sendpush', {
+            http: {
+                path: '/createemptyevent',
+                verb: 'post'
+            },
+            accepts: {
+                arg: 'data',
+                type: 'object',
+                http: {
+                    source: 'context'
+                }
+            },
+            returns: {
+                arg: 'res',
+                type: 'object',
+                'http': {
+                    source: 'res'
+                }
+            }
+        });
+    
 };
