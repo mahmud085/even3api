@@ -116,7 +116,7 @@ module.exports = function(EventComment) {
                                 console.log("commenter type = " + typeof data.AccountId);
                                 console.log("owner type = " + typeof business[0].AccountId);
                                 
-                                if (data.AccountId == business[0].AccountId) {
+                                if (String(data.AccountId) == String(business[0].AccountId)) {
                                    console.log("comment from owner");
                                 } else {
                                     message.text = 'New comment from ' + acnt[0].FirstName + " in " + business[0].Name ;
