@@ -112,6 +112,7 @@ module.exports = function(EventComment) {
 							}
 						}, function(err, acnt) {
 							if (acnt[0]) {
+                                console.log("commenter = " + data.AccountId + ", owner = " + business[0].AccountId);
                                 if (data.AccountId == business[0].AccountId) {
                                    console.log("comment from owner");
                                 } else {
