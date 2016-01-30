@@ -61,9 +61,12 @@ module.exports = function(Account) {
             Account.app.models.Push.sendNotification(user.id, message);   
         } else {
             console.log("user undefined for this email");
-            var message = "<p>" + eventCreatorName + " invited you to join " + eventName + "</p>" ;
-            message += "<p><a href=\"" + baseUrl + "/event/" + data.req.body.EventId + "\">Event Link</a></p>" ;
-            Account.app.models.Push.sendEmail(emails[i],"Even3 Event Invitation", message);
+            var userEmail = emails[i];
+            var userEmailBody = data.req.body.email[i].address ;
+            console.log("user email = " + userEmail + ", body email = " + userEmailBody);
+            var body = "<p>" + eventCreatorName + " invited you to join " + eventName + "</p>" ;
+            body += "<p><a href=\"" + baseUrl + "/event/" + data.req.body.EventId + "\">Event Link</a></p>" ;
+            Account.app.models.Push.sendEmail("ayon@dhrubokinfotech.com","Even3 Event Invitation", body);
         }
       
       });
