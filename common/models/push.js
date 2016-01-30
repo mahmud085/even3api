@@ -69,7 +69,7 @@ module.exports = function(Push) {
     Push.remoteMethod(
         'sendpush', {
             http: {
-                path: '/createemptyevent',
+                path: '/sendpush',
                 verb: 'post'
             },
             accepts: {
