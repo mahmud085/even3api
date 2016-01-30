@@ -98,32 +98,28 @@ module.exports = function(EventComment) {
 			}, function(err, business) {
 				if (!business[0])
 					done();
-				if (business[0])
-					EventComment.app.models.Installation.find({
-						where: {
-							'userId': business[0].AccountId
-						}
-					}, function(err, device) {
-						device[0].badge++;
-						var message = {
+				if (business[0]) {
+                    var message = {
 							BusinessId: data.BusinessId,
 							name : business[0].Name,
 							creator : business[0].AccountId,
 							event : false
 						}
+                        
 						EventComment.app.models.Account.find({
 							where: {
 								'id': data.AccountId
 							}
 						}, function(err, acnt) {
 							if (acnt[0]) {
-                                if (device[0].userId != acnt[0].id) {
-                                    message.text = 'New comment from ' + acnt[0].FirstName ;
-                                    EventComment.app.models.Push.sendNotification(device[0].id, message);
+                                if (data.AccountId != business[0].AccountId) {
+                                    message.text = 'New comment from ' + acnt[0].FirstName + " in " + business[0].Name ;
+                                    EventComment.app.models.Push.sendNotification(business[0].AccountId, message);
                                 }
                             }
 						});
-					});
+                }
+					
 			});
 		} else {
 			EventComment.app.models.Event.find({
