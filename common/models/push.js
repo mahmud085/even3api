@@ -13,8 +13,8 @@ module.exports = function(Push) {
             where : {"userId" : userId}
         }, function (error, devices) {
             if (!error) {
-                console.log('devices installed = ' + JSON.stringify(devices));
-                for (var i = 0 ; i < devices.length ; i++) {
+                console.log('devices installed count = ' + devices.length);
+                if (devices.length > 0) {
                     var notification = Push.app.models.Notification;
                     var note = new notification({
                             expirationInterval: 3600, // Expires 1 hour from now.
@@ -24,7 +24,7 @@ module.exports = function(Push) {
                             messageFrom: 'Even3'
                     });
                     
-                    Push.notifyById(devices[i].id, note, function (err) {
+                    Push.notifyById(devices[0].id, note, function (err) {
                         if (err) {
                             console.error('Cannot notify %j: %s', userId, err.stack);
                             return;
