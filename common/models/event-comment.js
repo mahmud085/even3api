@@ -112,10 +112,7 @@ module.exports = function(EventComment) {
 							}
 						}, function(err, acnt) {
 							if (acnt[0]) {
-                                console.log("commenter = " + data.AccountId + ", owner = " + business[0].AccountId);
-                                console.log("commenter type = " + typeof data.AccountId);
-                                console.log("owner type = " + typeof business[0].AccountId);
-                                
+                               
                                 if (String(data.AccountId) == String(business[0].AccountId)) {
                                    console.log("comment from owner");
                                 } else {
@@ -128,62 +125,38 @@ module.exports = function(EventComment) {
 					
 			});
 		} else {
-			EventComment.app.models.Event.find({
+			
+            EventComment.app.models.Event.find({
 				where: {
 					'id': data.EventId
 				}
 			}, function(err, event) {
 				if (!event[0])
 					done();
-				if (event[0])
-					EventComment.app.models.Installation.find({
-						where: {
-							'userId': event[0].AccountId
-						}
-					}, function(err, device) {
-						var notification = EventComment.app.models.Notification;
-						device[0].badge++;
-						var message = {
-							EventId: data.EventId,
-							name : event[0].Name,
-							creator : event[0].AccountId,
-							event : true
-						}
-						EventComment.app.models.Account.find({
-							where: {
-								'id': data.AccountId
-							}
-						}, function(err, acnt) {
-							if (acnt[0])
-								message.text = 'New comment from ' + acnt[0].FirstName ;
-
-							var note = new notification({
-								expirationInterval: 3600, // Expires 1 hour from now.
-								badge: device[0].badge,
-								sound: 'ping.aiff',
-								message: message,
-								messageFrom: 'Even3co'
-							});
-
-							EventComment.app.models.Push.notifyById(device[0].id, note, function(err) {
-
-								if (err) {
-									console.log(err);
-									done();
-								}
-								if (!err) {
-									device[0].save();
-									console.log('pushing notification to %j', device[0].id);
-									done();
-								}
-
-							});
-						});
-					});
+				
+                var message = {
+					EventId: data.EventId,
+					name : event[0].Name,
+					creator : event[0].AccountId,
+                    event : true
+				}
+				
+                EventComment.app.models.Account.find({
+					where: {
+                        'id': data.AccountId
+					}
+				}, function(err, acnt) {
+					 if (acnt[0]) {
+                         if (String(data.AccountId) == String(event[0].AccountId)) {
+                              console.log("comment from owner");
+                         } else {
+                              message.text = 'New comment from ' + acnt[0].FirstName + " in " + event[0].Name ;
+                              EventComment.app.models.Push.sendNotification(event[0].AccountId, message);
+                         }
+                     }			
+				});
 			});
 		}
-
-		//done();
 	});
 
 
