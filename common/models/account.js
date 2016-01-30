@@ -16,6 +16,13 @@ module.exports = function(Account) {
     
     var eventName = "An Event";
     var eventCreatorName = data.req.body.CreatorName ;
+    var emails = [];
+    for (var i = 0 ; data.req.body.email.length; i++) {
+        emails.push(data.req.body.email[i].address);
+    }
+    
+    console.log("Emails = " + JSON.stringify(emails));
+    
     Account.app.models.Event.find({
         where: {
           'id': data.req.body.EventId
@@ -29,11 +36,11 @@ module.exports = function(Account) {
     
     console.log("event name = " + eventName);
 
-    for (var i = 0; i < data.req.body.email.length; i++) {
+    for (var i = 0; i < emails.length; i++) {
       
       Account.find({
         where: {
-          'email': data.req.body.email[i].address
+          'email': emails[i]
         }
       }, function(err, result) {
         if (result.length > 0) {
@@ -52,7 +59,7 @@ module.exports = function(Account) {
             console.log("user undefined for this email");
             var message = "<p>" + eventCreatorName + " invited you to join " + eventName + "</p>" ;
             message += "<p><a href=\"" + baseUrl + "/event/" + data.req.body.EventId + "\">Event Link</a></p>" ;
-            Account.app.models.Push.sendEmail(data.req.body.email[i].address,"Even3 Event Invitation", message);
+            Account.app.models.Push.sendEmail(emails[i],"Even3 Event Invitation", message);
         }
       
       });
