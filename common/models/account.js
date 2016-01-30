@@ -15,6 +15,7 @@ module.exports = function(Account) {
     console.log('invite friends > data = ' + JSON.stringify(data.req.body));
     
     var eventName = "An Event";
+    var eventCreatorName = data.req.body.CreatorName ;
     Account.app.models.Event.find({
         where: {
           'id': data.req.body.EventId
@@ -29,9 +30,10 @@ module.exports = function(Account) {
     console.log("event name = " + eventName);
 
     for (var i = 0; i < data.req.body.email.length; i++) {
+      var emailAddress = data.req.body.email[i].address ;  
       Account.find({
         where: {
-          'email': data.req.body.email[i].address
+          'email': emailAddress
         }
       }, function(err, result) {
         if (result.length > 0) {
@@ -44,10 +46,13 @@ module.exports = function(Account) {
           }, function(err) {
 
           });
-          var message = user.FirstName + " invited you to join " + eventName ;
+          var message = eventCreatorName + " invited you to join " + eventName ;
           Account.app.models.Push.sendNotification(user.id, message);   
         } else {
             console.log("user undefined for this email");
+            var message = "<p>" + eventCreatorName + " invited you to join " + eventName + "</p>" ;
+            message += "<p><a href=\"" + baseUrl + "/event/" + data.req.body.EventId + "\">Event Link</a></p>" ;
+            Account.app.models.Push.sendEmail(emailAddress,"Even3 Event Invitation", message);
         }
       
       });

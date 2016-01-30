@@ -35,7 +35,23 @@ module.exports = function(Push) {
             } else {
                 console.log("push installation error = " + error);
             }
-        });
-       
+        });   
     }
+    
+    Push.sendEmail = function (email, subject, message) {
+        loopback.Email.send({
+            to: email,
+            from: "even3co@gmail.com",
+            subject: subject,
+            text: "",
+            html: message
+          }, function(err, result) {
+                if (err) {
+                    console.log('Something went wrong while sending email.');
+                } else {
+                    console.log('mail sent to ' + email);
+                }
+          });
+    }
+    
 };
