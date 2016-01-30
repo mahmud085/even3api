@@ -112,7 +112,9 @@ module.exports = function(EventComment) {
 							}
 						}, function(err, acnt) {
 							if (acnt[0]) {
-                                if (data.AccountId != business[0].AccountId) {
+                                if (data.AccountId === business[0].AccountId) {
+                                   console.log("comment from owner");
+                                } else {
                                     message.text = 'New comment from ' + acnt[0].FirstName + " in " + business[0].Name ;
                                     EventComment.app.models.Push.sendNotification(business[0].AccountId, message);
                                 }
