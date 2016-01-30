@@ -30,29 +30,29 @@ module.exports = function(Account) {
     console.log("event name = " + eventName);
 
     for (var i = 0; i < data.req.body.email.length; i++) {
-      var emailAddress = data.req.body.email[i].address ;  
+      
       Account.find({
         where: {
-          'email': emailAddress
+          'email': data.req.body.email[i].address
         }
       }, function(err, result) {
         if (result.length > 0) {
             var user = result[0];
-        if (user != undefined)
-          Account.app.models.Participant.create({
-            Invited: true,
-            AccountId: user.id,
-            EventId: data.req.body.EventId
-          }, function(err) {
+            if (user != undefined)
+            Account.app.models.Participant.create({
+                Invited: true,
+                AccountId: user.id,
+                EventId: data.req.body.EventId
+            }, function(err) {
 
-          });
-          var message = eventCreatorName + " invited you to join " + eventName ;
-          Account.app.models.Push.sendNotification(user.id, message);   
+            });
+            var message = eventCreatorName + " invited you to join " + eventName ;
+            Account.app.models.Push.sendNotification(user.id, message);   
         } else {
             console.log("user undefined for this email");
             var message = "<p>" + eventCreatorName + " invited you to join " + eventName + "</p>" ;
             message += "<p><a href=\"" + baseUrl + "/event/" + data.req.body.EventId + "\">Event Link</a></p>" ;
-            Account.app.models.Push.sendEmail(emailAddress,"Even3 Event Invitation", message);
+            Account.app.models.Push.sendEmail(data.req.body.email[i].address,"Even3 Event Invitation", message);
         }
       
       });
