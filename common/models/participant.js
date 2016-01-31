@@ -30,10 +30,13 @@ module.exports = function(Participant) {
                             } else if (ctx.args.data.Rsvp == 2) {
                                 message.text = sender.FirstName + ' is going to your event named ' + event.Name ;
                             }
-				            Participant.app.models.Push.sendNotification(owner.id, message); 
+				            Participant.app.models.Push.sendNotification(owner[0].id, message);
+                            done(); 
 			            });    
                     }
 		        });	
+            } else {
+                console.log('sender not found');
             }
         });
 	});
