@@ -3,45 +3,6 @@ var app = module.exports = loopback();
 
 module.exports = function(Participant) {
 
-
-	Participant.afterRemote('create',function(ctx,data,done){
-		
-        console.log('after remote: perticipant create');
-        console.log('perticipant create data = ' + JSON.stringify(data));
-		
-        Participant.app.models.Account.find({
-            where:{'id' : ctx.args.data.AccountId}
-        }, function (error, users) {
-            if (users.length > 0) {
-                var sender = users[0] ;
-                Participant.app.models.Event.find({
-                    where:{'id':ctx.args.data.EventId}
-                },function(err,result) {                
-                    var event = result[0];
-			        if(event) {
-                        Participant.app.models.Account({
-                            where:{'id':result[0].AccountId}
-                        },function(err,owner) {
-                            var message = {
-                                   EventId : ctx.args.data.EventId
-                            };
-                            if (ctx.args.data.Rsvp == 1) {
-                                message.text = sender.FirstName + ' is not going to your event named ' + event.Name ;
-                            } else if (ctx.args.data.Rsvp == 2) {
-                                message.text = sender.FirstName + ' is going to your event named ' + event.Name ;
-                            }
-				            Participant.app.models.Push.sendNotification(owner[0].id, message);
-                            done(); 
-			            });    
-                    }
-		        });	
-            } else {
-                console.log('sender not found');
-            }
-        });
-	});
-
-
 	Participant.afterRemote('prototype.updateAttributes',function(ctx,data,done) {
 	
 	   Participant.app.models.Event.find({where: {'id': ctx.result.EventId}},function(err,result) {
