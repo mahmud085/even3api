@@ -721,11 +721,53 @@ module.exports = function(Account) {
     });
   };
 
+  Account.unsubscribe = function (data, cb) {
+      var userId = data.req.params.userId ;
+      if (userId === undefined) {
+        console.log("user is undefined");
+        cb (null, "User is undefined");
+      };
+
+      var installations = Account.app.models.installations ;
+      installations.destroyAll({ userId : userId }, function(err, obj) { 
+          if (err) {
+            cb (null, err);
+          };
+          cb(null, {"result" : "success"});
+      });
+  };
 
 
   Account.remoteMethod(
     'addaccount', {
       description: 'Uploads a file',
+      accepts: [{
+        arg: 'ctx',
+        type: 'object',
+        http: {
+          source: 'context'
+        }
+      }, {
+        arg: 'options',
+        type: 'object',
+        http: {
+          source: 'query'
+        }
+      }],
+      returns: {
+        arg: 'fileObject',
+        type: 'object',
+        root: true
+      },
+      http: {
+        verb: 'post'
+      }
+    }
+  );
+
+Account.remoteMethod (
+    'unsubscribe', {
+      description: 'unsubscribe from Push Notification',
       accepts: [{
         arg: 'ctx',
         type: 'object',
