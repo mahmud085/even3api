@@ -723,6 +723,7 @@ module.exports = function(Account) {
 
   Account.unsubscribe = function (data, cb) {
       var userId = data.req.params.userId ;
+      console.log("userid received " + userId);
       if (userId === undefined) {
         console.log("user is undefined");
         cb (null, "User is undefined");
