@@ -722,7 +722,7 @@ module.exports = function(Account) {
   };
 
   Account.unsubscribe = function (data, cb) {
-      console.log("data received " + JSON.stringify(data));
+      console.log("data received " + JSON.stringify(data.req));
       var userId = data.req.params.userId ;
       console.log("userid received " + userId);
       if (userId === undefined) {
