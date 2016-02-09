@@ -731,7 +731,7 @@ module.exports = function(Account) {
         cb (null, "User is undefined");
       };
 
-      var installations = Account.app.models.installations ;
+      var installations = Account.app.models.installation ;
       installations.destroyAll({ userId : userId }, function(err, obj) { 
           if (err) {
             cb (null, err);
