@@ -771,16 +771,10 @@ Account.remoteMethod (
     'unsubscribe', {
       description: 'unsubscribe from Push Notification',
       accepts: [{
-        arg: 'ctx',
+        arg: 'data',
         type: 'object',
         http: {
           source: 'context'
-        }
-      }, {
-        arg: 'options',
-        type: 'object',
-        http: {
-          source: 'query'
         }
       }],
       returns: {
