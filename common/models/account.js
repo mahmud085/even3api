@@ -723,13 +723,8 @@ module.exports = function(Account) {
 
   Account.unsubscribe = function (data, cb) {
       
-      for (var key in data.req) {
-          console.log("key = " + key);
-      }
-      
-      console.log("params received " + JSON.stringify(data.req.params));
       console.log("body received " + JSON.stringify(data.req.body));
-    /*  var userId = data.req.params.userId ;
+      var userId = data.req.body.userId ;
       console.log("userid received " + userId);
       if (userId === undefined) {
         console.log("user is undefined");
@@ -742,7 +737,7 @@ module.exports = function(Account) {
             cb (null, err);
           };
           cb(null, {"result" : "success"});
-      }); */
+      }); 
   };
 
 
