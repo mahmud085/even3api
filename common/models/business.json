@@ -29,6 +29,10 @@
     },
     "Website": {
       "type": "string"
+    },
+    "valid": {
+        "type" : "boolean",
+        "default" : false
     }
   },
   "validations": [],

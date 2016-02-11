@@ -678,7 +678,6 @@ module.exports = function(Account) {
         });
       } else {
 
-
         Account.find({
           where: {
             "id": Id
