@@ -36,7 +36,9 @@ module.exports = function(Business) {
                 if (fileObj.fields.hasOwnProperty("email"))
                     var email = fileObj.fields.email[0];
                 if (fileObj.fields.hasOwnProperty("Website"))
-                    var Website = fileObj.fields.Website[0];               
+                    var Website = fileObj.fields.Website[0];
+                if (fileObj.fields.hasOwnProperty("valid"))
+                    var valid = fileObj.fields.valid[0];               
 
             var extensionType= fileInfo.type.split('/');
             var fileCurrentPath= './server/storage/businesspic'+'/'+fileInfo.name;
@@ -62,6 +64,7 @@ module.exports = function(Business) {
                     busnes[0].Phone = Phone;
                     busnes[0].email = email ;
                     busnes[0].Website = Website ;
+                    busnes[0].valid = valid;
                     busnes[0].save();       
                 }
 
@@ -91,6 +94,8 @@ module.exports = function(Business) {
                     var email = fileObj.fields.email[0];
                 if (fileObj.fields.hasOwnProperty("Website"))
                     var Website = fileObj.fields.Website[0];  
+                if (fileObj.fields.hasOwnProperty("valid"))
+                    var valid = fileObj.fields.valid[0];  
 
             Business.find({where:{"id":Id}},function(err,busnes){
                 if(err)
@@ -107,6 +112,7 @@ module.exports = function(Business) {
                     busnes[0].Phone = Phone;
                     busnes[0].email = email ;
                     busnes[0].Website = Website ;
+                    busnes[0].valid = valid;
                     busnes[0].save();       
                 }
             cb(null,busnes[0]);
