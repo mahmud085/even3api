@@ -126,7 +126,7 @@ module.exports = function(Business) {
     		response='Can not save';
     		cb(null, response);
     	}    		
-    	response='Businessurl/'+business.id;
+    	response='Businessurl/'+ business.id;
     	console.log(response);
     	cb(null, response);
     });
