@@ -43,6 +43,9 @@
     },
     "Website": {
       "type": "string"
+    },
+    "public" : {
+      "type" : "boolean"
     }
   },
   "validations": [],
