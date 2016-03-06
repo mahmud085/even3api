@@ -9,6 +9,9 @@
     "Price": {
       "type": "number"
     },
+    "currency": {
+      "type" : "string"
+    },
     "Available": {
       "type": "number"
     },
