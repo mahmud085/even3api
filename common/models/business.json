@@ -31,8 +31,8 @@
       "type": "string"
     },
     "valid": {
-        "type" : "string",
-        "default" : "no"
+      "type": "string",
+      "default": "no"
     }
   },
   "validations": [],

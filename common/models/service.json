@@ -12,8 +12,8 @@
     "Price": {
       "type": "number"
     },
-    "currency" : {
-      "type" : "string"
+    "currency": {
+      "type": "string"
     }
   },
   "validations": [],

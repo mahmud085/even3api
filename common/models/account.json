@@ -46,8 +46,8 @@
     "PushNotification": {
       "type": "boolean"
     },
-    "phone" : {
-      "type" : "string"
+    "phone": {
+      "type": "string"
     }
   },
   "validations": [],

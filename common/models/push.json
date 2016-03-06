@@ -9,7 +9,7 @@
   "validations": [],
   "relations": {},
   "acls": [
-      {
+    {
       "accessType": "EXECUTE",
       "principalType": "ROLE",
       "principalId": "$everyone",

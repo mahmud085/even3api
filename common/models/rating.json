@@ -1,38 +1,27 @@
 {
-  "name": "EventComment",
+  "name": "rating",
   "base": "PersistedModel",
   "idInjection": true,
   "options": {
     "validateUpsert": true
   },
   "properties": {
-    "Time": {
-      "type": "number"
-    },
-    "CommentBody": {
-      "type": "string"
-    },
-    "CommentPicture": {
-      "type": "string"
-    },
-    "BusinessId": {
-      "type": "string"
-    },
-    "EventId": {
-      "type": "string"
+    "value": {
+      "type": "number",
+      "required": true
     }
   },
   "validations": [],
   "relations": {
-    "account": {
+    "person": {
       "type": "belongsTo",
       "model": "Account",
       "foreignKey": "AccountId"
     },
-    "commentLike": {
-      "type": "hasMany",
-      "model": "CommentLike",
-      "foreignKey": "EventCommentId"
+    "business": {
+      "type": "belongsTo",
+      "model": "Business",
+      "foreignKey": "BusinessId"
     }
   },
   "acls": [
@@ -59,20 +48,6 @@
       "principalType": "ROLE",
       "principalId": "$owner",
       "permission": "ALLOW"
-    },
-    {
-      "accessType": "EXECUTE",
-      "principalType": "ROLE",
-      "principalId": "$unauthenticated",
-      "permission": "DENY",
-      "property": "addcomment"
-    },
-    {
-      "accessType": "EXECUTE",
-      "principalType": "ROLE",
-      "principalId": "$authenticated",
-      "permission": "ALLOW",
-      "property": "addcomment"
     }
   ],
   "methods": {}
