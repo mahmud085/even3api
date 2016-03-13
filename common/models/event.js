@@ -68,6 +68,9 @@ module.exports = function(Event) {
                             });
                         }
 
+                        if (fileObj.fields.hasOwnProperty("status"))
+                            evnt[0].status = fileObj.fields.status[0];
+
                         if (fileObj.fields.hasOwnProperty("Address"))
                             evnt[0].Address = fileObj.fields.Address[0];
                         if (fileObj.fields.hasOwnProperty("EventCategoryId"))
@@ -110,6 +113,8 @@ module.exports = function(Event) {
                     var email = fileObj.fields.email[0];
                 if (fileObj.fields.hasOwnProperty("Website"))
                     var Website = fileObj.fields.Website[0];
+                if (fileObj.fields.hasOwnProperty("status"))
+                    var status = fileObj.fields.status[0];
 
                 Event.find({
                     where: {
@@ -122,8 +127,6 @@ module.exports = function(Event) {
 
                         evnt[0].Name = Name;
                         evnt[0].Description = Description;
-                        //evnt[0].LocationLat=LocationLat;
-                        //evnt[0].LocationLong=LocationLong;
                         if (LocationLat && LocationLong)
                             evnt[0].Location = new loopback.GeoPoint({
                                 lat: LocationLat,
@@ -136,6 +139,7 @@ module.exports = function(Event) {
                         evnt[0].Phone = Phone;
                         evnt[0].email = email;
                         evnt[0].Website = Website;
+                        evnt[0].status = status;
                         evnt[0].save();
                     }
                     cb(null, evnt[0]);
