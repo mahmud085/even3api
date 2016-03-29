@@ -4,6 +4,10 @@ var fs = require('fs');
 var path = require('path');
 var app = module.exports = loopback();
 
+var Notification = app.models.notification;
+var Application = app.models.application;
+var PushModel = app.models.push;
+
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
@@ -38,10 +42,6 @@ function register() {
 
 
 function prepareForPush() {
-
-  var Notification = app.models.notification;
-  var Application = app.models.application;
-  var PushModel = app.models.push;
 
   Application.find(function(err, result) {
     if (err)
