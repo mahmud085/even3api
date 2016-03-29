@@ -17,9 +17,6 @@ function register() {
       description: 'LoopBack Push Notification Demo Application',
       pushSettings: {
         apns: {
-          //certData: readCredentialsFile('apns_cert_dev.pem'),
-          // keyData: readCredentialsFile('apns_key_dev.pem'),
-
           pushOptions: {},
           feedbackOptions: {
             batchFeedback: true,
@@ -33,17 +30,13 @@ function register() {
     },
     function(err, app) {
       console.log(app);
-      //if (err) return cb(err);
-      // return cb(null, app);
     }
   );
 }
 
-
-
 function prepareForPush() {
 
-  Application.find(function(err, result) {
+  app.models.application.find(function(err, result) {
     if (err)
       return;
     if (result[0])
