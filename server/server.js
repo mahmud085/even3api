@@ -12,7 +12,7 @@ app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
 function register() {
-  Application.register('even3appdeveloper',
+  app.models.application.register('even3appdeveloper',
     'even3app', {
       description: 'LoopBack Push Notification Demo Application',
       pushSettings: {
