@@ -48,6 +48,7 @@ module.exports = function(Push) {
             html: message
           }, function(err, result) {
                 if (err) {
+                    console.log("Error = ",err);
                     console.log('Something went wrong while sending email.');
                 } else {
                     console.log('mail sent to ' + email);

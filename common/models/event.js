@@ -2,6 +2,7 @@ var CONTAINERS_URL = '/containers/';
 var loopback = require('loopback');
 var app = module.exports = loopback();
 var fs = require('fs');
+var moment = require('moment');
 
 module.exports = function(Event) {
 
@@ -195,6 +196,102 @@ module.exports = function(Event) {
 
     }
 
+    Event.afterCreate=function(next){
+    
+        console.log(this.Name);
+        console.log(this.id);
+        eventId=this.id;
+
+        var StartDate=this.StartDate;
+
+        var date = new Date(StartDate);
+        var formattedDate = ('0' + date.getDate()).slice(-2) + '/' + ('0' + (date.getMonth() + 1)).slice(-2) + '/' + date.getFullYear() + ' ' + ('0' + date.getHours()).slice(-2) + ':' + ('0' + date.getMinutes()).slice(-2)+ ':' + ('0' + date.getSeconds()).slice(-2)+' '+'GMT';
+        console.log(formattedDate);
+
+        var actualDate=new Date(formattedDate);
+        actualDate=actualDate.getTime();
+        console.log("actualDate=",actualDate);
+
+
+
+        var one_day=1000*60*60*24;
+        var one_hr=1000*60*60;
+        var min=1000*60;
+
+        var currentTime=new Date();
+        currentTime=currentTime.getTime();
+        console.log("currentTime=",currentTime); 
+
+        calc=StartDate-currentTime;
+
+        console.log("calc= ",Math.round(calc/min));
+     
+        var kue=require('kue');
+        var queue=kue.createQueue();
+        
+        var delay=(1000*60*43);
+        var miliSecond=calc-delay;
+
+        console.log("delay = ",miliSecond);
+
+        var job=queue.create('event',{
+            startDate:formattedDate
+        })
+        .delay(2000)
+        .save(function(err){
+            if(!err) console.log("job created "+job.id+" "+Date());
+        });
+        queue.process('event',function(job,done){ 
+            console.log("1= "+job.id+" "+job.data.startDate+" "+Date());
+            
+            Event.app.models.Participant.find(
+            {
+                include: ['account','event'], 
+                where: {
+                    and:[{
+                        "EventId":eventId
+                    },{
+                        "Rsvp":2
+                    }]
+                }
+            },function(err,participant){
+                if(err) {
+                    console.log(err);
+                }
+                else{
+                    console.log(participant);        
+                    for(j=0;j<participant.length;j++){
+                        var event = participant[j].event;
+                        var eventName = "An Event" ;
+                        if (event) {
+                            eventName = event.Name ;
+                        }
+                        var firstName = participant[j].account.firstName;
+                        var message="Hi "+  firstName + ",<br>Thanks for using Even3. This is a reminder of event, " + eventName + ", which is happenning tomorrow. Your participation is expected there. <br><br> Even3 Team" ;
+                        Event.app.models.Push.sendEmail(participant[j].account.email, eventName + " is happenning tomorrow", message);
+                    }
+                }
+            });
+            
+
+
+            done();
+        });
+
+        kue.Job.rangeByState( 'complete', 0, 100, 'asc', function( err, jobs ) {
+          jobs.forEach( function( job ) {
+            job.remove( function(){
+              console.log( 'removed ', job.id );
+            });
+          });
+        });
+        queue.promote();
+
+
+        next();
+    };
+
+
 
 
     Event.createemptyevent = function(data, cb) {
@@ -322,5 +419,6 @@ module.exports = function(Event) {
             }
         }
     );
+
 
 };
