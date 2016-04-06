@@ -112,14 +112,14 @@
       "principalType": "ROLE",
       "principalId": "$owner",
       "permission": "ALLOW",
-      "property": "editevent"
+      "property": "newEvent"
     },
     {
       "accessType": "EXECUTE",
       "principalType": "ROLE",
       "principalId": "$unauthenticated",
       "permission": "DENY",
-      "property": "editevent"
+      "property": "newEvent"
     },
     {
       "accessType": "EXECUTE",

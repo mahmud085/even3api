@@ -122,21 +122,77 @@ module.exports = function(Business) {
 };  
 
 
+    Business.newBusiness = function(ctx,options,cb){
 
+        if(!options) options = {};
+        ctx.req.params.container = 'businesspic';
+        Business.app.models.container.upload(ctx.req,ctx.result,options,function (err,fileObj) {
+            if(err) {
+                cb(null,err);
+            } 
+            if(fileObj.files.hasOwnProperty('file'))
+            { 
+                var fileInfo = fileObj.files.file[0];
+                if(fileObj.fields.hasOwnProperty('Name'))
+                    var Name=fileObj.fields.Name[0];
+                if(fileObj.fields.hasOwnProperty('LocationLat'))
+                    var LocationLat=fileObj.fields.LocationLat[0];
+                if(fileObj.fields.hasOwnProperty('LocationLong'))
+                    var LocationLong=fileObj.fields.LocationLong[0];
+                if(fileObj.fields.hasOwnProperty('Address'))
+                    var Address=fileObj.fields.Address[0];                
+                if(fileObj.fields.hasOwnProperty('Description'))
+                    var Description=fileObj.fields.Description[0]; 
+                if(fileObj.fields.hasOwnProperty('BusinessCategoryId'))
+                    var categoryId=fileObj.fields.BusinessCategoryId[0]; 
 
-	Business.createemptybusiness = function(data,cb) {
-    var response={};
-    Business.create({AccountId:data.req.body.Id},function(err,business){
-    	if(err)
-    	{
-    		response='Can not save';
-    		cb(null, response);
-    	}    		
-    	response='Businessurl/'+ business.id;
-    	console.log(response);
-    	cb(null, response);
-    });
-};
+                if (fileObj.fields.hasOwnProperty("Phone"))
+                    var Phone = fileObj.fields.Phone[0];
+                if (fileObj.fields.hasOwnProperty("email"))
+                    var email = fileObj.fields.email[0];
+                if (fileObj.fields.hasOwnProperty("Website"))
+                    var Website = fileObj.fields.Website[0];
+                if (fileObj.fields.hasOwnProperty("valid"))
+                    var valid = fileObj.fields.valid[0];               
+
+                var date=new Date();
+                var Id=date.getTime();
+                var extensionType= fileInfo.type.split('/');
+                var fileCurrentPath= './server/storage/businesspic'+'/'+fileInfo.name;
+                newFilePath='./server/storage/businesspic'+'/'+Id+'.'+extensionType[1];
+
+                fs.rename(fileCurrentPath, newFilePath, function (err) {
+                if (err) throw err;
+                //console.log('renamed complete');
+                });
+                
+                var busnes={};
+
+                busnes.Name=Name;
+                if (LocationLat && LocationLong) {
+                    busnes.Location= new loopback.GeoPoint({lat: LocationLat, lng: LocationLong});
+                }
+                busnes.Address=Address;
+                busnes.BusinessPicture=CONTAINERS_URL+fileInfo.container+'/download/'+Id+'.'+extensionType[1];
+                busnes.Description=Description;
+                busnes.BusinessCategoryId = categoryId;
+                busnes.Phone = Phone;
+                busnes.email = email ;
+                busnes.Website = Website ;
+                busnes.valid = valid;
+
+                Business.create(busnes,function(err,result){
+                    if(err){
+                        console.log(err);
+                        throw err;
+                    }else{
+                        console.log("Result = ",result);
+                        cb(null,result);
+                    }
+                });
+            }
+        });
+    };
 
     Business.search=function(data,cb){
 
@@ -184,16 +240,22 @@ module.exports = function(Business) {
 
 
 
-
-Business.remoteMethod(
-	'createemptybusiness',
-	{
-		http: {path: '/createemptybusiness', verb: 'post'},
-		accepts: { arg: 'data', type: 'object', http: { source: 'context' } },
-		returns: {arg: 'res', type: 'string', 'http': {source: 'res'}}
-	});
  Business.remoteMethod(
         'editbusiness',
+        {  http: {verb: 'post'},
+            description: 'Uploads a file',
+            accepts: [
+                { arg: 'ctx', type: 'object', http: { source:'context' } },
+                { arg: 'options', type: 'object', http:{ source: 'query'} }
+            ],
+            returns: {
+                arg: 'fileObject', type: 'object', root: true
+            }
+        }
+    );
+
+ Business.remoteMethod(
+        'newBusiness',
         {  http: {verb: 'post'},
             description: 'Uploads a file',
             accepts: [

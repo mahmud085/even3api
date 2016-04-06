@@ -83,14 +83,14 @@
       "principalType": "ROLE",
       "principalId": "$owner",
       "permission": "ALLOW",
-      "property": "editbusiness"
+      "property": "newBusiness"
     },
     {
       "accessType": "EXECUTE",
       "principalType": "ROLE",
       "principalId": "$unauthenticated",
       "permission": "DENY",
-      "property": "editbusiness"
+      "property": "newBusiness"
     }
   ],
   "methods": {}

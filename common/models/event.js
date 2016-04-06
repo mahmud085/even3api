@@ -152,6 +152,94 @@ module.exports = function(Event) {
     };
 
 
+    Event.newEvent = function(ctx, options, cb) {
+
+            console.log("Context = ",ctx.req.body);
+
+            if (!options) options = {};
+            ctx.req.params.container = 'eventpic';
+        
+        Event.app.models.container.upload(ctx.req, ctx.result, options, function(err, fileObj) {
+            
+            if (err) {
+                console.log("Err = ",err);
+                cb(err);
+            }
+             console.log("file object = ",fileObj);
+
+            if (fileObj.files.hasOwnProperty('file')) {
+                
+                var fileInfo = fileObj.files.file[0];
+                var date=new Date();
+                var Id=date.getTime();
+                var extensionType = fileInfo.type.split('/');
+                var fileCurrentPath = './server/storage/eventpic' + '/' + fileInfo.name;
+                var newFilePath = './server/storage/eventpic' + '/' + Id + '.' + extensionType[1];
+
+                fs.rename(fileCurrentPath, newFilePath, function(err) {
+                    if (err) {
+                         console.log('rename err= ',err);
+                        throw err;
+                    }
+                   
+                });
+
+                var evnt={};
+
+                if (fileObj.fields.hasOwnProperty('Description'))
+                    evnt.Description = fileObj.fields.Description[0];
+                if (fileObj.fields.hasOwnProperty("Name"))
+                    evnt.Name = fileObj.fields.Name[0];
+                if (fileObj.fields.hasOwnProperty("StartDate"))
+                    evnt.StartDate = fileObj.fields.StartDate[0];
+                if (fileObj.fields.hasOwnProperty("EndDate"))
+                    evnt.EndDate = fileObj.fields.EndDate[0];
+                if (fileObj.fields.hasOwnProperty("LocationLat"))
+                    var LocationLat = fileObj.fields.LocationLat[0];
+
+                if (fileObj.fields.hasOwnProperty("LocationLong"))
+                    var LocationLong = fileObj.fields.LocationLong[0];
+
+                if (LocationLat && LocationLong) {
+                    evnt.Location = new loopback.GeoPoint({
+                        lat: LocationLat,
+                        lng: LocationLong
+                    });
+                }
+
+                if (fileObj.fields.hasOwnProperty("status"))
+                    evnt.status = fileObj.fields.status[0];
+
+                if (fileObj.fields.hasOwnProperty("Address"))
+                    evnt.Address = fileObj.fields.Address[0];
+                if (fileObj.fields.hasOwnProperty("EventCategoryId"))
+                    evnt.EventCategoryId = fileObj.fields.EventCategoryId[0];
+                if (fileObj.fields.hasOwnProperty("Phone"))
+                    evnt.Phone = fileObj.fields.Phone[0];
+                if (fileObj.fields.hasOwnProperty("email"))
+                    evnt.email = fileObj.fields.email[0];
+                if (fileObj.fields.hasOwnProperty("Website"))
+                    evnt.Website = fileObj.fields.Website[0];
+
+                    evnt.EventPicture = CONTAINERS_URL + fileInfo.container + '/download/' + Id + '.' + extensionType[1];
+                
+
+                Event.create(evnt,function(err,result){
+                    if(err){
+                        console.log("err2=",err);
+                        throw err;
+                    }
+                    else{
+                        console.log("Successfully Created ! = ",result);
+                        cb(null,result);
+                    }
+                });         
+            }
+
+        });
+
+    };
+
 
     Event.afterCreate=function(next){
   
@@ -295,6 +383,33 @@ module.exports = function(Event) {
                     source: 'query'
                 }
             }],
+            returns: {
+                arg: 'fileObject',
+                type: 'object',
+                root: true
+            }
+        }
+    );
+     Event.remoteMethod(
+        'newEvent', {
+            http: {
+                verb: 'post'
+            },
+            description: 'Uploads a file',
+            accepts: [{
+                arg: 'ctx',
+                type: 'object',
+                http: {
+                    source: 'context'
+                }
+            }, {
+                arg: 'options',
+                type: 'object',
+                http: {
+                    source: 'query'
+                }
+            }
+            ],
             returns: {
                 arg: 'fileObject',
                 type: 'object',
