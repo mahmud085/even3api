@@ -1,6 +1,6 @@
 var CONTAINERS_URL = '/containers/';
 var loopback = require('loopback');
-var app = module.exports = loopback();
+var app = loopback();
 var fs = require('fs');
 var path = require('path');
 var AccessToken = loopback.AccessToken;

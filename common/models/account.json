@@ -98,12 +98,6 @@
     {
       "accessType": "READ",
       "principalType": "ROLE",
-      "principalId": "$unauthenticated",
-      "permission": "ALLOW"
-    },
-    {
-      "accessType": "READ",
-      "principalType": "ROLE",
       "principalId": "$authenticated",
       "permission": "ALLOW"
     },
