@@ -1,6 +1,6 @@
 var CONTAINERS_URL = '/containers/';
 var loopback = require('loopback');
-var app = module.exports = loopback();
+var app = loopback();
 var fs = require('fs');
 var moment = require('moment');
 
@@ -167,6 +167,45 @@ module.exports = function(Event) {
             }
              console.log("file object = ",fileObj);
 
+
+            var evnt={};
+            
+            if (fileObj.fields.hasOwnProperty('Description'))
+                 evnt.Description = fileObj.fields.Description[0];
+            if (fileObj.fields.hasOwnProperty("Name"))
+                 evnt.Name = fileObj.fields.Name[0];
+            if (fileObj.fields.hasOwnProperty("StartDate"))
+                 evnt.StartDate = fileObj.fields.StartDate[0];
+            if (fileObj.fields.hasOwnProperty("EndDate"))
+                 evnt.EndDate = fileObj.fields.EndDate[0];
+            if (fileObj.fields.hasOwnProperty("LocationLat"))
+                 var LocationLat = fileObj.fields.LocationLat[0];
+
+            if (fileObj.fields.hasOwnProperty("LocationLong"))
+                 var LocationLong = fileObj.fields.LocationLong[0];
+
+            if (LocationLat && LocationLong) {
+                  evnt.Location = new loopback.GeoPoint({
+                       lat: LocationLat,
+                       lng: LocationLong
+                   });
+               }
+
+            if (fileObj.fields.hasOwnProperty("status"))
+                evnt.status = fileObj.fields.status[0];
+
+            if (fileObj.fields.hasOwnProperty("Address"))
+                evnt.Address = fileObj.fields.Address[0];
+            if (fileObj.fields.hasOwnProperty("EventCategoryId"))
+                evnt.EventCategoryId = fileObj.fields.EventCategoryId[0];
+            if (fileObj.fields.hasOwnProperty("Phone"))
+                evnt.Phone = fileObj.fields.Phone[0];
+            if (fileObj.fields.hasOwnProperty("email"))
+                evnt.email = fileObj.fields.email[0];
+            if (fileObj.fields.hasOwnProperty("Website"))
+                evnt.Website = fileObj.fields.Website[0];
+
+            
             if (fileObj.files.hasOwnProperty('file')) {
                 
                 var fileInfo = fileObj.files.file[0];
@@ -180,50 +219,21 @@ module.exports = function(Event) {
                     if (err) {
                          console.log('rename err= ',err);
                         throw err;
+                    } else {
+                        evnt.EventPicture = CONTAINERS_URL + fileInfo.container + '/download/' + Id + '.' + extensionType[1];   
+                    
+                        Event.create(evnt,function(err,result){
+                            if(err){
+                                console.log("err2=",err);
+                                throw err;
+                            } else{
+                                console.log("Successfully Created ! = ",result);
+                                cb(null,result);
+                            }
+                        }); 
                     }
-                   
                 });
-
-                var evnt={};
-
-                if (fileObj.fields.hasOwnProperty('Description'))
-                    evnt.Description = fileObj.fields.Description[0];
-                if (fileObj.fields.hasOwnProperty("Name"))
-                    evnt.Name = fileObj.fields.Name[0];
-                if (fileObj.fields.hasOwnProperty("StartDate"))
-                    evnt.StartDate = fileObj.fields.StartDate[0];
-                if (fileObj.fields.hasOwnProperty("EndDate"))
-                    evnt.EndDate = fileObj.fields.EndDate[0];
-                if (fileObj.fields.hasOwnProperty("LocationLat"))
-                    var LocationLat = fileObj.fields.LocationLat[0];
-
-                if (fileObj.fields.hasOwnProperty("LocationLong"))
-                    var LocationLong = fileObj.fields.LocationLong[0];
-
-                if (LocationLat && LocationLong) {
-                    evnt.Location = new loopback.GeoPoint({
-                        lat: LocationLat,
-                        lng: LocationLong
-                    });
-                }
-
-                if (fileObj.fields.hasOwnProperty("status"))
-                    evnt.status = fileObj.fields.status[0];
-
-                if (fileObj.fields.hasOwnProperty("Address"))
-                    evnt.Address = fileObj.fields.Address[0];
-                if (fileObj.fields.hasOwnProperty("EventCategoryId"))
-                    evnt.EventCategoryId = fileObj.fields.EventCategoryId[0];
-                if (fileObj.fields.hasOwnProperty("Phone"))
-                    evnt.Phone = fileObj.fields.Phone[0];
-                if (fileObj.fields.hasOwnProperty("email"))
-                    evnt.email = fileObj.fields.email[0];
-                if (fileObj.fields.hasOwnProperty("Website"))
-                    evnt.Website = fileObj.fields.Website[0];
-
-                    evnt.EventPicture = CONTAINERS_URL + fileInfo.container + '/download/' + Id + '.' + extensionType[1];
-                
-
+            } else {
                 Event.create(evnt,function(err,result){
                     if(err){
                         console.log("err2=",err);
@@ -233,9 +243,9 @@ module.exports = function(Event) {
                         console.log("Successfully Created ! = ",result);
                         cb(null,result);
                     }
-                });         
-            }
-
+                }); 
+            }   
+           
         });
 
     };
