@@ -152,55 +152,11 @@ module.exports = function(Event) {
     };
 
 
-    Event.search = function(data, cb) {
-
-        var response = {};
-        if (!data.req.body.Address && data.req.body.LocationLat && data.req.body.LocationLong) {
-            Event.find({
-                where: {
-                    "LocationLat": data.req.body.LocationLat,
-                    "LocationLong": data.req.body.LocationLong
-                }
-            }, function(err, event) {
-                if (err) {
-                    cb(null, err);
-                }
-                console.log(event);
-                response = JSON.parse(JSON.stringify(event));
-                cb(null, response);
-            });
-
-        }
-
-        if (data.req.body.Address) {
-            Event.find(function(err, event) {
-
-                if (err) {
-                    cb(null, err);
-                }
-
-                var res = JSON.parse(JSON.stringify(event));
-                var result = [];
-                for (sample in res) {
-                    if (res[sample].hasOwnProperty('Address'))
-                        if (res[sample].Address.toLowerCase().search(Address.toLowerCase()) != -1)
-                            result.push(res[sample]);
-                }
-
-                cb(null, result);
-
-            })
-        }
-
-
-
-    }
 
     Event.afterCreate=function(next){
-    
-        console.log(this.Name);
-        console.log(this.id);
+  
         eventId=this.id;
+        eventName=this.Name;
 
         var StartDate=this.StartDate;
 
@@ -208,73 +164,98 @@ module.exports = function(Event) {
         var formattedDate = ('0' + date.getDate()).slice(-2) + '/' + ('0' + (date.getMonth() + 1)).slice(-2) + '/' + date.getFullYear() + ' ' + ('0' + date.getHours()).slice(-2) + ':' + ('0' + date.getMinutes()).slice(-2)+ ':' + ('0' + date.getSeconds()).slice(-2)+' '+'GMT';
         console.log(formattedDate);
 
-        var actualDate=new Date(formattedDate);
-        actualDate=actualDate.getTime();
-        console.log("actualDate=",actualDate);
-
-
-
         var one_day=1000*60*60*24;
         var one_hr=1000*60*60;
         var min=1000*60;
+        var sec=1000;
 
         var currentTime=new Date();
         currentTime=currentTime.getTime();
         console.log("currentTime=",currentTime); 
 
         calc=StartDate-currentTime;
-
-        console.log("calc= ",Math.round(calc/min));
-     
-        var kue=require('kue');
-        var queue=kue.createQueue();
         
-        var delay=(1000*60*43);
-        var miliSecond=calc-delay;
+        var delay=min*1;
 
+        var miliSecond=calc-delay;
         console.log("delay = ",miliSecond);
 
+        var kue=require('kue');                 
+        var queue=kue.createQueue();
+        
+        ////////////////////      Create a job for every event 
+
         var job=queue.create('event',{
-            startDate:formattedDate
+            startDate:formattedDate,
+            EventId:eventId,
+            Name:eventName
         })
-        .delay(2000)
+        .delay(delay)
         .save(function(err){
             if(!err) console.log("job created "+job.id+" "+Date());
         });
-        queue.process('event',function(job,done){ 
+
+        ////////////////////      Process every job that are created
+
+        queue.process('event',function(job,done){                                     
             console.log("1= "+job.id+" "+job.data.startDate+" "+Date());
+            console.log("2= "+job.id+" "+job.data.Name);
+            console.log("3= "+job.id+" "+job.data.EventId);
             
             Event.app.models.Participant.find(
             {
-                include: ['account','event'], 
+               // include: ['account'], 
                 where: {
                     and:[{
-                        "EventId":eventId
+                        "EventId":job.data.EventId
                     },{
                         "Rsvp":2
                     }]
                 }
             },function(err,participant){
+                console.log("All Participant = ",participant);
                 if(err) {
                     console.log(err);
                 }
                 else{
-                    console.log(participant);        
                     for(j=0;j<participant.length;j++){
-                        var event = participant[j].event;
-                        var eventName = "An Event" ;
-                        if (event) {
-                            eventName = event.Name ;
-                        }
-                        var firstName = participant[j].account.firstName;
-                        var message="Hi "+  firstName + ",<br>Thanks for using Even3. This is a reminder of event, " + eventName + ", which is happenning tomorrow. Your participation is expected there. <br><br> Even3 Team" ;
-                        Event.app.models.Push.sendEmail(participant[j].account.email, eventName + " is happenning tomorrow", message);
-                    }
+                       (function(item){
+
+                            accountId = participant[item].AccountId;
+                            
+                            Event.app.models.Account.find({
+                                where:
+                                {
+                                    id:accountId
+                                }
+                            },function(err,result){
+                                if(err){
+                                    console.log(err);
+                                }
+                                else if(!result[0]){
+                                    console.log("No Participant!");
+                                }
+                                else{
+                                    console.log("result = ",result);
+                                    var firstName = result[0].FirstName;
+                                    var email=result[0].email;
+                                    console.log("Email = ",email);
+
+                                    if(!email){
+                                        console.log(err);
+                                        throw err;
+                                    }
+
+                                    var message="Hi "+  firstName + ",<br>Thanks for using Even3. This is a reminder of event <strong>" + job.data.Name + "</strong> which is happenning tomorrow. Your participation is expected there. <br><br> Even3 Team" ;
+                                    Event.app.models.Push.sendEmail(email, job.data.Name + " is happenning tomorrow", message);
+                                }
+                            });
+                       })(j); 
+                   
+                    } 
                 }
             });
             
-
-
             done();
         });
 
@@ -293,90 +274,7 @@ module.exports = function(Event) {
 
 
 
-
-    Event.createemptyevent = function(data, cb) {
-
-        //console.log('Its Working');
-
-        var response = {};
-
-        Event.create({
-            AccountId: data.req.body.Id
-        }, function(err, event) {
-            if (err) {
-                response = 'Can not save';
-                cb(null, response);
-            }
-            var response = {};
-            response.id = event.id;
-            response.link = 'eventurl/' + event.id;
-
-            console.log(response);
-            cb(null, response);
-        });
-
-    };
-
-
-
-    Event.remoteMethod(
-        'createemptyevent', {
-            http: {
-                path: '/createemptyevent',
-                verb: 'post'
-            },
-            accepts: {
-                arg: 'data',
-                type: 'object',
-                http: {
-                    source: 'context'
-                }
-            },
-            returns: {
-                arg: 'res',
-                type: 'object',
-                'http': {
-                    source: 'res'
-                }
-            }
-        });
-
-    Event.remoteMethod(
-        'search', {
-            http: {
-                path: '/search',
-                verb: 'post'
-            },
-            accepts: {
-                arg: 'data',
-                type: 'object',
-                http: {
-                    source: 'context'
-                }
-            },
-
-            /*[{ 
-        arg: 'LocationLat', 
-        type: 'number'
-      },
-      { 
-        arg: 'LocationLong', 
-        type: 'number'
-      },
-        { 
-        arg: 'Address', 
-        type: 'string'
-      }
-  ],*/
-            returns: {
-                arg: 'res',
-                type: 'object',
-                'http': {
-                    source: 'res'
-                }
-            }
-        }
-    );
+   
 
     Event.remoteMethod(
         'editevent', {

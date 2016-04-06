@@ -105,7 +105,7 @@
       "accessType": "WRITE",
       "principalType": "ROLE",
       "principalId": "$unauthenticated",
-      "permission": "DENY"
+      "permission": "ALLOW"
     },
     {
       "accessType": "EXECUTE",
