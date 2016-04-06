@@ -153,6 +153,8 @@ module.exports = function(Business) {
                     var Website = fileObj.fields.Website[0];
                 if (fileObj.fields.hasOwnProperty("valid"))
                     var valid = fileObj.fields.valid[0]; 
+                if (fileObj.fields.hasOwnProperty("AccountId"))
+                    var accountId = fileObj.fields.AccountId[0]; 
                     
                 busnes.Name = Name;
                 if (LocationLat && LocationLong) {
@@ -165,6 +167,7 @@ module.exports = function(Business) {
                 busnes.email = email ;
                 busnes.Website = Website ;
                 busnes.valid = valid; 
+                busnes.AccountId = accountId;
                 
                 if(fileObj.files.hasOwnProperty('file')) { 
                     var fileInfo = fileObj.files.file[0];
