@@ -1,6 +1,6 @@
 var CONTAINERS_URL = '/containers/';
 var loopback = require('loopback');
-var app = module.exports = loopback();
+var app = loopback();
 var fs = require('fs');
 
 
@@ -129,10 +129,9 @@ module.exports = function(Business) {
         Business.app.models.container.upload(ctx.req,ctx.result,options,function (err,fileObj) {
             if(err) {
                 cb(null,err);
-            } 
-            if(fileObj.files.hasOwnProperty('file'))
-            { 
-                var fileInfo = fileObj.files.file[0];
+            } else {
+                var busnes={};
+                
                 if(fileObj.fields.hasOwnProperty('Name'))
                     var Name=fileObj.fields.Name[0];
                 if(fileObj.fields.hasOwnProperty('LocationLat'))
@@ -153,44 +152,56 @@ module.exports = function(Business) {
                 if (fileObj.fields.hasOwnProperty("Website"))
                     var Website = fileObj.fields.Website[0];
                 if (fileObj.fields.hasOwnProperty("valid"))
-                    var valid = fileObj.fields.valid[0];               
-
-                var date=new Date();
-                var Id=date.getTime();
-                var extensionType= fileInfo.type.split('/');
-                var fileCurrentPath= './server/storage/businesspic'+'/'+fileInfo.name;
-                newFilePath='./server/storage/businesspic'+'/'+Id+'.'+extensionType[1];
-
-                fs.rename(fileCurrentPath, newFilePath, function (err) {
-                if (err) throw err;
-                //console.log('renamed complete');
-                });
-                
-                var busnes={};
-
-                busnes.Name=Name;
+                    var valid = fileObj.fields.valid[0]; 
+                    
+                busnes.Name = Name;
                 if (LocationLat && LocationLong) {
                     busnes.Location= new loopback.GeoPoint({lat: LocationLat, lng: LocationLong});
                 }
                 busnes.Address=Address;
-                busnes.BusinessPicture=CONTAINERS_URL+fileInfo.container+'/download/'+Id+'.'+extensionType[1];
                 busnes.Description=Description;
                 busnes.BusinessCategoryId = categoryId;
                 busnes.Phone = Phone;
                 busnes.email = email ;
                 busnes.Website = Website ;
-                busnes.valid = valid;
+                busnes.valid = valid; 
+                
+                if(fileObj.files.hasOwnProperty('file')) { 
+                    var fileInfo = fileObj.files.file[0];
+                    var date=new Date();
+                    var Id=date.getTime();
+                    var extensionType= fileInfo.type.split('/');
+                    var fileCurrentPath= './server/storage/businesspic'+'/'+fileInfo.name;
+                    var newFilePath='./server/storage/businesspic'+'/'+Id+'.'+extensionType[1];
 
-                Business.create(busnes,function(err,result){
-                    if(err){
-                        console.log(err);
-                        throw err;
-                    }else{
-                        console.log("Result = ",result);
-                        cb(null,result);
+                    fs.rename(fileCurrentPath, newFilePath, function (err) {
+                    if (err) {
+                        throw err
+                    } else {
+                        busnes.BusinessPicture=CONTAINERS_URL+fileInfo.container+'/download/'+Id+'.'+extensionType[1];
+                        Business.create(busnes,function(err,result){
+                        if(err){
+                            console.log(err);
+                            throw err;
+                        }else{
+                            console.log("Result = ",result);
+                            cb(null,result);
+                        }
+                    });
                     }
-                });
-            }
+                  });
+                } else {
+                     Business.create(busnes,function(err,result){
+                        if(err){
+                            console.log(err);
+                            throw err;
+                        }else{
+                            console.log("Result = ",result);
+                            cb(null,result);
+                        }
+                    });
+                }
+            } 
         });
     };
 
