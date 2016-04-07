@@ -1,5 +1,5 @@
 var loopback = require('loopback');
-var app = module.exports = loopback();
+var app = loopback();
 
 module.exports = function(Participant) {
 
