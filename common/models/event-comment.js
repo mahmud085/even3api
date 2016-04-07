@@ -161,6 +161,8 @@ module.exports = function(EventComment) {
 				});
 			});
 		}
+        
+        done();
 	});
 
 
