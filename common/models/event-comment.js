@@ -2,7 +2,7 @@ var CONTAINERS_URL = '/containers/';
 var fs = require('fs');
 var path = require('path');
 var loopback = require('loopback');
-var app = module.exports = loopback();
+var app = loopback();
 module.exports = function(EventComment) {
 
 	EventComment.addcomment = function(ctx, options, cb) {
@@ -39,8 +39,10 @@ module.exports = function(EventComment) {
 					AccountId: Id,
 					Time: Time
 				}, function(err, eventcomment) {
-					if (err)
-						cb(null, err);
+					if (err) {
+						cb(null, err); 
+                        console.log("post comment error = " + err);
+                    }
 					console.log(fileInfo.name);
 					var fileCurrentPath = './server/storage/eventcommentpic' + '/' + fileInfo.name;
 					newFilePath = './server/storage/eventcommentpic' + '/' + eventcomment.id + '.jpg';
@@ -50,9 +52,8 @@ module.exports = function(EventComment) {
 					});
 					eventcomment.CommentPicture = CONTAINERS_URL + fileInfo.container + '/download/' + eventcomment.id + '.jpg';
 					eventcomment.save();
+                    console.log("post comment success = " + eventcomment);
 					cb(null, eventcomment);
-
-
 				});
 			} else {
 				if (fileObj.fields.hasOwnProperty("CommentBody"))
@@ -76,15 +77,18 @@ module.exports = function(EventComment) {
 					AccountId: Id,
 					Time: Time
 				}, function(err, eventcomment) {
-					if (err)
+					if (err) {
 						cb(null, err);
-					cb(null, eventcomment);
+                        console.log("post comment error = " + err);
+                    } else {
+                        console.log("post comment success = " + eventcomment);
+                        cb(null, eventcomment);
+                    }
 				});
 			}
 		});
 
 	};
-
 
 	EventComment.afterRemote('addcomment', function(ctx, data, done) {
 
