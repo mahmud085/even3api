@@ -255,56 +255,62 @@ module.exports = function(Event) {
 
     Event.afterCreate=function(next){
   
-        eventId=this.id;
-        eventName=this.Name;
+        var estimatedDelay = 5000 ;
+        var testDelay = 3000 ;
+        eventId = this.id;
+        eventName = this.Name;
 
-        var StartDate=this.StartDate;
-
+        var StartDate = this.StartDate;
         var date = new Date(StartDate);
-        var formattedDate = ('0' + date.getDate()).slice(-2) + '/' + ('0' + (date.getMonth() + 1)).slice(-2) + '/' + date.getFullYear() + ' ' + ('0' + date.getHours()).slice(-2) + ':' + ('0' + date.getMinutes()).slice(-2)+ ':' + ('0' + date.getSeconds()).slice(-2)+' '+'GMT';
-        console.log(formattedDate);
 
-        var one_day=1000*60*60*24;
-        var one_hr=1000*60*60;
-        var min=1000*60;
-        var sec=1000;
-
-        var currentTime=new Date();
-        currentTime=currentTime.getTime();
+        var currentTime = new Date();
+        currentTime = currentTime.getTime();
         console.log("currentTime=",currentTime); 
 
-        calc=StartDate-currentTime;
+        var notificationTime = StartDate - estimatedDelay ;
+        var delay = notificationTime - currentTime ;
+
+        var kue = require('kue');                 
+        var queue = kue.createQueue();
         
-        var delay=min*1;
-
-        var miliSecond=calc-delay;
-        console.log("delay = ",miliSecond);
-
-        var kue=require('kue');                 
-        var queue=kue.createQueue();
-        
-        ////////////////////      Create a job for every event 
-
-        var job=queue.create('event',{
-            startDate:formattedDate,
+        var job = queue.create(eventId, {
+            StartDate:StartDate,
             EventId:eventId,
             Name:eventName
-        })
-        .delay(delay)
-        .save(function(err){
-            if(!err) console.log("job created "+job.id+" "+Date());
+        }).delay(testDelay).save(function(err){
+            if (err) {
+               console.log("queue create error = " + err); 
+            } 
+            console.log("job created with " + job.id + " at" + Date());
         });
 
-        ////////////////////      Process every job that are created
+        // Process every job that are created
 
-        queue.process('event',function(job,done){                                     
-            console.log("1= "+job.id+" "+job.data.startDate+" "+Date());
-            console.log("2= "+job.id+" "+job.data.Name);
-            console.log("3= "+job.id+" "+job.data.EventId);
+        queue.process(eventId, function(job,done) {                                     
+            console.log("job processing = " + JSON.stringify(job.data));
             
-            Event.app.models.Participant.find(
-            {
-               // include: ['account'], 
+            Event.findOne({id:eventId}, function (error, event) {
+                if (event) {
+                    notifyUser(job);
+                } else {
+                    job.remove(function(err) {
+                        if (err) {
+                            throw err;
+                        }
+                        console.log('removed completed job ' + job.id);
+                    });
+                }
+            });
+            done();
+        });
+        
+        queue.promote();
+        next();
+    };
+
+
+var notifyUser = function (job) {
+     Event.app.models.Participant.find({
                 where: {
                     and:[{
                         "EventId":job.data.EventId
@@ -316,13 +322,10 @@ module.exports = function(Event) {
                 console.log("All Participant = ",participant);
                 if(err) {
                     console.log(err);
-                }
-                else{
-                    for(j=0;j<participant.length;j++){
-                       (function(item){
-
+                } else {
+                    for(j=0;j<participant.length;j++) {
+                       (function(item) {
                             accountId = participant[item].AccountId;
-                            
                             Event.app.models.Account.find({
                                 where:
                                 {
@@ -346,7 +349,7 @@ module.exports = function(Event) {
                                         throw err;
                                     }
 
-                                    var message="Hi "+  firstName + ",<br>Thanks for using Even3. This is a reminder of event <strong>" + job.data.Name + "</strong> which is happenning tomorrow. Your participation is expected there. <br><br> Even3 Team" ;
+                                    var message = "Hi "+  firstName + ",<br>Thanks for using Even3. This is a reminder of event <strong>" + job.data.Name + "</strong> which is happenning tomorrow. Your participation is expected there. <br><br> Even3 Team" ;
                                     Event.app.models.Push.sendEmail(email, job.data.Name + " is happenning tomorrow", message);
                                 }
                             });
@@ -355,23 +358,7 @@ module.exports = function(Event) {
                     } 
                 }
             });
-            
-            done();
-        });
-
-        kue.Job.rangeByState( 'complete', 0, 100, 'asc', function( err, jobs ) {
-          jobs.forEach( function( job ) {
-            job.remove( function(){
-              console.log( 'removed ', job.id );
-            });
-          });
-        });
-        queue.promote();
-
-
-        next();
-    };
-
+}
 
 
 Event.editevent = function(ctx, options, cb) {
