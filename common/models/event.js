@@ -259,6 +259,7 @@ module.exports = function(Event) {
         var testDelay = 60 * 1000 ;
         eventId = this.id;
         eventName = this.Name;
+        ownerId = this.AccountId;
 
         var StartDate = this.StartDate;
         var date = new Date(StartDate);
@@ -276,7 +277,8 @@ module.exports = function(Event) {
         var job = queue.create(eventId, {
             StartDate:StartDate,
             EventId:eventId,
-            Name:eventName
+            Name:eventName,
+            Owner:ownerId
         }).delay(testDelay).save(function(err){
             if (err) {
                console.log("queue create error = " + err); 
@@ -310,7 +312,32 @@ module.exports = function(Event) {
 
 
 var notifyUser = function (job) {
-     Event.app.models.Participant.find({
+
+    participantList = "";
+    Event.app.models.Account.find({
+        where:{id:job.data.Owner}
+    },function(err,eventOwner){
+        if(err){
+            console.log("Event owner not found ! ",err);
+        }else if(!eventOwner[0]){
+            console.log("No Event Owner Found!");
+        }
+        else{
+            console.log("result = ",eventOwner);
+            var firstName = eventOwner[0].LastName;
+            ownerEmail=eventOwner[0].email;
+            console.log("Email = ",ownerEmail);
+
+            if(!ownerEmail){
+                console.log("Email not found!",err);
+                throw err;
+            }
+            participantList += "Hi! " + firstName + ",<br> Your Event <strong>" + job.data.Name + "</strong> is happening tomorrow.Here is a list of the people who are attending : <br>";
+            //console.log("Participant = ",participantList);
+        }
+    });
+
+    Event.app.models.Participant.find({
                 where: {
                     and:[{
                         "EventId":job.data.EventId
@@ -323,6 +350,7 @@ var notifyUser = function (job) {
                 if(err) {
                     console.log(err);
                 } else {
+                    
                     for(j=0;j<participant.length;j++) {
                        (function(item) {
                             accountId = participant[item].AccountId;
@@ -341,7 +369,9 @@ var notifyUser = function (job) {
                                 else{
                                     console.log("result = ",result);
                                     var firstName = result[0].FirstName;
-                                    var email=result[0].email;
+                                    var lastName = result[0].LastName;
+                                    var phone = result[0].phone;
+                                    var email = result[0].email;
                                     console.log("Email = ",email);
 
                                     if(!email){
@@ -350,12 +380,23 @@ var notifyUser = function (job) {
                                     }
 
                                     var message = "Hi "+  firstName + ",<br>Thanks for using Even3. This is a reminder of event <strong>" + job.data.Name + "</strong> which is happenning tomorrow. Your participation is expected there. <br><br> Even3 Team" ;
+                                    participantList = participantList + "<br>Name : " + firstName + " " + lastName + "<br>Email : " + email +"<br>Phone : " + phone + "<br>";
+                                    
+                                    if(item===participant.length-1){
+                                        participantList = participantList + "<br>Even3 Team" ;
+                                        console.log("participantList full = ",participantList);
+                                        Event.app.models.Push.sendEmail(ownerEmail,"Participant lists of your event " + job.data.Name, participantList);
+                                      
+                                    }
+
                                     Event.app.models.Push.sendEmail(email, job.data.Name + " is happenning tomorrow", message);
                                 }
                             });
+                           
                        })(j); 
-                   
+                            
                     } 
+                    
                 }
             });
 }
