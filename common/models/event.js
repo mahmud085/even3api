@@ -256,7 +256,7 @@ module.exports = function(Event) {
     Event.afterCreate=function(next){
   
         var estimatedDelay = 5000 ;
-        var testDelay = 3000 ;
+        var testDelay = 60 * 1000 ;
         eventId = this.id;
         eventName = this.Name;
 
