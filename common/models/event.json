@@ -44,8 +44,8 @@
     "Website": {
       "type": "string"
     },
-    "status" : {
-      "type" : "string"
+    "status": {
+      "type": "string"
     }
   },
   "validations": [],

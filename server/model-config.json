@@ -121,5 +121,9 @@
   "rating": {
     "dataSource": "myDB",
     "public": true
+  },
+  "subscribers": {
+    "dataSource": "myDB",
+    "public": true
   }
 }

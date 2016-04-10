@@ -323,10 +323,8 @@ var notifyUser = function (job) {
             console.log("No Event Owner Found!");
         }
         else{
-            console.log("result = ",eventOwner);
             var firstName = eventOwner[0].LastName;
             ownerEmail=eventOwner[0].email;
-            console.log("Email = ",ownerEmail);
 
             if(!ownerEmail){
                 console.log("Email not found!",err);

@@ -553,7 +553,7 @@ module.exports = function(Account) {
         console.log('> user.afterRemote triggered');
 
         var options = {
-            host: 'http://even3app.com',
+            host: 'api.even3app.com',
             port: 80,
             type: 'email',
             to: user.email,
@@ -591,8 +591,8 @@ module.exports = function(Account) {
         console.log('> user.afterRemote triggered');
 
         var options = {
-            host: 'http://even3app.com',
-            port: 80,
+            host: 'api.even3app.com',
+            port :80,
             type: 'email',
             to: user.email,
             from: 'even3co@gmail.com',
