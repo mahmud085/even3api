@@ -2,7 +2,12 @@ var loopback = require('loopback');
 var boot = require('loopback-boot');
 var fs = require('fs');
 var path = require('path');
+var bodyParser = require('body-parser');
 var app = module.exports = loopback();
+
+
+app.middleware('initial', bodyParser.urlencoded({ extended: true }));
+
 
 var Notification = app.models.notification;
 var Application = app.models.application;
@@ -47,8 +52,25 @@ function prepareForPush() {
 
 };
 
-
-
+app.get('/admin/newsletter',function(req,res){
+    app.models.subscribers.find(function(err,result){
+      res.render('newsLetter.ejs',{
+        emails : result
+      });
+    });
+});
+app.post('/admin/newsletter',function(req,res){
+  console.log("Body = ",req.body);
+  emailcontent = req.body.emailBody;
+  selected = req.body.select;
+  if(typeof selected !=='object'){
+    app.models.Push.sendEmail(selected, "Notification of Newsletter", emailcontent);
+  }else{
+    for(i=0;i<selected.length;i++)
+    app.models.Push.sendEmail(selected[i], "Notification of Newsletter", emailcontent);
+  }
+  res.redirect('/admin/newsletter');
+});
 app.start = function() {
   // start the web server
   return app.listen(function() {
