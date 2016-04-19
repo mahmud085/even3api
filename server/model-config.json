@@ -125,5 +125,9 @@
   "subscribers": {
     "dataSource": "myDB",
     "public": true
+  },
+  "interest": {
+    "dataSource": "myDB",
+    "public": true
   }
 }

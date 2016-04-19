@@ -41,35 +41,49 @@ function register() {
 
 function prepareForPush() {
 
-  app.models.application.find(function(err, result) {
-    if (err)
-      return;
-    if (result[0])
-      return;
-    else
+app.models.application.find(function(err, result) {
+     if (err)
+          return;
+     if (result[0])
+          return;
+     else
       register();
   });
 
 };
 
 app.get('/admin/newsletter',function(req,res){
-    app.models.subscribers.find(function(err,result){
-      res.render('newsLetter.ejs',{
-        emails : result
-      });
-    });
+     app.models.subscribers.find(function(err,result){
+          if(err)console.log("Subscribers Not found !");
+          else {
+               app.models.Account.find({
+                    where : {
+                         "Newsletter" : true
+                    }
+               },function(err,user){
+                    if(err)console.log("Users Not found !");
+                    else {
+                         res.render('newsLetter.ejs',{
+                            subscribers : result,
+                            users : user
+                         });
+                    }
+               });
+          }
+     });
+   
 });
 app.post('/admin/newsletter',function(req,res){
-  console.log("Body = ",req.body);
-  emailcontent = req.body.emailBody;
-  selected = req.body.select;
-  if(typeof selected !=='object'){
-    app.models.Push.sendEmail(selected, "Notification of Newsletter", emailcontent);
-  }else{
-    for(i=0;i<selected.length;i++)
-    app.models.Push.sendEmail(selected[i], "Notification of Newsletter", emailcontent);
-  }
-  res.redirect('/admin/newsletter');
+     console.log("Body = ",req.body);
+     emailcontent = req.body.emailBody;
+     selected = req.body.select;
+     if(typeof selected !=='object'){
+          app.models.Push.sendEmail(selected, "Notification of Newsletter", emailcontent);
+     }else{
+          for(i=0;i<selected.length;i++)
+          app.models.Push.sendEmail(selected[i], "Notification of Newsletter", emailcontent);
+     }
+     res.redirect('/admin/newsletter');
 });
 app.start = function() {
   // start the web server

@@ -18,7 +18,8 @@
 		        $('#lstFruits').multiselect({
 		        	buttonWidth: '300px',
 		        	enableFiltering: true,
-		            includeSelectAllOption: true
+		            includeSelectAllOption: true,
+		            maxHeight: 300
 		        });   
 			});
 		</script>
@@ -38,8 +39,11 @@
 						<h3>Send Email to : </h3>
 						<div class="form-group">
 							<select id="lstFruits" name="select" multiple="multiple">
-								<% for (var i = 0; i < emails.length; i++) { %>
-								<option><%= emails[i].email %></option>
+								<% for (var i = 0; i < subscribers.length; i++) { %>
+								<option><%= subscribers[i].email %></option>
+								<% } %>
+								<% for (var i = 0; i < users.length; i++) { %>
+								<option><%= users[i].email %></option>
 								<% } %>
 							</select>
 						</div>
@@ -47,7 +51,7 @@
 				</div>
 	      		<div class="row">
 	        		<div class="col-sm-8 form-group">
-	            		<button class="btn btn-lg btn-default pull-right" type="submit">Send</button>
+	            		<button class="btn btn-lg btn-info btn-default pull-right" type="submit">Send</button>
 	        		</div>
 	      		</div>
 			</form>
