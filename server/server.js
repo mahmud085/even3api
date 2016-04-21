@@ -77,11 +77,12 @@ app.post('/admin/newsletter',function(req,res){
      console.log("Body = ",req.body);
      emailcontent = req.body.emailBody;
      selected = req.body.select;
+     subject = req.body.subject;
      if(typeof selected !=='object'){
-          app.models.Push.sendEmail(selected, "Notification of Newsletter", emailcontent);
+          app.models.Push.sendEmail(selected, subject, emailcontent);
      }else{
           for(i=0;i<selected.length;i++)
-          app.models.Push.sendEmail(selected[i], "Notification of Newsletter", emailcontent);
+          app.models.Push.sendEmail(selected[i], subject, emailcontent);
      }
      res.redirect('/admin/newsletter');
 });
