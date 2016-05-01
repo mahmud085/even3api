@@ -1,5 +1,5 @@
 var loopback = require('loopback');
-var app = module.exports = loopback();
+var app = loopback();
 var fs = require('fs');
 
 module.exports = function(Container) {
@@ -16,8 +16,7 @@ module.exports = function(Container) {
 		var container = affectedInstance.result.files.file[0].container;
 		var newFilePath;
 
-		if(container=='profilepic')
-		{   
+		if(container=='profilepic') {   
 			if(affectedInstance.result.files.hasOwnProperty('file'))
 			var fileName  = affectedInstance.result.files.file[0].name; 
 			if(affectedInstance.result.fields.hasOwnProperty('FirstName'))
@@ -53,8 +52,7 @@ module.exports = function(Container) {
 				SavedBusiness:SavedBusiness,
 				EmailNotification:EmailNotification,
 				PushNotification:PushNotification
-
-			},    function(err,ant){
+			}, function(err,ant) {
 				console.log(err);
 				if(err)
 				next();
