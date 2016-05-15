@@ -104,7 +104,6 @@ module.exports = function(Account) {
     if (!data.req.body.email)
       cb(true, 'You must specify an email');
     //console.log(data.req.body.email);
-
     Account.find({
       where: {
         "email": data.req.body.email
@@ -118,7 +117,8 @@ module.exports = function(Account) {
         var mail = '';
         for (var i = 0; i < data.req.body.email.length; i++)
           mail = mail + String.fromCharCode(data.req.body.email.charCodeAt(i) + 2);
-        var link = baseUrl + '/resetpassword/' + mail;
+       // var link = baseUrl + '/resetpassword/' + mail;
+       var link ='http://api.even3app.com/reset-password';
         //console.log(mail);
 
         loopback.Email.send({
@@ -126,7 +126,7 @@ module.exports = function(Account) {
             from: "even3co@gmail.com",
             subject: "Even3 Password Reset",
             text: "text message",
-            html: '<p>Hi ' + result[0].FirstName + '</p><p> You have requested to reset the password. Please click the link bellow to set your new password. If it does not work, click the button.</p>' + '<p>' + link + '</p>' + '<p><button href="http://even3app.com/login.html">Reset Password</button></p>'
+            html: '<p>Hi ' + result[0].FirstName + '</p><p> You have requested to reset the password. Please click the link bellow to set your new password. If it does not work, click the button.</p>' + '<p>' + link + '</p>' + '<p><button href="http://api.even3app.com/reset-password">Reset Password</button></p>'
           },
           function(err, result) {
                 if (err) {
@@ -146,15 +146,21 @@ module.exports = function(Account) {
   };
   // reset password
 
-  Account.passwordreset = function(data, cb) {
+  Account.passwordreset = function(data,res, cb) {
     if (data.req.body.email == null) {
       var msg = {
         error: 404,
         message: 'Email is required'
       }
-      cb(null, msg);
+      return res.send("Email is required! Try Again");
     }
-
+    if(data.req.body.newpass !== data.req.body.conpass ){
+      var msg = {
+        error: 404,
+        message: 'Password must be matched!'
+      }
+      return res.send("Password do Not Matched! Try Again");
+    }
     Account.find({
       where: {
         "email": data.req.body.email
@@ -170,7 +176,16 @@ module.exports = function(Account) {
             cb(err);
           if (ant) {
             console.log(newToken);
-            cb(null, newToken);
+            Account.findById(newToken.userId, function(err, user) {
+                console.log("user = ",user);
+                if(err) return res.sendStatus(401);
+                user.updateAttribute('password', data.req.body.newpass, function(err, user) {
+                  if (err) return res.sendStatus(404);
+                  console.log('> password reset processed successfully');
+                  res.redirect('http://even3app.com');
+                });
+            });
+            
           }
         });
       }
@@ -890,13 +905,17 @@ Account.remoteMethod (
   Account.remoteMethod(
     'passwordreset', {
       description: 'resets the password',
-      accepts: {
+      accepts: [{
         arg: 'data',
         type: 'object',
-        http: {
-          source: 'context'
+        http: {source: 'context'}
+        },
+        {
+        arg: 'res',
+        type: 'object',
+        http: { source: 'res' }
         }
-      },
+      ],
 
       returns: {
         arg: 'fileObject',

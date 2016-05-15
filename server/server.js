@@ -51,6 +51,9 @@ app.models.application.find(function(err, result) {
   });
 
 };
+app.get('/reset-password',function(req,res){
+    res.render('login.ejs');
+});
 
 app.get('/admin/newsletter',function(req,res){
      app.models.subscribers.find(function(err,result){
@@ -86,6 +89,7 @@ app.post('/admin/newsletter',function(req,res){
      }
      res.redirect('/admin/newsletter');
 });
+
 app.start = function() {
   // start the web server
   return app.listen(function() {
