@@ -16,7 +16,11 @@
   "auth": {},
   "parse": {},
   "routes": {},
-  "files": {},
+  "files": {
+      "loopback#static": {
+      "params": "$!../server/storage1"
+    }
+  },
   "final": {
     "loopback#urlNotFound": {}
   },

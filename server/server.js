@@ -15,7 +15,6 @@ var PushModel = app.models.push;
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
-
 function register() {
   app.models.application.register('even3appdeveloper',
     'even3app', {
