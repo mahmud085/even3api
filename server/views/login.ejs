@@ -8,28 +8,48 @@
 		<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
 		<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+		<style type="text/css">
+		.jumbotron{
+			background-color: #C8C8C8; 
+			margin-top: 100px;
+
+		}
+		h3{
+			text-align: center;
+		}
+
+		</style>
+		<script>
+			function myFunction() {
+			    if(document.getElementById("newpass").value !== document.getElementById("conpass").value ){
+			    	alert("Password does not matched! Try Again!");
+			    }
+			}
+		</script>
 	</head>
 	<body>
 		<div class="container">
 			<div class="row">
-				<div class="col-md-offset-3 col-md-7 jumbotron">
+				
+				<div class="col-sm-offset-3 col-md-6 jumbotron">
+					<h3>Reset Your Password!</h3>
 				 	<form class="form-horizontal" role="form" action="/api/Accounts/passwordreset" method="POST">
-				 	  	<div class="form-group">
-    						<label class="control-label col-sm-4" for="email">Email:</label>
+
+  						<div class="form-group">
     						<div class="col-sm-8">
-      							<input type="email" class="form-control" name="email">
+      							<input type="hidden" class="form-control" name="email" value=<%= email %>>
     						</div>
   						</div>
   						<div class="form-group">
     						<label class="control-label col-sm-4" for="newpass">New Password:</label>
     						<div class="col-sm-8">
-      							<input type="password" class="form-control" name="newpass">
+      							<input type="password" class="form-control" id= "newpass"name="newpass">
     						</div>
   						</div>
   						<div class="form-group">
      						<label class="control-label col-sm-4" for="conpass">Confirm Password:</label>
     						<div class="col-sm-8">
-      							<input type="password" class="form-control" name="conpass">
+      							<input type="password" onchange="myFunction()" class="form-control" id= "conpass" name="conpass">
     						</div>
   						</div>
   						<div class="form-group">

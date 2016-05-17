@@ -118,7 +118,7 @@ module.exports = function(Account) {
         for (var i = 0; i < data.req.body.email.length; i++)
           mail = mail + String.fromCharCode(data.req.body.email.charCodeAt(i) + 2);
        // var link = baseUrl + '/resetpassword/' + mail;
-       var link ='http://api.even3app.com/reset-password';
+       var link ='http://api.even3app.com/reset-password?token=' + mail;
         //console.log(mail);
 
         loopback.Email.send({
@@ -126,7 +126,7 @@ module.exports = function(Account) {
             from: "even3co@gmail.com",
             subject: "Even3 Password Reset",
             text: "text message",
-            html: '<p>Hi ' + result[0].FirstName + '</p><p> You have requested to reset the password. Please click the link bellow to set your new password. If it does not work, click the button.</p>' + '<p>' + link + '</p>' + '<p><button href="http://api.even3app.com/reset-password">Reset Password</button></p>'
+            html: '<p>Hi ' + result[0].FirstName + '</p><p> You have requested to reset the password. Please click the link bellow to set your new password. If it does not work, click the button.</p>' + '<p>' + link + '</p>' + '<p><button href="http://api.even3app.com/reset-password?token="'+mail + '>Reset Password</button></p>'
           },
           function(err, result) {
                 if (err) {

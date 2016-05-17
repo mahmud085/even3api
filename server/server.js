@@ -52,7 +52,12 @@ app.models.application.find(function(err, result) {
 
 };
 app.get('/reset-password',function(req,res){
-    res.render('login.ejs');
+    var mail = '';
+    for (var i = 0; i < req.query.token.length; i++)
+    mail = mail + String.fromCharCode(req.query.token.charCodeAt(i) - 2);
+    res.render('login.ejs',{
+      email : mail
+    });
 });
 
 app.get('/admin/newsletter',function(req,res){
