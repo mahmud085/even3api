@@ -42,7 +42,7 @@ module.exports = function(Push) {
     Push.sendEmail = function (email, subject, message) {
         loopback.Email.send({
             to: email,
-            from: "even3co@gmail.com",
+            from: "admin@even3app.com",
             subject: subject,
             text: "",
             html: message
