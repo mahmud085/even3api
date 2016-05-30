@@ -15,11 +15,11 @@ Interest.userinterest = function (allinterests,cb){
 	len = names.length;
 
 	console.log("all names = ",names);
-	for(i=0;i<len;i++){
-		(function(item){
+	// for(i=0;i<len;i++){
+	// 	(function(item){
 
 			Interest.findOne({
-				where : { 'name' : names[item] }
+				where : { 'AccountId' : userId }
 			},function(err,result){
 				if(err){
 					console.log("Something wrong finding Interest!");
@@ -27,10 +27,10 @@ Interest.userinterest = function (allinterests,cb){
 				}
 				if(!result){
 					var newInterest = {};
-					var users = [];
-					users.push({'AccountId':userId});
-					newInterest.name = names[item];
-					newInterest.users = users;
+					// var users = [];
+					// users.push({'AccountId':userId});
+					newInterest.names = names;
+					newInterest.AccountId = userId;
 					Interest.create(newInterest,function(err,res){
 						if(err){
 							console.log("Not Able to create interest ",err);
@@ -41,13 +41,13 @@ Interest.userinterest = function (allinterests,cb){
 						}
 					});
 				}else{
-					result.users.push({'AccountId':userId});
+					result.names = names;
 					result.save();
 					console.log("result = ",result);
 				}
 			});
-		})(i);
-	}
+	// 	})(i);
+	// }
 	cb(null,"successfull!");
 }
 

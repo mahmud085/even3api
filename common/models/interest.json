@@ -6,10 +6,10 @@
     "validateUpsert": true
   },
   "properties": {
-    "name": {
+    "AccountId": {
       "type": "string"
     },
-    "users" : {
+    "names" : {
       "type" : "array"
     }
   },
