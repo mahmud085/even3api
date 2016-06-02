@@ -565,7 +565,7 @@ module.exports = function(Account) {
 
   Account.afterRemote('addaccount', function(context, user, next) {
         console.log('> user.afterRemote triggered');
-
+        console.log("at add Account user = ",user);
         var options = {
             host: 'api.even3app.com',
             port: 80,
@@ -577,7 +577,6 @@ module.exports = function(Account) {
             redirect: '/verified',
             Account: user
         };
-        
         console.log('options = ' + JSON.stringify(options));
         
         if (user.hasOwnProperty('id')) {
@@ -588,7 +587,8 @@ module.exports = function(Account) {
             console.log('> verification email sent:', response);
             context.res.send({
                 status : 'Success',
-                message : 'Thanks for joining Even3. An activation link has been sent to your email. Please activate your account to use Even3.'
+                message : 'Thanks for joining Even3. An activation link has been sent to your email. Please activate your account to use Even3.',
+                options : options
               });
             });
         } else {
@@ -625,7 +625,28 @@ module.exports = function(Account) {
             console.log('> verification email sent:', response);
         });
   });
+  Account.resendLink =function(options,res,cb){
+    console.log("options resend= ",options);
+      loopback.Email.send({
+            to: options.to,
+            from: options.from,
+            subject: options.subject,
+            text: options.text,
+            html: options.html
+      },
+      function(err, result) {
+          if (err) {
+              console.log('Something went wrong while sending email.');
+              cb(err);
+          }
+      
+          if (result.message == 'success') {
+              console.log(result.message);
+              cb(null, 'success');
+          }
+      });
 
+  };
 
 
   Account.editaccount = function(ctx, options, cb) {
@@ -854,6 +875,28 @@ Account.remoteMethod (
     }
   );
 
+  Account.remoteMethod(
+    'resendLink',{
+    description: "resend activation link",
+    accepts : [
+    {
+      arg : 'options',
+      type : 'object'
+    },
+    { 
+      arg: 'res',
+      type: 'object',
+      http: { source: 'res' }
+    }
+    ],
+    returns : {
+      arg : "message",
+      tyoe : 'string'
+    },
+    http :{
+      verb :'post'
+    }
+  });
 
 
   Account.remoteMethod(

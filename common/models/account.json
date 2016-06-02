@@ -197,6 +197,13 @@
       "principalId": "$authenticated",
       "permission": "ALLOW",
       "property": "invitefriend"
+    },
+    {
+      "accessType": "EXECUTE",
+      "principalType": "ROLE",
+      "principalId": "$unauthenticated",
+      "permission": "ALLOW",
+      "property": "resendLink"
     }
   ],
   "methods": {}
