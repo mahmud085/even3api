@@ -130,12 +130,12 @@ module.exports = function(Account) {
           function(err, result) {
                 if (err) {
                     console.log('Something went wrong while sending email.');
-                    cb(err);
+                    cb(null,'Something went wrong while sending email.');
                 }
             
                 if (result.message == 'success') {
                     console.log(result.message);
-                    cb(null, 'success');
+                    cb(null, 'A password recovery link has been sent to the specified Email. Follow that link to reset your password');
                 }
           });
       }
