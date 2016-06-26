@@ -3,11 +3,9 @@
 
 module.exports = function(Card) {
 
-
+/*Payment via card*/
 
 Card.stripepayment = function (data,cb) {
-
-
 
 		if(data.req.body.isTest==true)
 		var stripe = require("stripe")("sk_test_NvxNY3Ph9h2vqH9SAGOLdobD");

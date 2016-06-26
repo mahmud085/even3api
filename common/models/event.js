@@ -6,6 +6,7 @@ var moment = require('moment');
 
 module.exports = function(Event) {
 
+    /*Delete an event*/
 
     Event.deleteevent = function(cb) {
         Event.destroyAll(function(err, result) {
@@ -16,6 +17,7 @@ module.exports = function(Event) {
 
     }
 
+    /* Edit an event */
 
     Event.editevent = function(ctx, options, cb) {
 
@@ -151,6 +153,7 @@ module.exports = function(Event) {
         });
     };
 
+    /* Create a new event*/
 
     Event.newEvent = function(ctx, options, cb) {
 
@@ -252,7 +255,10 @@ module.exports = function(Event) {
 
     };
 
-
+    /*after remote method for newEvent. This will execute after creating an event and create
+    a job for every event and notify the user who are going(RSVP=2) to that event and the event
+    owner before happenning the event*/
+    
     Event.afterCreate=function(next){
   
         var estimatedDelay = 5000 ;

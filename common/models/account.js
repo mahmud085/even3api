@@ -201,14 +201,14 @@ module.exports = function(Account) {
         cb(null, "Email Field is empty");   
     }
 
-    Account.find({
+    Account.find({    // find account by corresponding email
       where: {
         "email": data.req.body.email
       }
     }, function(err, ant) {
       if (err)
         cb(null, err);
-      if (ant[0] == undefined) {
+      if (ant[0] == undefined) {      //if account is not find create an account
         Account.create({
           FirstName: data.req.body.FirstName,
           email: data.req.body.email,
@@ -226,7 +226,7 @@ module.exports = function(Account) {
             cb(null, err);
           }
 
-          if (data.req.body.Type == 'FB') {
+          if (data.req.body.Type == 'FB') {       ///  check the Type is 'Facebook' or 'Google' set the id and token
             ant.FacebookID = data.req.body.Id;
             ant.accessTokenFacebook = data.req.body.Token;
           } else {
@@ -288,26 +288,26 @@ module.exports = function(Account) {
     
     var job ;
     if (context.req.body.Type == 'FB') {
-      job = queue.create('FindFacebook', {
+      job = queue.create('FindFacebook', {      //Create a job facebook id
         accessToken: context.req.body.Token
       }).save(function(err) {
         if (!err) console.log('FB is it ' + job.id);
       });
     } else {
-      job = queue.create('FindGoogle', {
+      job = queue.create('FindGoogle', {         //Create a job for Googleid
         accessToken: context.req.body.Token
       }).save(function(err) {
         if (!err) console.log('Google  is it ' + job.id);
       });
     }
 
-    job.on('complete', function(result) {
+    job.on('complete', function(result) {       //on job complete
       console.log('completed job ' + job.id);
       next();
     });
 
-    queue.process('FindGoogle', function(job, done) {
-      if (!job.data.accessToken)
+    queue.process('FindGoogle', function(job, done) {   // Friend Finding Process for Google
+      if (!job.data.accessToken)    // if no access token - terminate
         done();
 
       var url = 'https://www.googleapis.com/plus/v1/people/me/people/visible?maxResults=99&access_token=' + job.data.accessToken;
@@ -357,8 +357,8 @@ module.exports = function(Account) {
       done(null);
     });
 
-    // Friend Finding Process
-    queue.process('FindFacebook', function(job, done) {
+    
+    queue.process('FindFacebook', function(job, done) {   // Friend Finding Process for facebook
       console.log(job.data.accessToken);
       console.log('processing job ' + job.id);
 
@@ -424,6 +424,7 @@ module.exports = function(Account) {
   });
 
   // Adding social Token
+
   Account.addtoken = function(data, cb) {
 
     Account.find({
@@ -446,13 +447,14 @@ module.exports = function(Account) {
     });
   };
 
+  // Create an account
   Account.addaccount = function(ctx, options, cb) {
-
+    console.log("add Account context = ",ctx);
     if (!options) options = {};
     ctx.req.params.container = 'profilepic';
 
     Account.app.models.container.upload(ctx.req, ctx.result, options, function(err, fileObj) {
-      //console.log(fileObj);
+      
       if (err) {
         cb(err);
       }
@@ -480,6 +482,8 @@ module.exports = function(Account) {
           var EmailNotification = fileObj.fields.EmailNotification[0];
         if (fileObj.fields.hasOwnProperty('PushNotification'))
           var PushNotification = fileObj.fields.PushNotification[0];
+
+        /* create an account */
 
         Account.create({
           FirstName: FirstName,
@@ -563,6 +567,8 @@ module.exports = function(Account) {
     });
   };
 
+// after remote for addaccount.It will execute after creating an account
+
   Account.afterRemote('addaccount', function(context, user, next) {
         console.log('> user.afterRemote triggered');
         console.log("at add Account user = ",user);
@@ -579,6 +585,8 @@ module.exports = function(Account) {
         };
         console.log('options = ' + JSON.stringify(options));
         
+        /*  verify an user by sending a link to the corresponding email */
+
         if (user.hasOwnProperty('id')) {
             user.verify(options, function(err, response, next) {
             console.log('user verify response = ' + JSON.stringify(response));
@@ -625,8 +633,14 @@ module.exports = function(Account) {
             console.log('> verification email sent:', response);
         });
   });
+
+  /*Resend verification link to specified email*/
+
   Account.resendLink =function(options,res,cb){
     console.log("options resend= ",options);
+
+      /*sending email process*/
+      
       loopback.Email.send({
             to: options.to,
             from: options.from,
@@ -648,7 +662,7 @@ module.exports = function(Account) {
 
   };
 
-
+  /*Edit an account*/
   Account.editaccount = function(ctx, options, cb) {
 
     if (!options) options = {};
@@ -759,6 +773,7 @@ module.exports = function(Account) {
     });
   };
 
+  /*unsubscribe an user*/
   Account.unsubscribe = function (data, cb) {
       
       console.log("body received " + JSON.stringify(data.req.body));

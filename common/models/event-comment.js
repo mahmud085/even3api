@@ -5,6 +5,8 @@ var loopback = require('loopback');
 var app = loopback();
 module.exports = function(EventComment) {
 
+	/* add a comment to an event */
+
 	EventComment.addcomment = function(ctx, options, cb) {
 		if (!options)
 			options = {};
@@ -32,6 +34,9 @@ module.exports = function(EventComment) {
 					var Time = fileObj.fields.Time[0];
 
 				//var Commenter =JSON.parse(JSON.stringify(ctx.req.accessToken.userId));
+
+				// create an event comment  
+
 				EventComment.create({
 					CommentBody: CommentBody,
 					EventId: EventId,
@@ -89,6 +94,10 @@ module.exports = function(EventComment) {
 		});
 
 	};
+
+	/* after remote method for add comment. it will execute after creating an event comment 
+		find the owner of the corresponding event or business and send them notification if
+		anyone comments */
 
 	EventComment.afterRemote('addcomment', function(ctx, data, done) {
 

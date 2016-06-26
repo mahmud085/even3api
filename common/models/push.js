@@ -3,6 +3,7 @@ var app = loopback();
 
 module.exports = function(Push) {
 
+    /* SEND NOTIFICATION TO USER */
     Push.sendNotification = function (userId, message) {
         console.log('sendNotification > to : ' + userId + " , message = " + message);
         if (!userId) {
@@ -38,7 +39,9 @@ module.exports = function(Push) {
             }
         });   
     }
-    
+
+      /* SEND MAIL TO USER */
+
     Push.sendEmail = function (email, subject, message) {
         loopback.Email.send({
             to: email,
@@ -56,6 +59,8 @@ module.exports = function(Push) {
           });
     }
     
+    /* send push notification */
+
     Push.sendpush = function (data, cb) {
         var userId = data.req.body.userId ;
         var message = data.req.body.message ;

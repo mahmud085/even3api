@@ -8,6 +8,9 @@ Interest.remoteMethod(
 	}
 
 );
+
+/* create and save user interests */
+
 Interest.userinterest = function (allinterests,cb){
 	
 	userId = allinterests.AccountId;

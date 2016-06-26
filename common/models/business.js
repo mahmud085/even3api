@@ -6,6 +6,8 @@ var fs = require('fs');
 
 module.exports = function(Business) {
 
+     /* edit a business*/
+
     Business.editbusiness = function (ctx,options,cb) {
         if(!options) options = {};
         ctx.req.params.container = 'businesspic';
@@ -121,6 +123,7 @@ module.exports = function(Business) {
   });
 };  
 
+    /*create a new business*/
 
     Business.newBusiness = function(ctx,options,cb){
 
@@ -207,6 +210,8 @@ module.exports = function(Business) {
             } 
         });
     };
+
+    /*search a business by address and location longitude and latitude*/
 
     Business.search=function(data,cb){
 
