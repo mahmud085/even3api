@@ -64,7 +64,7 @@ module.exports = function(Account) {
             var userEmail = emails[index];
             console.log("user email = " + userEmail);
             var body = "<p>" + eventCreatorName + " invited you to join " + eventName + " in Even3 App.</p>" ;
-            body += "<p><a href=\"" + baseUrl + "/event/" + data.req.body.EventId + "\">Event Link</a></p>" ;
+            body += "<p><a href=\"" + baseUrl + "/#/event/" + data.req.body.EventId + "\">Event Link</a></p>" ;
             Account.app.models.Push.sendEmail(userEmail,"Even3 Event Invitation", body);
         } 
       })
