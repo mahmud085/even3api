@@ -571,7 +571,6 @@ module.exports = function(Account) {
 
   Account.afterRemote('addaccount', function(context, user, next) {
         console.log('> user.afterRemote triggered');
-        console.log("at add Account user = ",user);
         var options = {
             host: 'api.even3app.com',
             port: 80,
@@ -581,36 +580,40 @@ module.exports = function(Account) {
             subject: 'Welcome to Even3.',
             template: path.resolve(__dirname, '../../server/views/verify.ejs'),
             redirect: '/verified',
-            Account: user
+            Account: user,
+            user : user
         };
-        console.log('options = ' + JSON.stringify(options));
+        
         
         /*  verify an user by sending a link to the corresponding email */
 
         if (user.hasOwnProperty('id')) {
-            user.verify(options, function(err, response, next) {
-            console.log('user verify response = ' + JSON.stringify(response));
-            console.log('user verify error = ', JSON.stringify(err));
-            if (err) return next(err);
-            console.log('> verification email sent:', response);
-            context.res.send({
-                status : 'Success',
-                message : 'Thanks for joining Even3. An activation link has been sent to your email. Please activate your account to use Even3.',
-                options : options
-              });
-            });
-        } else {
-            context.res.send({
-                status : user['name'],
-                message : user['message']
-              });
-        }
+          console.log('options = ' + JSON.stringify(options));
+            user.verify(options, function(error,vresponse) {
+                
+                if (error) {
+                  console.log("verify error = ",error);
+                  return next(error);
+                } 
+                console.log('> verification email sent:', vresponse);
+                context.res.send({
+                    status : 'Success',
+                    message : 'Thanks for joining Even3. An activation link has been sent to your email. Please activate your account to use Even3.',
+                    options : options
+                  });
+                });
+            } else {
+              context.res.send({
+                  status : user['name'],
+                  message : user['message']
+                });
+            }
            
-        
+     //next();   
   });
   
   Account.afterRemote('create', function(context, user, next) {
-        console.log('> user.afterRemote triggered');
+        console.log('> user.afterRemote triggered 2');
 
         var options = {
             host: 'api.even3app.com',
