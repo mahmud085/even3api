@@ -38,7 +38,7 @@
     "name": "sendgrid",
     "connector": "loopback-connector-sendgrid",
     "api_user": "even3co",
-    "api_key": "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"
+    "api_key": "even3co1234"
   },
   "push": {
     "name": "push",
