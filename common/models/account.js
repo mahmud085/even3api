@@ -65,7 +65,7 @@ module.exports = function(Account) {
             console.log("user email = " + userEmail);
             var body = "<p>" + eventCreatorName + " invited you to join " + eventName + " in Even3 App.</p>" ;
             body += "<p><a href=\"" + baseUrl + "/#/event/" + data.req.body.EventId + "\">Event Link</a></p>" ;
-            Account.app.models.Push.sendEmail(userEmail,"Even3 Event Invitation", body);
+            Account.app.models.Push.sendEmail(userEmail,"Save the Date for "+eventName, body);
         } 
       })
       })(i);
@@ -116,16 +116,21 @@ module.exports = function(Account) {
       if (result[0]) {
         var mail = '';
         for (var i = 0; i < data.req.body.email.length; i++)
-          mail = mail + String.fromCharCode(data.req.body.email.charCodeAt(i) + 2);
-       var link ='http://api.even3app.com/reset-password?token=' + mail;
+        mail = mail + String.fromCharCode(data.req.body.email.charCodeAt(i) + 2);
+        var link ='http://api.even3app.com/reset-password?token=' + mail;
         //console.log(mail);
-
+        // create a custom object your want to pass to the email template. You can create as many key-value pairs as you want
+        var myMessage = {username : result[0].FirstName,link : link }; 
+ 
+        // prepare a loopback template renderer
+        var renderer = loopback.template(path.resolve(__dirname, '../../server/views/resetpass.ejs'));
+        var html_body = renderer(myMessage);
         loopback.Email.send({
             to: data.req.body.email,
             from: {email:'admin@even3app.com',name:"Even3"},
             subject: "Even3 Password Reset",
             text: "text message",
-            html: '<p>Hi ' + result[0].FirstName + '</p><p> You have requested to reset the password. Please click the link bellow to set your new password. If it does not work, click the button.</p>' + '<p>' + link + '</p>' + '<p><button href="http://api.even3app.com/reset-password?token="'+mail + '>Reset Password</button></p>'
+            html: html_body
           },
           function(err, result) {
                 if (err) {
@@ -571,6 +576,9 @@ module.exports = function(Account) {
 
   Account.afterRemote('addaccount', function(context, user, next) {
         console.log('> user.afterRemote triggered');
+        var userMail = '';
+        for (var i = 0; i < user.email.length; i++)
+        userMail = userMail + String.fromCharCode(user.email.charCodeAt(i) + 2);
         var options = {
             host: 'api.even3app.com',
             port: 80,
@@ -579,7 +587,7 @@ module.exports = function(Account) {
             from: {email:'admin@even3app.com',name:"Even3"},
             subject: 'Welcome to Even3.',
             template: path.resolve(__dirname, '../../server/views/verify.ejs'),
-            redirect: '/verified',
+            redirect: '/verified?user='+userMail,
             Account: user,
             user : user
         };

@@ -58,7 +58,48 @@ app.get('/reset-password',function(req,res){
       email : mail
     });
 });
+app.get('/verified',function(req,res){
+      var mail = '';
+    for (var i = 0; i < req.query.user.length; i++)
+    mail = mail + String.fromCharCode(req.query.user.charCodeAt(i) - 2);
+      console.log("here verify ",mail);
+      var name = "User"
+      app.models.Account.find({
+        where: {
+          'email': mail
+        }
+      }, 
+      function(err, result) {
+          if(err) throw err;
+          else {
+            name = result[0].FirstName;
+            console.log("result ",result[0].FirstName);
+            var myMessage = {username : result[0].FirstName }; 
+ 
+            // prepare a loopback template renderer
+            var renderer = loopback.template(path.resolve(__dirname, '../server/views/wcemail.ejs'));
+            var html_body = renderer(myMessage);
+            loopback.Email.send({
+                  to: mail,
+                  from: {email:'admin@even3app.com',name:"Even3"},
+                  subject: "Welcome "+name,
+                  text: "text",
+                  html: html_body
 
+            },
+            function(err, result) {
+                if (err) {
+                    console.log('Something went wrong while sending email.');
+                }
+            
+                if (result.message == 'success') {
+                    console.log(result.message);
+                }
+            });
+          }
+      });
+      res.render('verified.ejs');
+});
 app.get('/admin/newsletter',function(req,res){
      app.models.subscribers.find(function(err,result){
           if(err)console.log("Subscribers Not found !");
